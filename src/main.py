@@ -14,7 +14,11 @@ class ScanRequest(BaseModel):
 
 @app.post("/scan") 
 def scan(data: ScanRequest):
-  response = requests.get(data.url)
+  
+  if data.url.startswith("https://") or data.url.startswith("http://"):
+    response = requests.get(data.url)
+  else: 
+    return {"Error": "Invalid URL. URL must start with http:// or https://" }
 
   return {
     "target_url": data.url,
