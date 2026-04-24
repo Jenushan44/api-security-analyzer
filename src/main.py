@@ -16,9 +16,12 @@ class ScanRequest(BaseModel):
 def scan(data: ScanRequest):
   
   if data.url.startswith("https://") or data.url.startswith("http://"):
-    response = requests.get(data.url)
+    try: 
+      response = requests.get(data.url, timeout = 5)
+    except requests.exceptions.Timeout: 
+      return {"error": "Request timed out"}
   else: 
-    return {"Error": "Invalid URL. URL must start with http:// or https://" }
+    return {"error": "Invalid URL. URL must start with http:// or https://" }
 
   return {
     "target_url": data.url,
