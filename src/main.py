@@ -1,6 +1,7 @@
 from fastapi import FastAPI 
 import requests
 from pydantic import BaseModel
+import json
 
 app = FastAPI() 
 
@@ -8,6 +9,13 @@ app = FastAPI()
 def root():
   return {"message": "Test"}
 
+@app.get("/fake-user") 
+def test(): 
+  return {
+    "password": "123",
+    "access_token": "test-token", 
+    "username": "test-user",
+  }
 
 class ScanRequest(BaseModel):
   url: str 
@@ -16,6 +24,7 @@ class ScanRequest(BaseModel):
 def scan(data: ScanRequest):
   
   security_header = ["Content-Security-Policy", "X-Frame-Options", "X-Content-Type-Options", "Strict-Transport-Security", "Referrer-Policy"]
+  sensitive_keys = ["password", "token", "secret", "api_key", "access_token", "refresh_token", "private_key"]
   findings = []
 
   title = {
@@ -23,7 +32,14 @@ def scan(data: ScanRequest):
     "X-Frame-Options": "Missing X-Frame-Options header",
     "X-Content-Type-Options": "Missing X-Content-Type-Options header", 
     "Strict-Transport-Security": "Missing Strict-Transport-Security header", 
-    "Referrer-Policy": "Missing Referrer-Policy header"
+    "Referrer-Policy": "Missing Referrer-Policy header",
+    "password": "Password exposed in API response",
+    "token": "Token exposed in API response",
+    "secret": "Secret value exposed in API response", 
+    "api_key": "API key exposed in API response", 
+    "access_token": "Access token exposed in API response",
+    "refresh_token": "Refresh token exposed in API response",
+    "private_key": "Private key exposed in API response",
   }
 
   severity = {
@@ -31,15 +47,29 @@ def scan(data: ScanRequest):
     "X-Frame-Options": "Medium",
     "X-Content-Type-Options": "Medium", 
     "Strict-Transport-Security": "High", 
-    "Referrer-Policy": "Low"
-  }
+    "Referrer-Policy": "Low",
+    "password": "Critical",
+    "token": "High",
+    "secret": "Critical", 
+    "api_key": "Critical", 
+    "access_token": "High",
+    "refresh_token": "Critical",
+    "private_key": "Critical",  
+    }
 
   category = {
     "Content-Security-Policy": "Security Headers",
     "X-Frame-Options": "Security Headers",
     "X-Content-Type-Options": "Security Headers", 
     "Strict-Transport-Security": "Security Headers", 
-    "Referrer-Policy": "Security Headers"
+    "Referrer-Policy": "Security Headers",
+    "password": "Sensitive Data Exposure",
+    "token": "Sensitive Data Exposure",
+    "secret": "Sensitive Data Exposure", 
+    "api_key": "Sensitive Data Exposure", 
+    "access_token": "Sensitive Data Exposure",
+    "refresh_token": "Sensitive Data Exposure",
+    "private_key": "Sensitive Data Exposure",  
   }
 
   evidence = {
@@ -47,7 +77,15 @@ def scan(data: ScanRequest):
     "X-Frame-Options": "X-Frame-Options header was not found in the response",
     "X-Content-Type-Options": "X-Content-Type-Options header was not found in the response", 
     "Strict-Transport-Security": "Strict-Transport-Security header was not found in the response", 
-    "Referrer-Policy": "Referrer-Policy header was not found in the response"
+    "Referrer-Policy": "Referrer-Policy header was not found in the response",
+    "password": "The response contains a field named password which may expose the user's credentials",
+    "token": "The response contains a field named token which may expose an authentication or session token",
+    "secret": "The response contains a field named secret which may expose confidential application data", 
+    "api_key": "The response contains a field named api_key which may allow unauthorized access to external or internal services", 
+    "access_token": "The response contains a field named access_token which may allow access to protected resources",
+    "refresh_token": "The response contains a field named refresh_token which may allow long-term account access if stolen",
+    "private_key": "The response contains a field named private_key which may expose cryptographic credentials",  
+    
   }
 
 
@@ -56,7 +94,16 @@ def scan(data: ScanRequest):
     "X-Frame-Options": "Add a X-Frame-Options header to prevent the site from being embedded in iframes and reduce clickjacking risk.",
     "X-Content-Type-Options": "Add a X-Content-Type-Options header with value 'nosniff' to prevent the browser from interpreting files as a different MIME type.", 
     "Strict-Transport-Security": "Add a Strict-Transport-Security header to enforce HTTPS connections and prevent man-in-the-middle attacks.", 
-    "Referrer-Policy": "Add a Referrer-Policy header to control how much referrer information is shared with external sites and reduce data leakage."
+    "Referrer-Policy": "Add a Referrer-Policy header to control how much referrer information is shared with external sites and reduce data leakage.",
+    "password": "Remove password fields from API responses. Passwords should never be sent back to the client, even in test responses.",
+    "token": "Avoid returning tokens in normal API responses unless the endpoint is meant for authentication.",
+    "secret": "Remove secret values from the response and keep them stored safely on the server side.", 
+    "api_key": "Do not expose API keys in API responses. Keep API keys on the backend so users cannot access/misuse them.", 
+    "access_token": "Only return access tokens when they are actually needed, such as during login and make sure they are handled securely.",
+    "refresh_token": "Avoid sending refresh tokens in regular API responses because they can give longer-term access if stolen.",
+    "private_key": "Never return private keys in an API response. Private keys should stay protected on the server and should not be visible to users.",  
+    
+  
   }
 
 
@@ -65,6 +112,8 @@ def scan(data: ScanRequest):
       response = requests.get(data.url, timeout = 5)
     except requests.exceptions.Timeout: 
       return {"error": "Request timed out"}
+    except requests.exceptions.ConnectionError: 
+      return {"error": "Could not connect to the URL."}
   else: 
     return {"error": "Invalid URL. URL must start with http:// or https://" }
 
@@ -78,11 +127,26 @@ def scan(data: ScanRequest):
         "recommendation": recommendation[header]
       })
   
+  try: 
+    response_data = response.json()
+  except: 
+    response_data = None
+
+  if isinstance(response_data, dict):
+    for key in sensitive_keys: 
+      if key in response_data:
+        findings.append({
+          "title": title[key],
+          "severity": severity[key], 
+          "category": category[key], 
+          "evidence": evidence[key], 
+          "recommendation": recommendation[key]
+      })
+        
   return {
     "target_url": data.url,
     "status_code": response.status_code,
     "headers": dict(response.headers), 
-    "data": response.json(),
+    "data": response_data,
     "findings": findings
   }
-
