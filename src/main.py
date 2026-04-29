@@ -1,7 +1,6 @@
 from fastapi import FastAPI 
 import requests
 from pydantic import BaseModel
-import json
 
 app = FastAPI() 
 
@@ -12,7 +11,9 @@ def root():
 @app.get("/fake-user") 
 def test(): 
   return {
-    "password": "123",
+    "credentials": {
+      "password": "123",
+    },
     "access_token": "test-token", 
     "username": "test-user",
   }
@@ -132,17 +133,30 @@ def scan(data: ScanRequest):
   except: 
     response_data = None
 
-  if isinstance(response_data, dict):
-    for key in sensitive_keys: 
-      if key in response_data:
-        findings.append({
-          "title": title[key],
-          "severity": severity[key], 
-          "category": category[key], 
-          "evidence": evidence[key], 
-          "recommendation": recommendation[key]
-      })
+  def scan_sensitive_keys(response_data): 
+    if isinstance(response_data, dict):
+      for key in response_data.keys(): 
+        if key in sensitive_keys:
+          findings.append({
+            "title": title[key],
+            "severity": severity[key], 
+            "category": category[key], 
+            "evidence": evidence[key], 
+            "recommendation": recommendation[key]
+          })
+          
+        if isinstance(response_data[key], dict): 
+          scan_sensitive_keys(response_data[key])
+        elif isinstance(response_data[key], list): 
+          scan_sensitive_keys(response_data[key])
+
+    elif isinstance(response_data, list):
+      for item in response_data: 
+        if isinstance(item, dict): 
+          scan_sensitive_keys(item)
         
+  scan_sensitive_keys(response_data)
+
   return {
     "target_url": data.url,
     "status_code": response.status_code,
