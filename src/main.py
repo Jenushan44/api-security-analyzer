@@ -51,89 +51,116 @@ def scan(data: ScanRequest):
   risk_level = ""
   risk_summary = ""
 
-  title = {
-    "Content-Security-Policy": "Missing Content-Security-Policy header",
-    "X-Frame-Options": "Missing X-Frame-Options header",
-    "X-Content-Type-Options": "Missing X-Content-Type-Options header", 
-    "Strict-Transport-Security": "Missing Strict-Transport-Security header", 
-    "Referrer-Policy": "Missing Referrer-Policy header",
-    "password": "Password exposed in API response",
-    "token": "Token exposed in API response",
-    "secret": "Secret value exposed in API response", 
-    "api_key": "API key exposed in API response", 
-    "access_token": "Access token exposed in API response",
-    "refresh_token": "Refresh token exposed in API response",
-    "private_key": "Private key exposed in API response",
-  }
+  rules = {
 
-  severity = {
-    "Content-Security-Policy": "High",
-    "X-Frame-Options": "Medium",
-    "X-Content-Type-Options": "Medium", 
-    "Strict-Transport-Security": "High", 
-    "Referrer-Policy": "Low",
-    "password": "Critical",
-    "token": "High",
-    "secret": "Critical", 
-    "api_key": "Critical", 
-    "access_token": "High",
-    "refresh_token": "Critical",
-    "private_key": "Critical",  
-    }
+    "Content-Security-Policy" : {
+      "title": "Missing Content-Security-Policy header",
+      "severity": "High",
+      "category": "Security Headers",
+      "evidence": "Content-Security-Policy header was not found in the response",
+      "recommendation": "Add a Content-Security-Policy header to restrict which resources can be loaded which reduce the risk of XSS attacks.",
+    },
 
-  category = {
-    "Content-Security-Policy": "Security Headers",
-    "X-Frame-Options": "Security Headers",
-    "X-Content-Type-Options": "Security Headers", 
-    "Strict-Transport-Security": "Security Headers", 
-    "Referrer-Policy": "Security Headers",
-    "password": "Sensitive Data Exposure",
-    "token": "Sensitive Data Exposure",
-    "secret": "Sensitive Data Exposure", 
-    "api_key": "Sensitive Data Exposure", 
-    "access_token": "Sensitive Data Exposure",
-    "refresh_token": "Sensitive Data Exposure",
-    "private_key": "Sensitive Data Exposure",  
-  }
+    "X-Frame-Options" : {
+      "title": "Missing X-Frame-Options header",
+      "severity": "Medium",
+      "category": "Security Headers",
+      "evidence": "X-Frame-Options header was not found in the response",
+      "recommendation": "Add a X-Frame-Options header to prevent the site from being embedded in iframes and reduce clickjacking risk.",
+    },
 
-  evidence = {
-    "Content-Security-Policy": "Content-Security-Policy header was not found in the response",
-    "X-Frame-Options": "X-Frame-Options header was not found in the response",
-    "X-Content-Type-Options": "X-Content-Type-Options header was not found in the response", 
-    "Strict-Transport-Security": "Strict-Transport-Security header was not found in the response", 
-    "Referrer-Policy": "Referrer-Policy header was not found in the response",
-    "password": "The response contains a field named password which may expose the user's credentials",
-    "token": "The response contains a field named token which may expose an authentication or session token",
-    "secret": "The response contains a field named secret which may expose confidential application data", 
-    "api_key": "The response contains a field named api_key which may allow unauthorized access to external or internal services", 
-    "access_token": "The response contains a field named access_token which may allow access to protected resources",
-    "refresh_token": "The response contains a field named refresh_token which may allow long-term account access if stolen",
-    "private_key": "The response contains a field named private_key which may expose cryptographic credentials",  
-  }
+    "X-Content-Type-Options": {
+      "title": "Missing X-Content-Type-Options header", 
+      "severity": "Medium",
+      "category": "Security Headers",
+      "evidence": "X-Content-Type-Options header was not found in the response",
+      "recommendation": "Add a X-Content-Type-Options header with value 'nosniff' to prevent the browser from interpreting files as a different MIME type.",
 
+    },
 
-  recommendation = {
-    "Content-Security-Policy": "Add a Content-Security-Policy header to restrict which resources can be loaded which reduce the risk of XSS attacks.",
-    "X-Frame-Options": "Add a X-Frame-Options header to prevent the site from being embedded in iframes and reduce clickjacking risk.",
-    "X-Content-Type-Options": "Add a X-Content-Type-Options header with value 'nosniff' to prevent the browser from interpreting files as a different MIME type.", 
-    "Strict-Transport-Security": "Add a Strict-Transport-Security header to enforce HTTPS connections and prevent man-in-the-middle attacks.", 
-    "Referrer-Policy": "Add a Referrer-Policy header to control how much referrer information is shared with external sites and reduce data leakage.",
-    "password": "Remove password fields from API responses. Passwords should never be sent back to the client, even in test responses.",
-    "token": "Avoid returning tokens in normal API responses unless the endpoint is meant for authentication.",
-    "secret": "Remove secret values from the response and keep them stored safely on the server side.", 
-    "api_key": "Do not expose API keys in API responses. Keep API keys on the backend so users cannot access/misuse them.", 
-    "access_token": "Only return access tokens when they are actually needed, such as during login and make sure they are handled securely.",
-    "refresh_token": "Avoid sending refresh tokens in regular API responses because they can give longer-term access if stolen.",
-    "private_key": "Never return private keys in an API response. Private keys should stay protected on the server and should not be visible to users.",  
+    "Strict-Transport-Security": {
+      "title": "Missing Strict-Transport-Security header",
+      "severity": "High",
+      "category": "Security Headers",
+      "evidence": "Strict-Transport-Security header was not found in the response",
+      "recommendation": "Add a Strict-Transport-Security header to enforce HTTPS connections and prevent man-in-the-middle attacks.",
+    },
+
+    "Referrer-Policy" : {
+      "title": "Missing Referrer-Policy header",
+      "severity": "Low",
+      "category": "Security Headers",
+      "evidence": "Referrer-Policy header was not found in the response",
+      "recommendation": "Add a Referrer-Policy header to control how much referrer information is shared with external sites and reduce data leakage.",
+    },
+
+    "password" : {
+      "title": "Password exposed in API response",
+      "severity": "Critical",
+      "category": "Sensitive Data Exposure",
+      "evidence": "The response contains a field named password which may expose the user's credentials",
+      "recommendation": "Remove password fields from API responses. Passwords should never be sent back to the client, even in test responses.",
+    },
+
+    "token": {
+      "title": "Token exposed in API response",
+      "severity": "High",
+      "category": "Sensitive Data Exposure",
+      "evidence": "The response contains a field named token which may expose an authentication or session token",
+      "recommendation": "Avoid returning tokens in normal API responses unless the endpoint is meant for authentication.",
+    },
+
+    "secret": {
+      "title": "Secret value exposed in API response",
+      "severity": "Critical",
+      "category": "Sensitive Data Exposure",
+      "evidence": "The response contains a field named secret which may expose confidential application data",
+      "recommendation": "Remove secret values from the response and keep them stored safely on the server side.",
+    },
+
+    "api_key": {
+      "title": "API key exposed in API response", 
+      "severity": "Critical",
+      "category": "Sensitive Data Exposure",
+      "evidence": "The response contains a field named api_key which may allow unauthorized access to external or internal services",
+      "recommendation": "Do not expose API keys in API responses. Keep API keys on the backend so users cannot access/misuse them.",
+    },
+
+    "access_token": {
+      "title": "Access token exposed in API response",
+      "severity": "High",
+      "category": "Sensitive Data Exposure",
+      "evidence": "The response contains a field named access_token which may allow access to protected resources",
+      "recommendation": "Only return access tokens when they are actually needed, such as during login and make sure they are handled securely.",
+    },
+
+    "refresh_token": {
+      "title": "Refresh token exposed in API response",
+      "severity": "Critical",
+      "category": "Sensitive Data Exposure",
+      "evidence": "The response contains a field named refresh_token which may allow long-term account access if stolen",
+      "recommendation": "Avoid sending refresh tokens in regular API responses because they can give longer-term access if stolen.",
+    },
+     
+    "private_key" : {
+      "title": "Private key exposed in API response",
+      "severity": "Critical",
+      "category": "Sensitive Data Exposure",
+      "evidence": "The response contains a field named private_key which may expose cryptographic credentials",
+      "recommendation": "Never return private keys in an API response. Private keys should stay protected on the server and should not be visible to users.",
+    },
+
   }
 
   def add_finding(request_key):
+    rule = rules[request_key]
+
     findings.append({
-      "title": title[request_key],
-      "severity": severity[request_key],
-      "category": category[request_key],
-      "evidence":  evidence[request_key],
-      "recommendation": recommendation[request_key],
+      "title": rule["title"],
+      "severity": rule["severity"],
+      "category": rule["category"],
+      "evidence":  rule["evidence"],
+      "recommendation": rule["recommendation"],
     })
 
 
