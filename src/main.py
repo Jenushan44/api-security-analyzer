@@ -127,6 +127,15 @@ def scan(data: ScanRequest):
     "private_key": "Never return private keys in an API response. Private keys should stay protected on the server and should not be visible to users.",  
   }
 
+  def add_finding(request_key):
+    findings.append({
+      "title": title[request_key],
+      "severity": severity[request_key],
+      "category": category[request_key],
+      "evidence":  evidence[request_key],
+      "recommendation": recommendation[request_key],
+    })
+
 
   if data.url.startswith("https://") or data.url.startswith("http://"):
     try: 
@@ -140,14 +149,7 @@ def scan(data: ScanRequest):
 
   for header in security_header:
     if header not in response.headers: 
-      findings.append({
-        "title": title[header],
-        "severity": severity[header], 
-        "category": category[header], 
-        "evidence": evidence[header], 
-        "recommendation": recommendation[header]
-      })
-  
+      add_finding(header)
   try: 
     response_data = response.json()
   except: 
@@ -157,13 +159,7 @@ def scan(data: ScanRequest):
     if isinstance(response_data, dict):
       for key in response_data.keys(): 
         if key in sensitive_keys:
-          findings.append({
-            "title": title[key],
-            "severity": severity[key], 
-            "category": category[key], 
-            "evidence": evidence[key], 
-            "recommendation": recommendation[key]
-          })
+          add_finding(key)
           
         if isinstance(response_data[key], dict): 
           scan_sensitive_keys(response_data[key])
