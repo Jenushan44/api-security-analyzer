@@ -5,6 +5,7 @@ from scanner.rules import security_header
 from scanner.findings import add_finding
 from scanner.sensitive_data import scan_sensitive_keys
 from scanner.risk import calculate_risk
+from scanner.errors import build_error_response
 
 app = FastAPI() 
 
@@ -22,7 +23,6 @@ def test():
     "username": "test-user",
   }
 
-
 @app.post("/scan") 
 def scan(data: ScanRequest):
   findings = []
@@ -31,11 +31,13 @@ def scan(data: ScanRequest):
     try: 
       response = requests.get(data.url, timeout = 5)
     except requests.exceptions.Timeout: 
-      return {"error": "Request timed out"}
+      return build_error_response("timeout", data.url)
     except requests.exceptions.ConnectionError: 
-      return {"error": "Could not connect to the URL."}
+      return build_error_response("connection_error", data.url)
+    except requests.exceptions.RequestException: 
+      return build_error_response("request_error", data.url)
   else: 
-    return {"error": "Invalid URL. URL must start with http:// or https://" }
+    return build_error_response("invalid_url", data.url)
 
   for header in security_header:
     if header not in response.headers: 
