@@ -11,6 +11,7 @@ def calculate_risk(findings):
   category_counts = {
     "Security Headers": 0,
     "Sensitive Data Exposure": 0,
+    "Rate Limiting": 0,
   }
 
   risk_score = 0

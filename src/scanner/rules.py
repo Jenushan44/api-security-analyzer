@@ -107,4 +107,12 @@ rules = {
     "evidence": "The response contains a field named private_key which may expose cryptographic credentials",
     "recommendation": "Never return private keys in an API response. Private keys should stay protected on the server and should not be visible to users.",
   },
+
+  "missing_rate_limiting" : {
+    "title": "Missing or weak rate limiting detected", 
+    "severity": "Medium", 
+    "category": "Rate Limiting", 
+    "evidence": "No rate limiting response or rate limit headers were seen during a small repeated-request test", 
+    "recommendation": "Add rate limiting to protect the API from abuse, brute-force attempts and excessive automated requests."
+  }
 }
