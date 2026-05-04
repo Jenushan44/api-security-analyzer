@@ -114,5 +114,13 @@ rules = {
     "category": "Rate Limiting", 
     "evidence": "No rate limiting response or rate limit headers were seen during a small repeated-request test", 
     "recommendation": "Add rate limiting to protect the API from abuse, brute-force attempts and excessive automated requests."
-  }
+  },
+
+  "potential_auth_exposure" : {
+    "title": "Potential unauthenticated data exposure", 
+    "severity": "Medium",
+    "category": "Authentication Exposure", 
+    "evidence": "The endpoint returned user or account-related fields in a publicly accessible response.",
+    "recommendation": "Review if this endpoint should require authentication before returning user or account-related data.",
+  },
 }

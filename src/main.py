@@ -7,6 +7,7 @@ from scanner.sensitive_data import scan_sensitive_keys
 from scanner.risk import calculate_risk
 from scanner.errors import build_error_response
 from scanner.rate_limit import check_rate_limiting
+from scanner.auth_exposure import check_auth_exposure
 
 app = FastAPI() 
 
@@ -49,6 +50,7 @@ def scan(data: ScanRequest):
     response_data = None
 
   scan_sensitive_keys(response_data, findings)
+  check_auth_exposure(response_data, response.status_code, findings )
   check_rate_limiting(data.url, findings)
   risk = calculate_risk(findings)
 
