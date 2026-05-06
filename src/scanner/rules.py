@@ -138,5 +138,31 @@ rules = {
     "category": "CORS Misconfiguration", 
     "evidence": "The response allows credentials while also using a wildcard CORS origin.", 
     "recommendation": "Do not allow credentials with a wildcard origin. Use specific trusted origins instead. "
+  }, 
+
+  "cookie_missing_httponly": {
+    "title": "Cookie missing HttpOnly attribute", 
+    "severity": "medium", 
+    "category": "Cookie Security", 
+    "evidence": "The response sets a cookie without the HttpOnly attribute.",
+    "recommendation": "Add HttpOnly to cookies that do not need to be accessed by JavaScript."
+  }, 
+
+  "cookie_missing_secure": {
+    "title": "Cookie missing Secure attribute", 
+    "severity": "High", 
+    "category": "Cookie Security", 
+    "evidence": "The response sets a cookie without the Secure attribute", 
+    "recommendation": "Add Secure so the cookie is only sent over HTTPS."
+  }, 
+
+  "cookie_missing_samesite": {
+    "title": "Cookie missing SameSite attribute", 
+    "severity": "Medium", 
+    "category": "Cookie Security", 
+    "evidence": "The response sets a cookie without a SameSite attribute.",
+    "recommendation": "Add a SameSite value such as Lax or Strict uncless cross-site cookie behavior is required."
   }
+
+
 }
