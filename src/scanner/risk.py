@@ -13,6 +13,7 @@ def calculate_risk(findings):
     "Sensitive Data Exposure": 0,
     "Rate Limiting": 0,
     "Authentication Exposure": 0,
+    "CORS Misconfiguration": 0,
   }
 
   risk_score = 0

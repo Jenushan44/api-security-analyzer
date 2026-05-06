@@ -123,4 +123,20 @@ rules = {
     "evidence": "The endpoint returned user or account-related fields in a publicly accessible response.",
     "recommendation": "Review if this endpoint should require authentication before returning user or account-related data.",
   },
+
+  "permissive_cors_origin" : {
+    "title": "CORS allows all origins", 
+    "severity": "Medium", 
+    "category": "CORS Misconfiguration", 
+    "evidence": "The response included Acess-Control-Allow-Origin: *, which allows any website origin to read the API response from a browser.",
+    "recommendation": "Limit Access-Control-Allow-Origin to the frontend domaisn that actually need access. "
+  }, 
+
+  "cors_credentials_with_wildcard": {
+    "title": "CORS allows credentials with a wildcard origin",
+    "severity": "High", 
+    "category": "CORS Misconfiguration", 
+    "evidence": "The response allows credentials while also using a wildcard CORS origin.", 
+    "recommendation": "Do not allow credentials with a wildcard origin. Use specific trusted origins instead. "
+  }
 }
