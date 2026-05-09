@@ -10,6 +10,7 @@ from scanner.rate_limit import check_rate_limiting
 from scanner.auth_exposure import check_auth_exposure
 from scanner.cors import check_cors
 from scanner.cookies import check_cookie_security
+from database.save_scan import save_scan_result
 
 app = FastAPI() 
 
@@ -57,8 +58,10 @@ def scan(data: ScanRequest):
   check_auth_exposure(response_data, response.status_code, findings )
   check_rate_limiting(data.url, findings)
   risk = calculate_risk(findings)
+  scan_id = save_scan_result(data.url, response.status_code, risk, findings)
 
   return {
+    "scan_id": scan_id,
     "target_url": data.url,
     "status_code": response.status_code,
     "headers": dict(response.headers), 
