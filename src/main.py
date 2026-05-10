@@ -12,7 +12,7 @@ from scanner.cors import check_cors
 from scanner.cookies import check_cookie_security
 from database.save_scan import save_scan_result
 from database.connection import SessionLocal
-from database.models import Scan
+from database.models import Scan, Finding
 
 app = FastAPI() 
 
@@ -89,3 +89,32 @@ def get_scans():
     db.close()
   
   return scan_results
+
+@app.get("/scans/{scan_id}")
+def get_scan_report(scan_id: int): 
+  db = SessionLocal()
+  finding_list = []
+  try: 
+    scan_search = db.get(Scan, scan_id)    
+    
+    if scan_search == None: 
+      return {
+        "error": True, 
+        "message": "Scan not found"
+      }
+    
+    finding_search = db.query(Finding).filter(Finding.scan_id == scan_id).all()
+
+    scan_dict = {"id": scan_search.id, "target_url": scan_search.target_url, "status_code": scan_search.status_code, "risk_score": scan_search.risk_score, "risk_level": scan_search.risk_level, "risk_summary": scan_search.risk_summary, "created_at": scan_search.created_at}
+
+    for finding in finding_search: 
+      finding_dict = {"id": finding.id, "scan_id": finding.scan_id, "title": finding.title, "severity": finding.severity, "category": finding.category, "evidence": finding.evidence, "recommendation": finding.recommendation}
+      finding_list.append(finding_dict)
+
+  finally: 
+    db.close()
+
+  return {
+    "scan": scan_dict,
+    "findings": finding_list
+  }
