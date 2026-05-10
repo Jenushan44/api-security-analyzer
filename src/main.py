@@ -11,6 +11,8 @@ from scanner.auth_exposure import check_auth_exposure
 from scanner.cors import check_cors
 from scanner.cookies import check_cookie_security
 from database.save_scan import save_scan_result
+from database.connection import SessionLocal
+from database.models import Scan
 
 app = FastAPI() 
 
@@ -73,3 +75,17 @@ def scan(data: ScanRequest):
     "severity_counts": risk["severity_counts"], 
     "category_counts": risk["category_counts"],
   }
+
+@app.get("/scans") 
+def get_scans(): 
+  scan_results = []
+  db = SessionLocal()
+  try: 
+    scans = db.query(Scan).order_by(Scan.created_at.desc()).limit(20).all() 
+    for scan in scans: 
+      scan_dict = {"id": scan.id, "target_url": scan.target_url, "status_code": scan.status_code, "risk_score": scan.risk_score, "risk_level": scan.risk_level, "risk_summary": scan.risk_summary, "created_at": scan.created_at}
+      scan_results.append(scan_dict)
+  finally: 
+    db.close()
+  
+  return scan_results

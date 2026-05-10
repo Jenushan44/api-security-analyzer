@@ -142,7 +142,7 @@ rules = {
 
   "cookie_missing_httponly": {
     "title": "Cookie missing HttpOnly attribute", 
-    "severity": "medium", 
+    "severity": "Medium", 
     "category": "Cookie Security", 
     "evidence": "The response sets a cookie without the HttpOnly attribute.",
     "recommendation": "Add HttpOnly to cookies that do not need to be accessed by JavaScript."
