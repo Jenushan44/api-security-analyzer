@@ -1,14 +1,16 @@
 "use client";
 import { useState } from 'react'
-
+import Navbar from "../components/Navbar"
+import { ScanResult } from "../types/scan";
 
 export default function Home() {
 
   const [apiUrl, setApiUrl] = useState('');
-  const [result, setResult] = useState(null);
+  const [result, setResult] = useState<ScanResult | null>(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false)
 
+  // Sends the user url to the FastAPI scanner and stores returned report
   async function handleScan() {
     setError('');
     setLoading(true);
@@ -36,8 +38,9 @@ export default function Home() {
   }
 
   return (
-    <main>
-      <div>
+    <div className='flex'>
+      <Navbar />
+      <main className='flex-1'>
         <h1 className="text-center mt-5">API Security Analyzer</h1>
         <input type="text" value={apiUrl} onChange={(event) => setApiUrl(event.target.value)} placeholder="Enter your api url" />
         <button onClick={handleScan}>{loading == true ? "Scanning" : "Scan"}</button>
@@ -45,8 +48,58 @@ export default function Home() {
         {result && (
           <pre>{JSON.stringify(result, null, 2)}</pre>
         )}
-      </div>
-    </main >
+        <div className='flex items-center justify-evenly mt-10 text-center'>
+          <div className='border'>
+            <div className='w-[200px]'>
+              <p className='text-left pl-3 pt-3'>Risk Score</p>
+            </div>
+            <div>
+              {result && (
+                <p className='text-[50px]'>{result.risk_score}</p>
+              )}
+              <p className='text-right pr-5'>out of 100</p>
+            </div>
+          </div>
 
+          <div className='border'>
+            <div className='w-[200px]'>
+              <p>Risk Level</p>
+            </div>
+            <div>
+              {result && (
+                <p>{result.risk_level}</p>
+              )}
+            </div>
+          </div>
+
+
+          <div className='border'>
+            <div className='w-[200px]'>
+              <p>Total Findings</p>
+            </div>
+            <div>
+              {result && (
+                <p></p>
+              )}
+            </div>
+          </div>
+
+          <div className='border'>
+            <div className='w-[200px]'>
+              <p>Scan Summary</p>
+            </div>
+            <div>
+              {result && (
+                <p>{result.risk_summary}</p>
+              )}
+            </div>
+          </div>
+
+
+
+        </div>
+
+      </main >
+    </div >
   );
 }
