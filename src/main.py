@@ -118,3 +118,31 @@ def get_scan_report(scan_id: int):
     "scan": scan_dict,
     "findings": finding_list
   }
+
+@app.delete("/scans/{scan_id}")
+def delete_scan(scan_id: int): 
+  db = SessionLocal()
+  
+  try: 
+    scan_search = db.get(Scan, scan_id)
+    if scan_search == None: 
+      return {
+        "error": True, 
+        "message": "Scan not found"
+      }
+    
+    finding_search = db.query(Finding).filter(Finding.scan_id == scan_id).all()
+
+    for finding in finding_search: 
+      db.delete(finding)
+    
+    db.delete(scan_search)
+    db.commit()
+    
+  finally: 
+    db.close()
+  
+  return {
+    "message": "Scan successfully deleted",
+    "scan_id": scan_id,
+  }
