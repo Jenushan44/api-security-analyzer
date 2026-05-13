@@ -1,4 +1,4 @@
-from backend.src.scanner.findings import add_finding
+from scanner.findings import add_finding
 
 def check_cookie_security(headers, findings): 
   cookie_header = headers.get("Set-Cookie", None)

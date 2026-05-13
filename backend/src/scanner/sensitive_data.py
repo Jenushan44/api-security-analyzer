@@ -1,5 +1,5 @@
-from backend.src.scanner.rules import sensitive_keys 
-from backend.src.scanner.findings import add_finding
+from scanner.rules import sensitive_keys 
+from scanner.findings import add_finding
 
 def scan_sensitive_keys(response_data, findings): 
   if isinstance(response_data, dict):

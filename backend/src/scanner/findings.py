@@ -1,4 +1,4 @@
-from backend.src.scanner.rules import rules 
+from scanner.rules import rules 
 
 def add_finding(findings, request_key):
   rule = rules[request_key]

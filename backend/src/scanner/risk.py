@@ -1,4 +1,4 @@
-from backend.src.scanner.rules import severity_points
+from scanner.rules import severity_points
 
 def calculate_risk(findings): 
   severity_counts = {
