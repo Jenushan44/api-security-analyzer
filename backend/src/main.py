@@ -1,18 +1,18 @@
 from fastapi import FastAPI 
 import requests
-from schemas import ScanRequest
-from scanner.rules import security_header
-from scanner.findings import add_finding
-from scanner.sensitive_data import scan_sensitive_keys
-from scanner.risk import calculate_risk
-from scanner.errors import build_error_response
-from scanner.rate_limit import check_rate_limiting
-from scanner.auth_exposure import check_auth_exposure
-from scanner.cors import check_cors
-from scanner.cookies import check_cookie_security
-from database.save_scan import save_scan_result
-from database.connection import SessionLocal
-from database.models import Scan, Finding
+from backend.src.schemas import ScanRequest
+from backend.src.scanner.rules import security_header
+from backend.src.scanner.findings import add_finding
+from backend.src.scanner.sensitive_data import scan_sensitive_keys
+from backend.src.scanner.risk import calculate_risk
+from backend.src.scanner.errors import build_error_response
+from backend.src.scanner.rate_limit import check_rate_limiting
+from backend.src.scanner.auth_exposure import check_auth_exposure
+from backend.src.scanner.cors import check_cors
+from backend.src.scanner.cookies import check_cookie_security
+from backend.src.database.save_scan import save_scan_result
+from backend.src.database.connection import SessionLocal
+from backend.src.database.models import Scan, Finding
 
 app = FastAPI() 
 

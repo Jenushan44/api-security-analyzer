@@ -1,4 +1,4 @@
-from scanner.findings import add_finding
+from backend.src.scanner.findings import add_finding
 
 def check_cors(headers, findings): 
   
