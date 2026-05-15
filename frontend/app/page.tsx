@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import Navbar from "../components/Navbar"
 import { ScanResult } from "../types/scan";
-import { Gauge, CircleHelp, CircleCheck, CircleAlert, ShieldAlert, TriangleAlert, List } from 'lucide-react';
+import { Gauge, CircleHelp, CircleCheck, CircleAlert, ShieldAlert, TriangleAlert, List, OctagonAlert, Circle } from 'lucide-react';
 
 export default function Home() {
 
@@ -14,6 +14,7 @@ export default function Home() {
   const [riskLevelInfo, setRiskLevelInfo] = useState(false);
   const [totalFindingsInfo, setTotalFindingsInfo] = useState(false);
   const [scanSummaryInfo, setScanSummaryInfo] = useState(false);
+  const [severityCountsInfo, setSeverityCountsInfo] = useState(false);
 
   // Sends the user url to the FastAPI scanner and stores returned report
   async function handleScan() {
@@ -69,7 +70,7 @@ export default function Home() {
           <pre>{JSON.stringify(result, null, 2)}</pre>
         )}
 
-        <div className='mb-20 mt-10 grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-4 gap-6 px-6 items-stretch'>
+        <div className='mb-20 mt-10 grid grid-cols-1 md:grid-cols-4 2xl:grid-cols-4 gap-5 px-6 items-stretch'>
 
           <div className="w-full min-h-[180px] border border-gray-100 border-3 rounded-xl bg-white p-5 shadow-lg">
             <div className="flex items-center  gap-2">
@@ -279,6 +280,79 @@ export default function Home() {
                 <p className='mt-4'>{result.risk_summary}</p>
               ) : <p className='mt-4'>Run a scan to generate an overall risk summary</p>
               }
+            </div>
+          </div>
+        </div>
+
+        <div className='mb-20 mt-10 grid grid-cols-1 2xl:grid-cols-2 gap-6 px-6 items-stretch'>
+          <div className='w-full min-h-[180px] border border-1 rounded-xl p-5 shadow-lg'>
+            <div className="flex gap-2">
+              <p className='font-bold'>Severity Counts</p>
+              <div className='relative'>
+                <button onClick={() => { setSeverityCountsInfo(!severityCountsInfo) }}>
+                  <CircleHelp className='text-gray-400 w-4 h-4 translate-y-1/8 cursor-pointer' />
+                </button>
+                {severityCountsInfo && (
+                  <div className='absolute left-1/2 -translate-x-1/2 p-2 w-50 bottom-full bg-gray-100 border border-gray-300 border-1 rounded-xl'>
+                    <p className='text-[13px]'>Severity counts group the scan findings by impact level so you can quickly see how many Critical, High, Medium and Low issues were found.</p>
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className='mt-5 grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-4 gap-4'>
+              <div className='w-full flex  2xl:flex-row items-center justify-center bg-red-100 border border-red-400 border-1 py-4 px-5 rounded-xl gap-3'>
+                <OctagonAlert className='w-12 h-12 text-[#db1414]' />
+
+                <div className='flex flex-col items-center'>
+                  <p className='text-red-600 font-semibold text-[20px]'>Critical</p>
+                  {result ? (
+                    <p className='text-[35px] text-red-600 font-semibold'>{result.severity_counts.Critical}</p>
+                  ) : <p className='text-[50px] text-[#db1414] -translate-y-5 font-semibold'>-</p>
+                  }
+                </div>
+
+              </div>
+
+
+              <div className='w-full flex 2xl:flex-row items-center justify-center bg-orange-100 border border-orange-400 border-1 py-4 px-5 rounded-xl gap-3'>
+                < TriangleAlert className="w-12 h-12 text-[#EA580C]" />
+
+                <div className='flex flex-col items-center'>
+                  <p className='text-orange-600 font-semibold text-[20px]'>High</p>
+                  {result ? (
+                    <p className='text-[35px] text-orange-600 font-semibold'>{result.severity_counts.High}</p>
+                  ) : <p className='text-[50px] text-[#EA580C] -translate-y-5 font-semibold'>-</p>
+                  }
+                </div>
+
+              </div>
+
+              <div className='w-full flex 2xl:flex-row items-center justify-center bg-yellow-100 border border-yellow-400 border-1 py-4 px-5 rounded-xl gap-3'>
+                < CircleAlert className="w-12 h-12 text-[#FFBC3B]" />
+
+                <div className='flex flex-col items-center'>
+                  <p className='text-yellow-500 font-semibold text-[20px]'>Medium</p>
+                  {result ? (
+                    <p className='text-[35px] text-yellow-500 font-semibold'>{result.severity_counts.Medium}</p>
+                  ) : <p className='text-[50px] text-yellow-500 -translate-y-5 font-semibold'>-</p>
+                  }
+                </div>
+
+              </div>
+
+
+              <div className='w-full flex 2xl:flex-row items-center justify-center bg-green-100 border border-green-400 border-1 py-4 px-5 rounded-xl gap-3'>
+                < CircleCheck className="w-12 h-12 text-[#16A34A]" />
+
+                <div className='flex flex-col items-center'>
+                  <p className='text-green-500 font-semibold text-[20px]'>Low</p>
+                  {result ? (
+                    <p className='text-[35px] text-green-500 font-semibold'>{result.severity_counts.Low}</p>
+                  ) : <p className='text-[50px] text-green-500 -translate-y-5 font-semibold'>-</p>
+                  }
+                </div>
+
+              </div>
             </div>
           </div>
         </div>
