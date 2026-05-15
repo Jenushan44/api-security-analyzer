@@ -285,7 +285,7 @@ export default function Home() {
         </div>
 
         <div className='mb-20 mt-10 grid grid-cols-1 2xl:grid-cols-2 gap-6 px-6 items-stretch'>
-          <div className='w-full min-h-[180px] border border-1 rounded-xl p-5 shadow-lg'>
+          <div className='w-full min-h-[180px] rounded-xl border border-3 border-gray-100 p-5 shadow-lg'>
             <div className="flex gap-2">
               <p className='font-bold'>Severity Counts</p>
               <div className='relative'>
