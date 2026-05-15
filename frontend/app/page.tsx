@@ -9,10 +9,11 @@ export default function Home() {
   const [apiUrl, setApiUrl] = useState('');
   const [result, setResult] = useState<ScanResult | null>(null);
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const [riskScoreInfo, setRiskScoreInfo] = useState(false);
   const [riskLevelInfo, setRiskLevelInfo] = useState(false);
-  const [totalFindingsInfo, setTotalFindingsInfo] = useState(false)
+  const [totalFindingsInfo, setTotalFindingsInfo] = useState(false);
+  const [scanSummaryInfo, setScanSummaryInfo] = useState(false);
 
   // Sends the user url to the FastAPI scanner and stores returned report
   async function handleScan() {
@@ -41,6 +42,21 @@ export default function Home() {
 
   }
 
+  let scanSummaryStyle = "bg-gray-50 border-gray-200";
+  if (result) {
+    if (result.risk_score >= 76) {
+      scanSummaryStyle = "bg-red-50 border-red-200";
+    } else if (result.risk_score >= 51) {
+      scanSummaryStyle = "bg-orange-50 border-orange-200";
+    } else if (result.risk_score >= 26) {
+      scanSummaryStyle = "bg-yellow-50 border-yellow-200";
+    } else if (result.risk_score >= 1) {
+      scanSummaryStyle = "bg-green-50 border-green-200";
+    } else {
+      scanSummaryStyle = "bg-gray-50 border-gray-200";
+    }
+  }
+
   return (
     <div className='flex'>
       <Navbar />
@@ -53,9 +69,9 @@ export default function Home() {
           <pre>{JSON.stringify(result, null, 2)}</pre>
         )}
 
-        <div className='mb-20 flex items-center justify-evenly mt-10 text-center'>
+        <div className='mb-20 mt-10 grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-4 gap-6 px-6 items-stretch'>
 
-          <div className="md:w-[260px] lg:w-[300px] border border-gray-100 border-3 rounded-xl bg-white p-5 shadow-lg">
+          <div className="w-full min-h-[180px] border border-gray-100 border-3 rounded-xl bg-white p-5 shadow-lg">
             <div className="flex items-center  gap-2">
               <p className='font-bold'>Risk Score</p>
               <div className='relative'>
@@ -120,7 +136,7 @@ export default function Home() {
 
 
 
-          <div className="md:w-[260px] lg:w-[300px]  border border-gray-100 border-3 rounded-xl bg-white p-5 shadow-lg">
+          <div className="w-full min-h-[180px] border border-gray-100 border-3 rounded-xl bg-white p-5 shadow-lg">
             <div className="flex items-center  gap-2">
               <p className='font-bold'>Risk Level</p>
               <div className='relative'>
@@ -197,7 +213,7 @@ export default function Home() {
 
 
 
-          <div className="md:w-[260px] lg:w-[300px]  border border-gray-100 border-3 rounded-xl bg-white p-5 shadow-lg">
+          <div className="w-full min-h-[180px] border border-gray-100 border-3 rounded-xl bg-white p-5 shadow-lg">
             <div className="flex items-center  gap-2">
               <p className='font-bold'>Total Findings</p>
               <div className='relative'>
@@ -240,19 +256,31 @@ export default function Home() {
             </div>
           </div>
 
-          <div className='border'>
-            <div className='w-[200px]'>
-              <p>Scan Summary</p>
+
+          <div className={`w-full min-h-[180px] border border-1 rounded-xl p-5 shadow-lg ${scanSummaryStyle}`}>
+            <div className="flex items-center  gap-2">
+              <p className='font-bold'>Scan Summary</p>
+              <div className='relative'>
+                <button onClick={() => { setScanSummaryInfo(!scanSummaryInfo) }}>
+                  <CircleHelp className='text-gray-400 w-4 h-4 translate-y-1/8 cursor-pointer' />
+                </button>
+
+                {scanSummaryInfo && (
+                  <div className='absolute left-1/2 -translate-x-1/2 p-2 w-50 bottom-full bg-gray-100 border border-gray-300 border-1 rounded-xl'>
+                    <p className='text-[13px]'>Scan summary explains the overall result of the scan using the final risk level, risk score and detected findings.</p>
+                  </div>
+                )}
+              </div>
+
             </div>
-            <div>
-              {result && (
-                <p>{result.risk_summary}</p>
-              )}
+
+            <div className='flex items-center gap-6'>
+              {result ? (
+                <p className='mt-4'>{result.risk_summary}</p>
+              ) : <p className='mt-4'>Run a scan to generate an overall risk summary</p>
+              }
             </div>
           </div>
-
-
-
         </div>
 
       </main >
