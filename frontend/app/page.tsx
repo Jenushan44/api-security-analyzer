@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import Navbar from "../components/Navbar"
 import { ScanResult } from "../types/scan";
-import { Gauge, CircleHelp, CircleCheck, CircleAlert, ShieldAlert, TriangleAlert } from 'lucide-react';
+import { Gauge, CircleHelp, CircleCheck, CircleAlert, ShieldAlert, TriangleAlert, List } from 'lucide-react';
 
 export default function Home() {
 
@@ -12,6 +12,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false)
   const [riskScoreInfo, setRiskScoreInfo] = useState(false);
   const [riskLevelInfo, setRiskLevelInfo] = useState(false);
+  const [totalFindingsInfo, setTotalFindingsInfo] = useState(false)
 
   // Sends the user url to the FastAPI scanner and stores returned report
   async function handleScan() {
@@ -135,6 +136,7 @@ export default function Home() {
               </div>
 
             </div>
+
             <div className='flex items-center gap-6'>
               {result ? (
                 result.risk_score >= 76 ? (
@@ -194,14 +196,47 @@ export default function Home() {
           </div>
 
 
-          <div className='border'>
-            <div className='w-[200px]'>
-              <p>Total Findings</p>
+
+          <div className="md:w-[260px] lg:w-[300px]  border border-gray-100 border-3 rounded-xl bg-white p-5 shadow-lg">
+            <div className="flex items-center  gap-2">
+              <p className='font-bold'>Total Findings</p>
+              <div className='relative'>
+                <button onClick={() => { setTotalFindingsInfo(!totalFindingsInfo) }}>
+                  <CircleHelp className='text-gray-400 w-4 h-4 translate-y-1/8 cursor-pointer' />
+                </button>
+
+                {totalFindingsInfo && (
+                  <div className='absolute left-1/2 -translate-x-1/2 p-2 w-50 bottom-full bg-gray-100 border border-gray-300 border-1 rounded-xl'>
+                    <p className='text-[13px]'>Total findings counts all detected issues across security headers, sensitive data, rate limiting, authentication exposure, CORS and cookie checks.</p>
+                  </div>
+                )}
+              </div>
+
             </div>
-            <div>
-              {result && (
-                <p></p>
-              )}
+
+            <div className='flex items-center gap-6'>
+              {result ? (
+                result.risk_score >= 0 ? (
+                  <div className="w-20 h-20 rounded-full bg-[#DBEAFE] flex items-center justify-center">
+                    < List className="w-10 h-10 text-[#2563EB]" />
+                  </div>
+                ) : (
+                  <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center">
+                    < List className="w-10 h-10 text-[#374151]" />
+                  </div>
+                )
+              ) : <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center">
+                < List className="w-10 h-10 text-[#374151]" />
+              </div>} {
+              }
+
+              <div className='flex flex-col items-center'>
+                {result ? (
+                  <p className='text-[50px] text-[#2563EB] font-semibold'>{result.findings.length}</p>
+                ) : <p className='text-[50px] text-[#374151] font-semibold'>-</p>
+                }
+                <p>Issues found</p>
+              </div>
             </div>
           </div>
 
