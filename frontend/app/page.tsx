@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import Navbar from "../components/Navbar"
 import { ScanResult } from "../types/scan";
-import { Gauge, CircleHelp, CircleCheck, CircleAlert, ShieldAlert, TriangleAlert, List, OctagonAlert, Circle } from 'lucide-react';
+import { Gauge, CircleHelp, CircleCheck, CircleAlert, CircleGauge, ShieldAlert, TriangleAlert, List, OctagonAlert, Circle, Shield, User, LockKeyhole, Earth, Cookie } from 'lucide-react';
 
 export default function Home() {
 
@@ -15,6 +15,7 @@ export default function Home() {
   const [totalFindingsInfo, setTotalFindingsInfo] = useState(false);
   const [scanSummaryInfo, setScanSummaryInfo] = useState(false);
   const [severityCountsInfo, setSeverityCountsInfo] = useState(false);
+  const [categoryCountsInfo, setCategoryCountsInfo] = useState(false);
 
   // Sends the user url to the FastAPI scanner and stores returned report
   async function handleScan() {
@@ -356,11 +357,101 @@ export default function Home() {
             </div>
           </div>
 
-          <div className='w-full min-h-[180px] border border-1 rounded-xl p-5 shadowlog'>
-            <h1>Category counts</h1>
+          <div className='mb-20 mt-10 grid grid-cols-1 2xl:grid-cols-2 gap-6 px-6 items-stretch'>
+            <div className='w-full min-h-[180px] rounded-xl border border-3 border-gray-100 p-5 shadow-lg'>
+              <div className="flex gap-2 ">
+                <p className='font-bold'>Category Counts</p>
+                <div className='relative'>
+                  <button onClick={() => { setCategoryCountsInfo(!categoryCountsInfo) }}>
+                    <CircleHelp className='text-gray-400 w-4 h-4 translate-y-1/8 cursor-pointer' />
+                  </button>
+                  {categoryCountsInfo && (
+                    <div className='absolute left-1/2 -translate-x-1/2 p-2 w-50 bottom-full bg-gray-100 border border-gray-300 border-1 rounded-xl'>
+                      <p className='text-[13px]'>Category counts show how many findings were detected in each security check area during the scan.</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div>
+                <div className='gap-2 flex mt-5'>
+                  <div>
+                    <div className='w-full flex 2xl:flex-row items-center justify-center border border-gray-200 border-1 py-4 px-5 rounded-xl gap-5'>
+                      <Shield fill="#004cff" className='w-12 h-12 text-[#004cff]' />
+
+                      <p className='font-semibold text-[20px]'>Security Headers</p>
+                      {result ? (
+                        <p className='text-[35px] font-semibold'>{result.category_counts["Security Headers"]}</p>
+                      ) : <p className='text-[50px] -translate-y-1 font-semibold'>-</p>
+                      }
+                    </div>
+
+                    <div className='w-full flex 2xl:flex-row items-center justify-center border border-gray-200 border-1 py-4 px-5 rounded-xl gap-5'>
+                      <User fill="#004cff" className='w-12 h-12 text-[#004cff]' />
+
+                      <p className='font-semibold text-[20px]'>Authentication <br /> Exposure</p>
+                      {result ? (
+                        <p className='text-[35px] font-semibold'>{result.category_counts["Authentication Exposure"]}</p>
+                      ) : <p className='text-[50px] -translate-y-1 font-semibold'>-</p>
+                      }
+                    </div>
+
+                  </div>
+
+                  <div>
+                    <div className='w-full flex 2xl:flex-row items-center justify-center border border-gray-200 border-1 py-4 px-5 rounded-xl gap-5'>
+                      <LockKeyhole className='w-12 h-12 text-[#822eff]' />
+
+                      <p className='font-semibold text-[20px]'>Sensitive Data <br /> Exposure</p>
+                      {result ? (
+                        <p className='text-[35px] font-semibold'>{result.category_counts["Sensitive Data Exposure"]}</p>
+                      ) : <p className='text-[50px] -translate-y-1 font-semibold'>-</p>
+                      }
+
+                    </div>
+
+                    <div className='w-full flex 2xl:flex-row items-center justify-center border border-gray-200 border-1 py-4 px-5 rounded-xl gap-5'>
+                      <Earth className='w-12 h-12 text-[#06c1ab]' />
+
+                      <p className='font-semibold text-[20px]'>CORS <br /> Misconfiguration</p>
+                      {result ? (
+                        <p className='text-[35px] font-semibold'>{result.category_counts["Sensitive Data Exposure"]}</p>
+                      ) : <p className='text-[50px] -translate-y-1 font-semibold'>-</p>
+                      }
+                    </div>
+
+                  </div>
+
+                  <div>
+                    <div className='w-full flex 2xl:flex-row items-center justify-center border border-gray-200 border-1 py-4 px-5 rounded-xl gap-5'>
+                      <CircleGauge className='w-12 h-12 text-[#06c1ab]' />
+
+                      <p className='font-semibold text-[20px]'>Rate Limiting</p>
+                      {result ? (
+                        <p className='text-[35px] font-semibold'>{result.category_counts["Rate Limiting"]}</p>
+                      ) : <p className='text-[50px] -translate-y-1 font-semibold'>-</p>
+                      }
+                    </div>
+
+
+                    <div className='w-full flex 2xl:flex-row items-center justify-center border border-gray-200 border-1 py-4 px-5 rounded-xl gap-5'>
+                      <Cookie fill='#822eff' className='w-12 h-12' />
+
+                      <p className='font-semibold text-[20px]'>Cookie Security</p>
+                      {result ? (
+                        <p className='text-[35px] font-semibold'>{result.category_counts["Cookie Security"]}</p>
+                      ) : <p className='text-[50px] -translate-y-1 font-semibold'>-</p>
+                      }
+                    </div>
+
+
+                  </div>
+
+
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-
       </main >
     </div >
   );
