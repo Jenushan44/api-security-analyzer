@@ -355,6 +355,10 @@ export default function Home() {
               </div>
             </div>
           </div>
+
+          <div className='w-full min-h-[180px] border border-1 rounded-xl p-5 shadowlog'>
+            <h1>Category counts</h1>
+          </div>
         </div>
 
       </main >
