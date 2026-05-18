@@ -72,7 +72,7 @@ function RiskLevelCard({ result }: { result: ScanResult | null }) {
         <div className='flex flex-col items-center'>
           {result ? (
             result.risk_score >= 76 ? (
-              <p className='text-[40px] text-[#db1414] mt-3 font-semibold'>{result.risk_level}</p>
+              <p className='text-[40px] text-[#db1414] mt-3 font-semibold text-center'>{result.risk_level}</p>
             ) : result.risk_score >= 51 ? (
               <p className='text-[40px] mt-3 text-[#C2410C] font-semibold'>{result.risk_level}</p>
             ) : result.risk_score >= 26 ? (
@@ -85,7 +85,7 @@ function RiskLevelCard({ result }: { result: ScanResult | null }) {
           }
           {result ? (
             result.risk_score >= 76 ? (
-              <p className='text-white mt-2'>Severe risk detected</p>
+              <p className='text-white mt-2 text-center'>Severe risk detected</p>
             ) : result.risk_score >= 51 ? (
               <p className='text-white -translate-y-2 translate-x-1'>Serious risk detected</p>
             ) : result.risk_score >= 26 ? (
