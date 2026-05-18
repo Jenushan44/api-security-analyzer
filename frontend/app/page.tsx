@@ -80,6 +80,34 @@ export default function Home() {
     }
   }
 
+  let riskBorder = "border-gray-800";
+  let riskGlow = "from-gray-500/10";
+  let riskColor = "#64748B";
+
+  if (result) {
+    if (result.risk_score >= 76) {
+      riskBorder = "border-red-500";
+      riskGlow = "bg-gradient-to-b from-red-500/10 to-[#0B1624]";
+      riskColor = "red";
+    } else if (result.risk_score >= 51) {
+      riskBorder = "border-orange-500";
+      riskGlow = "bg-gradient-to-b from-orange-500/10 to-[#0B1624]";
+      riskColor = "orange";
+    } else if (result.risk_score >= 26) {
+      riskBorder = "border-yellow-500";
+      riskGlow = "bg-gradient-to-b from-yellow-500/10 to-[#0B1624]";
+      riskColor = "yellow";
+    } else if (result.risk_score >= 1) {
+      riskBorder = "border-green-500";
+      riskGlow = "bg-gradient-to-b from-green-500/10 to-[#0B1624]";
+      riskColor = "gren";
+    } else {
+      riskBorder = "border-gray-500";
+      riskGlow = "bg-gradient-to-b from-green-500/10 to-[#0B1624]";
+      riskColor = "gray";
+    }
+  }
+
   return (
     <div className='flex'>
       <Navbar />
@@ -92,9 +120,9 @@ export default function Home() {
           <pre>{JSON.stringify(result, null, 2)}</pre>
         )}
 
-        <div className='mb-20 mt-10 grid grid-cols-1 md:grid-cols-4 2xl:grid-cols-4 gap-5 px-6 items-stretch'>
+        <div className='grid grid-cols-1 md:grid-cols-4 2xl:grid-cols-4 gap-5 px-6 items-stretch'>
 
-          <div className="w-full min-h-[180px] border border-gray-800 border-3 rounded-xl p-5 shadow-lg bg-[#0B1624]">
+          <div className={`w-full min-h-[180px] border rounded-xl p-5 shadow-lg bg-[#0B1624] ${riskBorder}`}>
             <div className="flex items-center gap-2">
               <p className='tracking-wide text-white'>RISK SCORE</p>
               <div className='relative'>
@@ -103,7 +131,7 @@ export default function Home() {
                 </button>
 
                 {riskScoreInfo && (
-                  <div className='absolute left-1/2 -translate-x-1/2 p-2 w-50 bottom-full bg-gray-100 border border-gray-300 border-1 rounded-xl'>
+                  <div className='absolute left-1/2 -translate-x-1/2 p-2 w-50 bottom-full bg-gray-100 border border-1 rounded-xl'>
                     <p className='text-[13px]'>Risk Score is based on detected finding severities and is capped at 100.</p>
                   </div>
                 )}
@@ -116,10 +144,7 @@ export default function Home() {
             </div>
           </div>
 
-
-
-
-          <div className="w-full min-h-[180px] border border-gray-800 border-3 rounded-md p-5 shadow-lg bg-[#0B1624]">
+          <div className={`w-full min-h-[180px] border border-gray-800 border-1 rounded-xl p-5 shadow-lg bg-[#0B1624] ${riskBorder}`}>
             <div className="flex items-center  gap-2">
               <p className='tracking-wide text-white'>RISK LEVEL</p>
               <div className='relative'>
@@ -196,7 +221,7 @@ export default function Home() {
 
 
 
-          <div className="w-full min-h-[180px] border border-gray-800 border-3 rounded-xl p-5 shadow-lg bg-[#0B1624]">
+          <div className="w-full min-h-[180px] border border-blue-500 border-1 rounded-xl p-5 shadow-lg bg-[#0B1624]">
             <div className="flex items-center  gap-2">
               <p className='tracking-wide text-white'>TOTAL FINDINGS</p>
               <div className='relative'>
@@ -240,7 +265,7 @@ export default function Home() {
           </div>
 
 
-          <div className='w-full min-h-[180px] border border-gray-800 border-1 rounded-xl p-5 shadow-lg bg-[#0B1624]'>
+          <div className={`w-full min-h-[180px] border border-1 rounded-xl p-5 shadow-lg bg-[#0B1624] ${riskBorder} ${riskGlow}`}>
             <div className="flex items-center  gap-2">
               <p className='text-white tracking-wide'>SCAN SUMMARY</p>
               <div className='relative'>
@@ -266,7 +291,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className='mb-20 mt-10 grid grid-cols-1 xl:grid-cols-2 gap-6 px-6 items-stretch'>
+        <div className='mb-20 mt-5 grid grid-cols-1 xl:grid-cols-2 gap-6 px-6 items-stretch'>
           <div className='w-full min-h-[180px] rounded-xl border border-3 border-gray-800 p-5 shadow-lg bg-[#0B1624]'>
             <div className="flex gap-2">
               <ChartNoAxesColumn className='text-white' />
