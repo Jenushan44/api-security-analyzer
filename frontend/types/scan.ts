@@ -1,8 +1,16 @@
+export type Finding = {
+  title: string;
+  severity: string;
+  category: string;
+  evidence: string;
+  recommendation: string;
+}
+
 export type ScanResult = {
   scan_id: number;
   target_url: string;
   status_code: string;
-  findings: unknown[];
+  findings: Finding[];
   risk_score: number;
   risk_level: string;
   risk_summary: string;

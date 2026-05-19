@@ -9,6 +9,7 @@ import ScanSummaryCard from '@/components/dashboard/ScanSummaryCard';
 import SeverityCountsCard from '@/components/dashboard/SeverityCountsCard';
 import CategoryCountsCard from '@/components/dashboard/CategoryCountsCard';
 import ScanFormCard from '@/components/dashboard/ScanFormCard';
+import LatestFindingsCard from '@/components/dashboard/LatestFindingsCard';
 
 export default function Home() {
 
@@ -30,9 +31,13 @@ export default function Home() {
           <ScanSummaryCard result={result} />
         </div>
 
-        <div className='mb-20 mt-5 grid grid-cols-1 xl:grid-cols-2 gap-6 px-6 items-stretch'>
+        <div className='mb-5 mt-5 grid grid-cols-1 xl:grid-cols-2 gap-6 px-6 items-stretch'>
           <SeverityCountsCard result={result} />
           <CategoryCountsCard result={result} />
+        </div>
+
+        <div className='px-6 mb-5'>
+          <LatestFindingsCard result={result} />
         </div>
       </main >
     </div >
