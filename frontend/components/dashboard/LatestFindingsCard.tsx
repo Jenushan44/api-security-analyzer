@@ -1,7 +1,12 @@
-import { List } from "lucide-react"
+"use client"
+import { useState } from "react";
+import { List, CircleHelp } from "lucide-react"
 import { ScanResult } from "../../types/scan";
 
 function LatestFindingsCard({ result }: { result: ScanResult | null }) {
+
+  const [latestFindingsInfo, setLatestFindingsInfo] = useState(false);
+
 
   function getSeverityCardStyle(severity: string) {
 
@@ -22,7 +27,17 @@ function LatestFindingsCard({ result }: { result: ScanResult | null }) {
     <div className="w-full bg-[#0B1624] min-h-[400px] border border-gray-800 border-1 rounded-xl flex flex-col px-6 gap-8">
       <div className="flex gap-2 mt-5">
         <List className="text-white" />
-        <p className="text-white tracking-wide font-semibold">LATEST FINDINGS</p>
+        <p className="text-white tracking-wide">LATEST FINDINGS</p>
+        <div className='relative'>
+          <button onClick={() => { setLatestFindingsInfo(!latestFindingsInfo) }}>
+            <CircleHelp className='text-gray-400 w-4 h-4 translate-y-1/8 cursor-pointer' />
+          </button>
+          {latestFindingsInfo && (
+            <div className='absolute left-1/2 -translate-x-1/2 p-2 w-50 bottom-full bg-gray-100 border border-gray-300 border-1 rounded-xl'>
+              <p className='text-[13px]'>Latest findings shows the most recent security issues found during the scan and helps prioritize what should be reviewed first.</p>
+            </div>
+          )}
+        </div>
       </div>
 
       <table className="w-full">
@@ -55,14 +70,14 @@ function LatestFindingsCard({ result }: { result: ScanResult | null }) {
             </tr>)
           ))) : (
             Array.from({ length: 5 }).map((_, index) => (
-              <tr key={index}>
-                <td className="py-4 border border-[#1E293B]"></td>
-                <td className="py-4 border border-[#1E293B]"></td>
-                <td className="py-4 border border-[#1E293B]"></td>
-                <td className="py-4 border border-[#1E293B]"></td>
-                <td className="py-4 border border-[#1E293B]"></td>
-                <td className="py-4 border border-[#1E293B]"></td>
-                <td className="py-4 border border-[#1E293B]"></td>
+              <tr key={index} className="text-gray-300">
+                <td className="py-3 border border-[#1E293B] text-center">{index + 1}</td>
+                <td className="py-3 border border-[#1E293B] text-center"></td>
+                <td className="py-3 border border-[#1E293B] text-center"></td>
+                <td className="py-3 border border-[#1E293B] text-center"></td>
+                <td className="py-3 border border-[#1E293B] text-center"></td>
+                <td className="py-3 border border-[#1E293B] text-center"></td>
+                <td className="py-3 border border-[#1E293B] text-center"></td>
               </tr>
             ))
           )}
