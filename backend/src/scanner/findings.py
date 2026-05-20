@@ -7,6 +7,7 @@ def add_finding(findings, request_key):
     "title": rule["title"],
     "severity": rule["severity"],
     "category": rule["category"],
+    "description": rule["description"],
     "evidence":  rule["evidence"],
     "recommendation": rule["recommendation"],
 })

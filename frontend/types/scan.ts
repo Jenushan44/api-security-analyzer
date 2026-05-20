@@ -2,6 +2,7 @@ export type Finding = {
   title: string;
   severity: string;
   category: string;
+  description: string;
   evidence: string;
   recommendation: string;
 }
