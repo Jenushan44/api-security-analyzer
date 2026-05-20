@@ -21,5 +21,8 @@ export type ScanResult = {
     Medium: number;
     Low: number;
   };
+  created_at: string;
+  time_passed: number;
+  total_findings: number;
   category_counts: Record<string, number>;
 };

@@ -14,6 +14,7 @@ from database.save_scan import save_scan_result
 from database.connection import SessionLocal
 from database.models import Scan, Finding
 from fastapi.middleware.cors import CORSMiddleware
+import time
 
 app = FastAPI() 
 
@@ -47,6 +48,7 @@ def test():
 @app.post("/scan") 
 def scan(data: ScanRequest):
   findings = []
+  start_time = time.perf_counter()
 
   if data.url.startswith("https://") or data.url.startswith("http://"):
     try: 
@@ -75,6 +77,16 @@ def scan(data: ScanRequest):
   check_rate_limiting(data.url, findings)
   risk = calculate_risk(findings)
   scan_id = save_scan_result(data.url, response.status_code, risk, findings)
+  
+  db = SessionLocal()
+  try: 
+    saved_scan = db.get(Scan, scan_id)
+    created_at = saved_scan.created_at.isoformat() if saved_scan else None 
+  finally: 
+    db.close()
+  
+  end_time = time.perf_counter()
+  time_passed = round((end_time - start_time ) * 1000, 2)
 
   return {
     "scan_id": scan_id,
@@ -88,6 +100,9 @@ def scan(data: ScanRequest):
     "risk_summary": risk["risk_summary"], 
     "severity_counts": risk["severity_counts"], 
     "category_counts": risk["category_counts"],
+    "response_time_ms": time_passed, 
+    "created_at": created_at,
+    "total_findings": len(findings),
   }
 
 @app.get("/scans") 
