@@ -54,7 +54,7 @@ function LatestFindingsCard({ result }: { result: ScanResult | null }) {
         </thead>
 
         <tbody className="bg-[#08172A]">
-          {result ? (result.findings.map(((finding, index) => (
+          {result && result.findings ? (result.findings.map(((finding, index) => (
             <tr key={index} className="text-gray-300 w-full px-4 py-3 text-sm">
               <td className="border border-[#1E293B] text-center px-4 py-3">{index + 1}</td>
               <td className="border border-[#1E293B] text-center px-4 py-3">

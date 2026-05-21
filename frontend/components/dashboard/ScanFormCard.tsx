@@ -12,8 +12,20 @@ function ScanFormCard({ setResult }: { setResult: (result: ScanResult | null) =>
   // Sends the user url to the FastAPI scanner and stores returned report
   async function handleScan() {
     setError('');
+
+    if (!apiUrl.trim()) {
+      setError("Please enter a valid API URL")
+      return
+    }
+
+    if ((!apiUrl.trim().startsWith("http://")) && (!apiUrl.trim().startsWith("https://"))) {
+      setError("Please enter a valid URL starting with http:// or https://.")
+      return
+    }
+
     setLoading(true);
     setResult(null);
+
     try {
       const response = await fetch(
         process.env.NEXT_PUBLIC_API_URL + "/scan",
@@ -22,20 +34,35 @@ function ScanFormCard({ setResult }: { setResult: (result: ScanResult | null) =>
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ "url": apiUrl })
         })
+
+      let contentType = response.headers.get("content-type");
+
+      if (!contentType || !contentType.includes("application/json")) {
+        setError("Non-JSON response recieved");
+        setResult(null);
+        return
+      }
+
       const data = await response.json()
+
+      if (data.error) {
+        setError(data.message)
+        setResult(null)
+        return
+      }
+
       setResult(data)
     }
     catch {
-      setError('Error: Response not found')
+      setError('Could not connect to the backend. Make sure the API server is running.')
     }
     finally {
       setLoading(false);
-      setApiUrl('');
     }
   }
 
   return (
-    <div className="w-full bg-[#0B1624] h-25 border border-gray-800 border-1 rounded-xl flex items-center px-6 justify-between gap-8">
+    <div className="w-full bg-[#0B1624] min-h-[100px] border border-gray-800 border-1 rounded-xl flex items-center px-6 justify-between gap-8">
       <div className="flex items-center gap-4 shrink-0">
         <div className="border border-gray-800 rounded-full w-14 h-14 flex items-center justify-center">
           <Globe className="text-[#2563EB] w-7 h-7" />
@@ -51,11 +78,13 @@ function ScanFormCard({ setResult }: { setResult: (result: ScanResult | null) =>
         <div>
           <p className="text-gray-400 text-xs mb-1.5 font-medium">Target URL</p>
           <input type="text" value={apiUrl} className="text-white border border-gray-800 bg-transparent p-2 w-full text-sm focus:border-blue-500" onChange={(event) => setApiUrl(event.target.value)} placeholder="Enter your api url" />
+          {error && <p className="text-red-600">{error}</p>}
         </div>
       </div>
 
-      <button onClick={handleScan} className="cursor-pointer text-white mt-4 border border-gray-800 rounded-lg bg-[#2563EB] px-5 py-2.5 shrink-0 font-medium flex items-center gap-2"> <Play className="w-4 h-4" fill="white" /> {loading == true ? "Scanning" : "Run Scan"}</button>
-      {error && <p>{error}</p>}
+      <button onClick={handleScan} className="cursor-pointer text-white mt-4 border border-gray-800 rounded-lg bg-[#2563EB] px-5 py-2.5 shrink-0 font-medium flex items-center gap-2">
+        <Play className="w-4 h-4" fill="white" /> {loading == true ? "Scanning" : "Run Scan"}
+      </button>
     </div>
   )
 }

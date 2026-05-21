@@ -31,7 +31,7 @@ function SeverityCountsCard({ result }: { result: ScanResult | null }) {
 
           <div className='flex flex-col items-center'>
             <p className='text-red-500 font-semibold text-[19px]'>Critical</p>
-            {result ? (
+            {result && result.severity_counts ? (
               <p className='text-[40px] text-red-500 font-semibold'>{result.severity_counts.Critical}</p>
             ) : <p className='text-[50px] text-[#db1414] -translate-y-5 font-semibold'>-</p>
             }
@@ -44,7 +44,7 @@ function SeverityCountsCard({ result }: { result: ScanResult | null }) {
 
           <div className='flex flex-col items-center'>
             <p className='text-orange-500 font-semibold text-[19px]'>High</p>
-            {result ? (
+            {result && result.severity_counts ? (
               <p className='text-[40px] text-orange-500 font-semibold'>{result.severity_counts.High}</p>
             ) : <p className='text-[50px] text-[#EA580C] -translate-y-5 font-semibold'>-</p>
             }
@@ -57,7 +57,7 @@ function SeverityCountsCard({ result }: { result: ScanResult | null }) {
 
           <div className='flex flex-col items-center'>
             <p className='text-yellow-500 font-semibold text-[19px]'>Medium</p>
-            {result ? (
+            {result && result.severity_counts ? (
               <p className='text-[40px] text-yellow-500 font-semibold'>{result.severity_counts.Medium}</p>
             ) : <p className='text-[50px] text-yellow-500 -translate-y-5 font-semibold'>-</p>
             }
@@ -71,7 +71,7 @@ function SeverityCountsCard({ result }: { result: ScanResult | null }) {
 
           <div className='flex flex-col items-center'>
             <p className='text-green-500 font-semibold text-[19px]'>Low</p>
-            {result ? (
+            {result && result.severity_counts ? (
               <p className='text-[40px] text-green-500 font-semibold'>{result.severity_counts.Low}</p>
             ) : <p className='text-[50px] text-green-500 -translate-y-5 font-semibold'>-</p>
             }

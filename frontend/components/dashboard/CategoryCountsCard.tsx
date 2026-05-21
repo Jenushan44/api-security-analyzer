@@ -29,7 +29,7 @@ function CategoryCountsCard({ result }: { result: ScanResult | null }) {
             <Shield fill="#004cff" className='w-7 h-7 text-[#004cff] shrink-0' />
 
             <p className='font-semibold text-[15px] text-gray-300'>Security Headers</p>
-            {result ? (
+            {result && result.category_counts ? (
               <p className='text-[25px] font-semibold ml-5 text-white ml-auto'>{result.category_counts["Security Headers"]}</p>
             ) : <p className='text-[50px] -translate-y-1 font-semibold text-white ml-auto'>-</p>
             }
@@ -39,7 +39,7 @@ function CategoryCountsCard({ result }: { result: ScanResult | null }) {
             <User fill="#004cff" className='w-7 h-7 text-[#004cff] shrink-0 ' />
 
             <p className='font-semibold text-[15px] text-gray-300'>Authentication <br /> Exposure</p>
-            {result ? (
+            {result && result.category_counts ? (
               <p className='text-[25px] font-semibold ml-5 text-white ml-auto'>{result.category_counts["Authentication Exposure"]}</p>
             ) : <p className='text-[50px] -translate-y-1 font-semibold text-white ml-auto'>-</p>
             }
@@ -50,7 +50,7 @@ function CategoryCountsCard({ result }: { result: ScanResult | null }) {
             <LockKeyhole className='w-7 h-7 text-[#822eff] shrink-0' />
 
             <p className='font-semibold text-[15px] text-gray-300'>Sensitive Data <br /> Exposure</p>
-            {result ? (
+            {result && result.category_counts ? (
               <p className='text-[25px] font-semibold ml-5 text-white ml-auto'>{result.category_counts["Sensitive Data Exposure"]}</p>
             ) : <p className='text-[50px] -translate-y-1 font-semibold text-white ml-auto'>-</p>
             }
@@ -61,7 +61,7 @@ function CategoryCountsCard({ result }: { result: ScanResult | null }) {
             <Earth className='w-7 h-7 shrink-0 text-[#06c1ab]' />
 
             <p className='font-semibold text-[15px] text-gray-300'>CORS <br /> Misconfiguration</p>
-            {result ? (
+            {result && result.category_counts ? (
               <p className='text-[25px] font-semibold ml-5 text-white ml-auto'>{result.category_counts["CORS Misconfiguration"]}</p>
             ) : <p className='text-[50px] -translate-y-1 font-semibold text-white ml-auto'>-</p>
             }
@@ -73,7 +73,7 @@ function CategoryCountsCard({ result }: { result: ScanResult | null }) {
             <CircleGauge className='w-7 h-7 text-[#06c1ab] shrink-0' />
 
             <p className='font-semibold text-[15px] text-gray-300'>Rate Limiting</p>
-            {result ? (
+            {result && result.category_counts ? (
               <p className='text-[25px] font-semibold ml-5 text-white ml-auto'>{result.category_counts["Rate Limiting"]}</p>
             ) : <p className='text-[50px] -translate-y-1 font-semibold  text-white ml-auto'>-</p>
             }
@@ -84,7 +84,7 @@ function CategoryCountsCard({ result }: { result: ScanResult | null }) {
             <Cookie fill='#822eff' className='w-7 h-7 shrink-0' />
 
             <p className='font-semibold text-[15px] text-gray-300'>Cookie Security</p>
-            {result ? (
+            {result && result.category_counts ? (
               <p className='text-[25px] font-semibold ml-5 text-white ml-auto'>{result.category_counts["Cookie Security"]}</p>
             ) : <p className='text-[50px] -translate-y-1 font-semibold text-white ml-auto'>-</p>
             }

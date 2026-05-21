@@ -47,7 +47,9 @@ function TotalFindingsCard({ result }: { result: ScanResult | null }) {
 
         <div className='flex flex-col items-center'>
           {result ? (
-            <p className='text-[50px] text-[#2563EB] font-semibold'>{result.findings.length}</p>
+            result.findings ? (
+              <p className='text-[50px] text-[#2563EB] font-semibold'>{result.findings.length}</p>
+            ) : <p className='text-[50px] text-[#2563EB] font-semibold'>0</p>
           ) : <p className='text-[50px] text-[#374151] font-semibold'>-</p>
           }
           <p className='text-white ml-2'>Issues Found</p>
