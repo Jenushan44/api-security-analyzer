@@ -25,4 +25,5 @@ export type ScanResult = {
   time_passed: number;
   total_findings: number;
   category_counts: Record<string, number>;
+  total_scans: number;
 };

@@ -1,9 +1,8 @@
 "use client"
 import { useState } from "react";
 import { CircleHelp, Activity } from "lucide-react";
-import { ScanResult } from "../../types/scan";
 
-function TotalScansCard({ result }: { result: ScanResult | null }) {
+function TotalScansCard({ total_scans }: { total_scans: number | null }) {
 
   const [totalScansInfo, setTotalScansInfo] = useState(false);
 
@@ -27,30 +26,20 @@ function TotalScansCard({ result }: { result: ScanResult | null }) {
 
       <div className='flex items-center gap-6'>
         <div className='flex flex-col items-center'>
-          {result ? (
-            result.findings ? (
-              <p className='text-[50px] text-[#2563EB] font-semibold'>{result.findings.length}</p>
-            ) : <p className='text-[50px] text-[#2563EB] font-semibold'>0</p>
-          ) : <p className='text-[50px] text-[#374151] font-semibold'>-</p>
+          {(total_scans == null) ? (
+            <p className='text-[50px] text-[#374151] font-semibold'>-</p>
+          ) :
+            <p className='text-[50px] text-[#2563EB] font-semibold'>{total_scans}</p>
           }
           <p className='text-white text-sm text-center'>Across All Targets</p>
         </div>
 
-        {result &&
-          result.risk_score >= 0 ? (
-          <div className=" border border-blue-800/15 border-3 rounded-3xl text-blue-500 p-3 bg-[#041a3b] flex items-center justify-center">
-            <div className="border rounded-full p-1">
-              < Activity className="text-blue-500 w-7 h-7" />
-            </div>
+        <div className=" border border-blue-800/15 border-3 rounded-3xl text-blue-500 p-3 bg-[#041a3b] flex items-center justify-center">
+          <div className="border rounded-full p-1">
+            < Activity className="text-blue-500 w-7 h-7" />
           </div>
+        </div>
 
-        ) : (
-          <div className=" border border-blue-800/15 border-3 rounded-3xl text-blue-500 p-3 bg-[#041a3b] flex items-center justify-center">
-            <div className="border rounded-full p-1">
-              < Activity className="text-blue-500 w-7 h-7" />
-            </div>
-          </div>
-        )}
 
 
       </div>
