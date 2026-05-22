@@ -10,7 +10,7 @@ export type Finding = {
 export type ScanResult = {
   scan_id: number;
   target_url: string;
-  status_code: string;
+  status_code: number;
   findings: Finding[];
   risk_score: number;
   risk_level: string;
@@ -25,5 +25,4 @@ export type ScanResult = {
   time_passed: number;
   total_findings: number;
   category_counts: Record<string, number>;
-  total_scans: number;
 };
