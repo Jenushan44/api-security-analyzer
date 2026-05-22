@@ -5,6 +5,7 @@ import TotalScansCard from "@/components/scan-history/TotalScansCard"
 import AverageScoreCard from "@/components/scan-history/AverageScoreCard";
 import { ScanResult } from "../../types/scan";
 import CriticalScansCard from "@/components/scan-history/CriticalScansCard";
+import LatestScanCard from "@/components/scan-history/LatestScanCard";
 
 export default function ScanHistory() {
 
@@ -14,6 +15,7 @@ export default function ScanHistory() {
   let currentSum = 0;
   let critical_count: number | null = null;
   let criticalCount = 0;
+  let latest_scan: string | null = null;
 
   async function fetchScans() {
     const response = await fetch(process.env.NEXT_PUBLIC_API_URL + "/scans",
@@ -32,6 +34,7 @@ export default function ScanHistory() {
   if (scans.length == 0) {
     average_score = null;
     critical_count = null;
+    latest_scan = null;
   }
   else {
     for (const savedScan of scans) {
@@ -42,7 +45,9 @@ export default function ScanHistory() {
     }
     average_score = currentSum / scans.length;
     critical_count = criticalCount;
+    latest_scan = scans[0].created_at;
   }
+
 
 
 
@@ -56,6 +61,7 @@ export default function ScanHistory() {
           <TotalScansCard total_scans={scans.length === 0 ? null : scans.length} />
           <AverageScoreCard averageScore={average_score} />
           <CriticalScansCard critical_scans={critical_count} />
+          <LatestScanCard latest_scan={latest_scan} />
         </div>
       </div>
 
