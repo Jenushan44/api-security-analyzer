@@ -27,7 +27,7 @@ function TotalScansCard({ total_scans }: { total_scans: number | null }) {
       <div className='flex items-center gap-6'>
         <div className='flex flex-col items-center'>
           {(total_scans == null) ? (
-            <p className='text-[50px] text-white font-semibold'>-</p>
+            <p className='text-[50px] text-[#374151] font-semibold'>-</p>
           ) :
             <p className='text-[45px] text-white font-semibold'>{total_scans}</p>
           }

@@ -6,7 +6,7 @@ function AverageScoreCard({ averageScore }: { averageScore: number | null }) {
 
   const [averageScoreInfo, setAverageScoreInfo] = useState(false);
 
-  let riskLabel = "-";
+  let riskLabel = "Across All Targets";
   if (averageScore != null) {
 
 
@@ -52,8 +52,6 @@ function AverageScoreCard({ averageScore }: { averageScore: number | null }) {
             </div>
           }
           <p className="text-white text-sm text-center tracking-wide">{riskLabel}</p>
-
-
         </div>
 
         <div className="border border-orange-500/20 rounded-3xl p-3 bg-amber-500/10 flex items-center justify-center">
