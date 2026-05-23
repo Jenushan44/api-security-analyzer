@@ -112,7 +112,8 @@ def get_scans():
   try: 
     scans = db.query(Scan).order_by(Scan.created_at.desc()).limit(20).all() 
     for scan in scans: 
-      scan_dict = {"id": scan.id, "target_url": scan.target_url, "status_code": scan.status_code, "risk_score": scan.risk_score, "risk_level": scan.risk_level, "risk_summary": scan.risk_summary, "created_at": scan.created_at}
+      total_findings = db.query(Finding).filter(Finding.scan_id == scan.id).count()
+      scan_dict = {"id": scan.id, "target_url": scan.target_url, "status_code": scan.status_code, "risk_score": scan.risk_score, "risk_level": scan.risk_level, "risk_summary": scan.risk_summary, "created_at": scan.created_at, "total_findings": total_findings}
       scan_results.append(scan_dict)
   finally: 
     db.close()

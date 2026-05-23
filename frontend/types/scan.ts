@@ -26,3 +26,14 @@ export type ScanResult = {
   total_findings: number;
   category_counts: Record<string, number>;
 };
+
+export type ScanHistoryItem = {
+  id: number;
+  target_url: string;
+  status_code: number;
+  risk_score: number;
+  risk_level: string;
+  risk_summary: string;
+  total_findings: number;
+  created_at: string;
+}

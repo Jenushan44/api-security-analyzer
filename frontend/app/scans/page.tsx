@@ -3,13 +3,14 @@ import { useState, useEffect } from "react";
 import Navbar from "../../components/Navbar"
 import TotalScansCard from "@/components/scan-history/TotalScansCard"
 import AverageScoreCard from "@/components/scan-history/AverageScoreCard";
-import { ScanResult } from "../../types/scan";
+import { ScanHistoryItem, ScanResult } from "../../types/scan";
 import CriticalScansCard from "@/components/scan-history/CriticalScansCard";
 import LatestScanCard from "@/components/scan-history/LatestScanCard";
+import ScanHistoryTable from '@/components/scan-history/ScanHistoryTable';
 
 export default function ScanHistory() {
 
-  const [scans, setScans] = useState<ScanResult[]>([]);
+  const [scans, setScans] = useState<ScanHistoryItem[]>([]);
 
   let average_score: number | null = null;
   let currentSum = 0;
@@ -63,6 +64,8 @@ export default function ScanHistory() {
           <CriticalScansCard critical_scans={critical_count} />
           <LatestScanCard latest_scan={latest_scan} />
         </div>
+        <ScanHistoryTable scans={scans} />
+
       </div>
 
     </div>
