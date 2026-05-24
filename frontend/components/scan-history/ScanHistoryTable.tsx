@@ -7,7 +7,7 @@ function ScanHistoryTable({ scans }: { scans: ScanHistoryItem[] }) {
 
   const [scanHistoryInfo, setScanHistoryInfo] = useState(false);
 
-  function getSeverityCardStyle(severity: string) {
+  function getRiskLevelCardStyle(severity: string) {
 
     if (severity == "Critical") {
       return "border border-red-500/70 bg-red-500/10 text-red-400 px-2 py-1 font-semibold"
@@ -22,66 +22,141 @@ function ScanHistoryTable({ scans }: { scans: ScanHistoryItem[] }) {
     }
   }
 
+  function getStatusCodeLevelCardStyle(status_code: number) {
+    if (status_code == 200) {
+      return "border border-green-500/70 bg-green-500/10 text-green-400 px-2 py-1 font-semibold"
+    } else if (status_code == 401) {
+      return "border border-yellow-500/70 bg-yellow-500/10 text-yellow-400 px-2 py-1 font-semibold"
+    } else if (status_code == 403) {
+      return "border border-red-500/70 bg-red-500/10 text-red-400 px-2 py-1 font-semibold"
+    } else {
+      return "border border-gray-500/70 bg-gray-500/10 text-gray-400 px-2 py-1 font-semibold"
+    }
+  }
+
+  function formatScanDate(dateString: string | null) {
+    if (dateString === null) {
+      return "-";
+    }
+
+    const date = new Date(dateString);
+
+    return date.toLocaleString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+  }
+
+  function getTimeAgo(dateString: string | null) {
+
+    if (dateString === null) {
+      return "No scans yet";
+    }
+
+    const scanDate = new Date(dateString);
+    const now = new Date();
+
+    const differenceInMs = now.getTime() - scanDate.getTime();
+    const differenceInSeconds = Math.floor(differenceInMs / 1000);
+    const differenceInMinutes = Math.floor(differenceInSeconds / 60);
+
+    const differenceInHours = Math.floor(differenceInMinutes / 60);
+    const differenceInDays = Math.floor(differenceInHours / 24);
+
+    if (differenceInSeconds < 60) {
+
+      return `${differenceInSeconds} seconds ago`;
+    }
+
+    if (differenceInMinutes < 60) {
+      return `${differenceInMinutes} minutes ago`;
+
+    }
+
+
+    if (differenceInHours < 24) {
+      return `${differenceInHours} hours ago`;
+    }
+
+    return `${differenceInDays} days ago`;
+  }
+
+  function getRiskScoreGauge({ risk_score }: { risk_score: number }) {
+    const radius = 40;
+    const circumference = 2 * Math.PI * radius;
+    const progress = risk_score / 100;
+    const dashOffset = circumference * (1 - progress);
+    return (
+      <div className="relative w-15 h-15 flex items-center justify-center">
+        <svg className="-rotate-90 w-15 h-15 flex" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r={radius} fill="none" stroke="#1E293B" strokeWidth="8" />
+          <circle cx="50" cy="50" r={radius} fill="none" stroke="#EF4444" strokeWidth="8" strokeDasharray={circumference} strokeDashoffset={dashOffset} strokeLinecap="round" />
+        </svg>
+        <p className="absolute text-md font-semibold text-white">{risk_score}</p>
+      </div>
+    )
+  }
+
   return (
     <div className="px-6 mt-5">
-      <div className="w-full min-h-[180px] border border-gray-800 mt-5 border-1 rounded-xl p-5 shadow-lg bg-[#011023]">
-        <div className="flex gap-2">
-          <p className="text-white tracking-wide mb-3">LATEST FINDINGS</p>
-          <div className='relative'>
-            <button onClick={() => { setScanHistoryInfo(!scanHistoryInfo) }}>
-              <CircleHelp className='text-gray-400 w-4 h-4 translate-y-1/8 cursor-pointer' />
-            </button>
+      <table className="w-full">
+        <thead>
+          <tr className="text-white bg-[#102034]">
+            <th className="border border-[#1E293B] px-4 py-1 font-normal">Scan ID</th>
+            <th className="border border-[#1E293B] font-normal">Target URL</th>
+            <th className="border border-[#1E293B] font-normal">Risk Score</th>
+            <th className="border border-[#1E293B] font-normal">Risk Level</th>
+            <th className="border border-[#1E293B] font-normal">Findings</th>
+            <th className="border border-[#1E293B] font-normal">Status</th>
+            <th className="border border-[#1E293B] font-normal">Scanned At</th>
+            <th className="border border-[#1E293B] font-normal">Actions</th>
+          </tr>
+        </thead>
 
-            {scanHistoryInfo && (
-              <div className='absolute left-1/2 -translate-x-1/2 p-2 w-50 bottom-full bg-gray-100 border border-gray-300 border-1 rounded-xl'>
-                <p className='text-[13px]'>Scan history shows previous API scans and helps you review past results over time.</p>
-              </div>
-            )}
-          </div>
-        </div>
-
-        <table className="w-full">
-          <thead>
-            <tr className="text-white bg-[#102034]">
-              <th className="border border-[#1E293B] px-4 py-1 font-normal">Scan ID</th>
-              <th className="border border-[#1E293B] font-normal">Target URL</th>
-              <th className="border border-[#1E293B] font-normal">Risk Score</th>
-              <th className="border border-[#1E293B] font-normal">Risk Level</th>
-              <th className="border border-[#1E293B] font-normal">Findings</th>
-              <th className="border border-[#1E293B] font-normal">Status</th>
-              <th className="border border-[#1E293B] font-normal">Scanned At</th>
-            </tr>
-          </thead>
-
-          <tbody className="bg-[#08172A]">
-            {scans.length > 0 ? (scans.map(((scan) => (
-              <tr key={scan.id} className="text-gray-300 w-full px-4 py-3 text-sm">
-                <td className="border border-[#1E293B] text-center px-4 py-3">{scan.id}</td>
-                <td className="border border-[#1E293B] text-center px-4 py-3">{scan.target_url}</td>
-                <td className="border border-[#1E293B] px-4 py-3 text-center">{scan.risk_score}</td>
-                <td className="border border-[#1E293B] px-4 py-3 text-blue-400 text-center">
-                  <span className={getSeverityCardStyle(scan.risk_level)}>{scan.risk_level}</span>
-                </td>
-                <td className="border border-[#1E293B] px-4 py-3 text-center">{scan.total_findings}</td>
-                <td className="border border-[#1E293B] text-center px-4">{scan.status_code}</td>
-                <td className="border border-[#1E293B] px-4 py-2">{scan.created_at}</td>
-              </tr>)
-            ))) : (
-              Array.from({ length: 5 }).map((_) => (
-                <tr className="text-gray-300">
-                  <td className="py-3 border border-[#1E293B] text-center"></td>
-                  <td className="py-3 border border-[#1E293B] text-center"></td>
-                  <td className="py-3 border border-[#1E293B] text-center"></td>
-                  <td className="py-3 border border-[#1E293B] text-center"></td>
-                  <td className="py-3 border border-[#1E293B] text-center"></td>
-                  <td className="py-3 border border-[#1E293B] text-center"></td>
-                  <td className="py-3 border border-[#1E293B] text-center"></td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
+        <tbody className="bg-[#08172A]">
+          {scans.length > 0 ? (scans.map(((scan) => (
+            <tr key={scan.id} className="text-gray-300 w-full px-4 py-3 text-sm">
+              <td className="border border-[#1E293B] text-center px-4 py-3">{scan.id}</td>
+              <td className="border border-[#1E293B] text-center px-4 py-3">{scan.target_url}</td>
+              <td className="border border-[#1E293B] px-4 py-3 text-center">
+                <div className="flex justify-center">
+                  {getRiskScoreGauge({ risk_score: scan.risk_score })}
+                </div>
+              </td>
+              <td className="border border-[#1E293B] px-4 py-3 text-blue-400 text-center">
+                <span className={getRiskLevelCardStyle(scan.risk_level)}>{scan.risk_level}</span>
+              </td>
+              <td className="border border-[#1E293B] px-4 py-3 text-center">{scan.total_findings}</td>
+              <td className="border border-[#1E293B] text-center px-4">
+                <p className={getStatusCodeLevelCardStyle(scan.status_code)}>{scan.status_code}</p>
+              </td>
+              <td className="border border-[#1E293B] px-4 py-2">
+                <div className="flex flex-col">
+                  <p>{formatScanDate(scan.created_at)}</p>
+                  <p className="text-gray-500">{getTimeAgo(scan.created_at)}</p>
+                </div>
+              </td>
+              <td className="border border-[#1E293B] px-4 py-2 text-center cursor-pointer">View Details</td>
+            </tr>)
+          ))) : (
+            Array.from({ length: 5 }).map((_) => (
+              <tr className="text-gray-300">
+                <td className="py-3 border border-[#1E293B] text-center"></td>
+                <td className="py-3 border border-[#1E293B] text-center"></td>
+                <td className="py-3 border border-[#1E293B] text-center"></td>
+                <td className="py-3 border border-[#1E293B] text-center"></td>
+                <td className="py-3 border border-[#1E293B] text-center"></td>
+                <td className="py-3 border border-[#1E293B] text-center"></td>
+                <td className="py-3 border border-[#1E293B] text-center"></td>
+              </tr>
+            ))
+          )}
+        </tbody>
+      </table>
     </div>
   )
 } export default ScanHistoryTable
