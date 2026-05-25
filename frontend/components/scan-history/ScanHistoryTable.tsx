@@ -6,6 +6,13 @@ import { CircleHelp } from "lucide-react";
 function ScanHistoryTable({ scans }: { scans: ScanHistoryItem[] }) {
 
   const [scanHistoryInfo, setScanHistoryInfo] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const rowsPerPage = 10;
+  const startIndex = (currentPage - 1) * rowsPerPage;
+  const endIndex = startIndex + rowsPerPage;
+  const visibleScans = scans.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(scans.length / rowsPerPage);
 
   function getRiskLevelCardStyle(severity: string) {
 
@@ -101,6 +108,24 @@ function ScanHistoryTable({ scans }: { scans: ScanHistoryItem[] }) {
     )
   }
 
+  function previousButton() {
+    if (currentPage == 1) {
+      return;
+    } else {
+      setCurrentPage(currentPage - 1);
+    }
+  }
+
+  function nextButton() {
+    if (currentPage == totalPages) {
+      return;
+    } else {
+      setCurrentPage(currentPage + 1);
+    }
+  }
+
+
+
   return (
     <div className="px-6 mt-5">
       <table className="w-full">
@@ -118,7 +143,7 @@ function ScanHistoryTable({ scans }: { scans: ScanHistoryItem[] }) {
         </thead>
 
         <tbody className="bg-[#08172A]">
-          {scans.length > 0 ? (scans.map(((scan) => (
+          {scans.length > 0 ? (visibleScans.map(((scan) => (
             <tr key={scan.id} className="text-gray-300 w-full px-4 py-3 text-sm">
               <td className="border border-[#1E293B] text-center px-4 py-3">{scan.id}</td>
               <td className="border border-[#1E293B] text-center px-4 py-3">{scan.target_url}</td>
@@ -143,8 +168,9 @@ function ScanHistoryTable({ scans }: { scans: ScanHistoryItem[] }) {
               <td className="border border-[#1E293B] px-4 py-2 text-center cursor-pointer">View Details</td>
             </tr>)
           ))) : (
-            Array.from({ length: 5 }).map((_) => (
-              <tr className="text-gray-300">
+            Array.from({ length: 5 }).map((_, index) => (
+              <tr key={index} className="text-gray-300">
+                <td className="py-3 border border-[#1E293B] text-center"></td>
                 <td className="py-3 border border-[#1E293B] text-center"></td>
                 <td className="py-3 border border-[#1E293B] text-center"></td>
                 <td className="py-3 border border-[#1E293B] text-center"></td>
@@ -155,6 +181,8 @@ function ScanHistoryTable({ scans }: { scans: ScanHistoryItem[] }) {
               </tr>
             ))
           )}
+          <button onClick={previousButton}>Previous</button>
+          <button onClick={nextButton}>Next</button>
         </tbody>
       </table>
     </div>
