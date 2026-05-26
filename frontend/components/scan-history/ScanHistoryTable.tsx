@@ -128,63 +128,78 @@ function ScanHistoryTable({ scans }: { scans: ScanHistoryItem[] }) {
 
   return (
     <div className="px-6 mt-5">
-      <table className="w-full">
-        <thead>
-          <tr className="text-white bg-[#102034]">
-            <th className="border border-[#1E293B] px-4 py-1 font-normal">Scan ID</th>
-            <th className="border border-[#1E293B] font-normal">Target URL</th>
-            <th className="border border-[#1E293B] font-normal">Risk Score</th>
-            <th className="border border-[#1E293B] font-normal">Risk Level</th>
-            <th className="border border-[#1E293B] font-normal">Findings</th>
-            <th className="border border-[#1E293B] font-normal">Status</th>
-            <th className="border border-[#1E293B] font-normal">Scanned At</th>
-            <th className="border border-[#1E293B] font-normal">Actions</th>
-          </tr>
-        </thead>
+      <div className="border rounded-lg border-gray-800 overflow-hidden">
+        <table className="w-full">
+          <thead>
+            <tr className="text-white bg-[#102034]">
+              <th className="border border-[#1E293B] px-4 py-1 font-normal">Scan ID</th>
+              <th className="border border-[#1E293B] font-normal">Target URL</th>
+              <th className="border border-[#1E293B] font-normal">Risk Score</th>
+              <th className="border border-[#1E293B] font-normal">Risk Level</th>
+              <th className="border border-[#1E293B] font-normal">Findings</th>
+              <th className="border border-[#1E293B] font-normal">Status</th>
+              <th className="border border-[#1E293B] font-normal">Scanned At</th>
+              <th className="border border-[#1E293B] font-normal">Actions</th>
+            </tr>
+          </thead>
 
-        <tbody className="bg-[#08172A]">
-          {scans.length > 0 ? (visibleScans.map(((scan) => (
-            <tr key={scan.id} className="text-gray-300 w-full px-4 py-3 text-sm">
-              <td className="border border-[#1E293B] text-center px-4 py-3">{scan.id}</td>
-              <td className="border border-[#1E293B] text-center px-4 py-3">{scan.target_url}</td>
-              <td className="border border-[#1E293B] px-4 py-3 text-center">
-                <div className="flex justify-center">
-                  {getRiskScoreGauge({ risk_score: scan.risk_score })}
-                </div>
-              </td>
-              <td className="border border-[#1E293B] px-4 py-3 text-blue-400 text-center">
-                <span className={getRiskLevelCardStyle(scan.risk_level)}>{scan.risk_level}</span>
-              </td>
-              <td className="border border-[#1E293B] px-4 py-3 text-center">{scan.total_findings}</td>
-              <td className="border border-[#1E293B] text-center px-4">
-                <p className={getStatusCodeLevelCardStyle(scan.status_code)}>{scan.status_code}</p>
-              </td>
-              <td className="border border-[#1E293B] px-4 py-2">
-                <div className="flex flex-col">
-                  <p>{formatScanDate(scan.created_at)}</p>
-                  <p className="text-gray-500">{getTimeAgo(scan.created_at)}</p>
-                </div>
-              </td>
-              <td className="border border-[#1E293B] px-4 py-2 text-center cursor-pointer">View Details</td>
-            </tr>)
-          ))) : (
-            Array.from({ length: 5 }).map((_, index) => (
-              <tr key={index} className="text-gray-300">
-                <td className="py-3 border border-[#1E293B] text-center"></td>
-                <td className="py-3 border border-[#1E293B] text-center"></td>
-                <td className="py-3 border border-[#1E293B] text-center"></td>
-                <td className="py-3 border border-[#1E293B] text-center"></td>
-                <td className="py-3 border border-[#1E293B] text-center"></td>
-                <td className="py-3 border border-[#1E293B] text-center"></td>
-                <td className="py-3 border border-[#1E293B] text-center"></td>
-                <td className="py-3 border border-[#1E293B] text-center"></td>
-              </tr>
-            ))
-          )}
-          <button onClick={previousButton}>Previous</button>
-          <button onClick={nextButton}>Next</button>
-        </tbody>
-      </table>
+          <tbody className="bg-[#08172A]">
+            {scans.length > 0 ? (visibleScans.map(((scan) => (
+              <tr key={scan.id} className="text-gray-300 w-full px-4 py-3 text-sm">
+                <td className="border border-[#1E293B] text-center px-4 py-3">{scan.id}</td>
+                <td className="border border-[#1E293B] text-center px-4 py-3">{scan.target_url}</td>
+                <td className="border border-[#1E293B] px-4 py-3 text-center">
+                  <div className="flex justify-center">
+                    {getRiskScoreGauge({ risk_score: scan.risk_score })}
+                  </div>
+                </td>
+                <td className="border border-[#1E293B] px-4 py-3 text-blue-400 text-center">
+                  <span className={getRiskLevelCardStyle(scan.risk_level)}>{scan.risk_level}</span>
+                </td>
+                <td className="border border-[#1E293B] px-4 py-3 text-center">{scan.total_findings}</td>
+                <td className="border border-[#1E293B] text-center px-4">
+                  <p className={getStatusCodeLevelCardStyle(scan.status_code)}>{scan.status_code}</p>
+                </td>
+                <td className="border border-[#1E293B] px-4 py-2">
+                  <div className="flex flex-col">
+                    <p>{formatScanDate(scan.created_at)}</p>
+                    <p className="text-gray-500">{getTimeAgo(scan.created_at)}</p>
+                  </div>
+                </td>
+                <td className="border border-[#1E293B] px-4 py-2 text-center cursor-pointer">View Details</td>
+              </tr>)
+            ))) : (
+              Array.from({ length: 5 }).map((_, index) => (
+                <tr key={index} className="text-gray-300">
+                  <td className="py-3 border border-[#1E293B] text-center"></td>
+                  <td className="py-3 border border-[#1E293B] text-center"></td>
+                  <td className="py-3 border border-[#1E293B] text-center"></td>
+                  <td className="py-3 border border-[#1E293B] text-center"></td>
+                  <td className="py-3 border border-[#1E293B] text-center"></td>
+                  <td className="py-3 border border-[#1E293B] text-center"></td>
+                  <td className="py-3 border border-[#1E293B] text-center"></td>
+                  <td className="py-3 border border-[#1E293B] text-center"></td>
+                </tr>
+              ))
+            )}
+
+
+          </tbody>
+        </table>
+
+        <div className="flex justify-between items-center pt-5 pb-5 w-full bg-[#08172A] border border-gray-800">
+          <div className="flex items-center">
+            <p className="text-white ml-5">Showing {startIndex + 1} to {endIndex} of {scans.length} scans</p>
+          </div>
+          <div className="flex items-center mr-35">
+            <button className="cursor-pointer text-white border rounded-md p-2 px-3" onClick={previousButton}>Previous</button>
+            <p className="text-white mx-10">Page {currentPage} of {totalPages}</p>
+            <button className="cursor-pointer text-white border rounded-md p-2 px-6" onClick={nextButton}>Next</button>
+          </div>
+          <div>
+          </div>
+        </div>
+      </div>
     </div>
   )
 } export default ScanHistoryTable
