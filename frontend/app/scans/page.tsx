@@ -49,13 +49,10 @@ export default function ScanHistory() {
     latest_scan = scans[0].created_at;
   }
 
-
-
-
   return (
     <div className="flex">
       <Navbar />
-      <div>
+      <div className="w-full flex-1">
         <p className="text-white text-[35px] font-semibold ml-6 mt-2">Scan History</p>
         <p className="text-gray-400 text-[16px] ml-6">Review previous scans and track changes over time.</p>
         <div className='grid grid-cols-1 md:grid-cols-4 2xl:grid-cols-4 gap-5 px-6 items-stretch'>
@@ -65,7 +62,6 @@ export default function ScanHistory() {
           <LatestScanCard latest_scan={latest_scan} />
         </div>
         <ScanHistoryTable scans={scans} />
-
       </div>
 
     </div>
