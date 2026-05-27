@@ -7,6 +7,8 @@ function ScanHistoryTable({ scans }: { scans: ScanHistoryItem[] }) {
 
   const [scanHistoryInfo, setScanHistoryInfo] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedReport, setSelectedReport] = useState<ScanHistoryItem | null>(null);
 
   const rowsPerPage = 10;
   const startIndex = (currentPage - 1) * rowsPerPage;
@@ -124,6 +126,11 @@ function ScanHistoryTable({ scans }: { scans: ScanHistoryItem[] }) {
     }
   }
 
+  function handleViewDetails(scan: ScanHistoryItem) {
+    setModalOpen(true)
+    setSelectedReport(scan)
+  }
+
 
 
   return (
@@ -166,7 +173,11 @@ function ScanHistoryTable({ scans }: { scans: ScanHistoryItem[] }) {
                     <p className="text-gray-500">{getTimeAgo(scan.created_at)}</p>
                   </div>
                 </td>
-                <td className="border border-[#1E293B] px-4 py-2 text-center cursor-pointer">View Details</td>
+                <td className="border border-[#1E293B] px-4 py-2 text-center ">
+                  <button className="cursor-pointer text-blue-500 border border-gray-800 rounded-md p-2" onClick={() => handleViewDetails(scan)}>
+                    View Details
+                  </button>
+                </td>
               </tr>)
             ))) : (
               Array.from({ length: 5 }).map((_, index) => (
@@ -200,6 +211,20 @@ function ScanHistoryTable({ scans }: { scans: ScanHistoryItem[] }) {
           </div>
         </div>
       </div>
+
+      {modalOpen && selectedReport && (
+        <div className="fixed bg-black/60 flex items-center justify-center z-50 inset-0">
+          <div className="bg-[#102034]">
+            <p>Selected Report</p>
+
+            <div>
+              <button className="cursor-pointer" onClick={() => setModalOpen(false)}>Exit</button>
+            </div>
+          </div>
+
+        </div>
+      )}
+
     </div>
   )
 } export default ScanHistoryTable
