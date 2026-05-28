@@ -214,7 +214,17 @@ function ScanHistoryTable({ scans }: { scans: ScanHistoryItem[] }) {
 
       {modalOpen && selectedReport && (
         <div className="fixed bg-black/60 flex items-center justify-center z-50 inset-0">
-          <div className="bg-[#102034]">
+          <div className="bg-[#102034] w-[80%] h-[80%]">
+            <p className="ml-5 mt-5 text-white text-3xl font-semibold">Scan Report</p>
+            <div className="border">
+            </div>
+
+            <div>
+
+            </div>
+            <div>
+            </div>
+
             <p>Selected Report</p>
 
             <div>
