@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { ScanHistoryItem } from "../../types/scan";
-import { CircleHelp } from "lucide-react";
+import { X, ExternalLink } from "lucide-react";
 
 function ScanHistoryTable({ scans }: { scans: ScanHistoryItem[] }) {
 
@@ -213,23 +213,75 @@ function ScanHistoryTable({ scans }: { scans: ScanHistoryItem[] }) {
       </div>
 
       {modalOpen && selectedReport && (
+
         <div className="fixed bg-black/60 flex items-center justify-center z-50 inset-0">
-          <div className="bg-[#102034] w-[80%] h-[80%]">
-            <p className="ml-5 mt-5 text-white text-3xl font-semibold">Scan Report</p>
-            <div className="border">
+          <div className="bg-[#102034] w-[80%] h-[80%] border rounded-lg">
+            <div className="flex items-center justify-between">
+              <p className="ml-5 mt-4 text-white text-3xl font-semibold">Scan Report</p>
+              <div>
+                <button className="cursor-pointer text-white mr-3 mt-2" onClick={() => setModalOpen(false)}> <X /> </button>
+              </div>
             </div>
 
-            <div>
+            <div className="border-2 rounded-xl border-gray-700 h-[20%] w-[95%] m-auto mt-10">
+              <div className="flex justify-between mt-2">
+                <div>
+                  <p className="text-gray-400 ml-10 mt-3">Target URL</p>
+                  <p className="text-blue-400 ml-10">{selectedReport.target_url}</p>
+                </div>
+
+                <div>
+                  <p className="text-gray-400 mt-3">Scan ID</p>
+                  <p className="text-blue-400">{selectedReport.id}</p>
+                </div>
+
+                <div className="mr-10">
+                  <p className="text-gray-400 ml-5 mt-3">Scan ID</p>
+                  <p className="text-blue-400 ml-5">{formatScanDate(selectedReport.created_at)}</p>
+                </div>
+              </div>
+
+              <div className="flex justify-center items-center">
+                <hr className="mt-5 w-[95%] text-gray-700"></hr>
+              </div>
+
+              <div>
+                <div>
+                  <p className="text-gray-400 ml-10 mt-3 mb-1">Risk Score</p>
+                  <div className="flex items-center">
+                    <p className="text-blue-400 ml-10">{getRiskScoreGauge({ risk_score: selectedReport.risk_score })}</p>
+                    <p className="text-gray-400 mt-6">/100</p>
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-gray-400 ml-10 mt-3 mb-1">Risk Level</p>
+                  <div>
+
+                  </div>
+                </div>
+
+
+              </div>
 
             </div>
-            <div>
+
+            <div className="flex gap-10 w-[95%] m-auto">
+
+              <div className="border-2 rounded-lg border-gray-700 h-[20%] w-[95%] m-auto mt-10 ">
+                <p>h1</p>
+              </div>
+
+              <div className="border-2 rounded-lg border-gray-700 h-[20%] w-[95%] m-auto mt-10 ">
+                <p>h1</p>
+              </div>
             </div>
 
-            <p>Selected Report</p>
+            <div className="border-2 rounded-xl border-gray-700 h-[20%] w-[95%] m-auto mt-10 ">
 
-            <div>
-              <button className="cursor-pointer" onClick={() => setModalOpen(false)}>Exit</button>
             </div>
+
+            <button className="flex gap-2 rounded-lg text-white border-2 border-gray-700 rounded-sm p-2 cursor-pointer ml-7 mt-3">Open Full Report <ExternalLink className="w-[20px]" /> </button>
           </div>
 
         </div>
