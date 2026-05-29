@@ -215,7 +215,7 @@ function ScanHistoryTable({ scans }: { scans: ScanHistoryItem[] }) {
       {modalOpen && selectedReport && (
 
         <div className="fixed bg-black/60 flex items-center justify-center z-50 inset-0">
-          <div className="bg-[#102034] w-[80%] h-[80%] border rounded-lg">
+          <div className="bg-[#102034] w-[60%] h-[80%] border rounded-lg ml-25">
             <div className="flex items-center justify-between">
               <p className="ml-5 mt-4 text-white text-3xl font-semibold">Scan Report</p>
               <div>
@@ -223,7 +223,7 @@ function ScanHistoryTable({ scans }: { scans: ScanHistoryItem[] }) {
               </div>
             </div>
 
-            <div className="border-2 rounded-xl border-gray-700 h-[20%] w-[95%] m-auto mt-10">
+            <div className="border-2 rounded-xl border-gray-700 pb-5 w-[95%] m-auto mt-10">
               <div className="flex justify-between mt-2">
                 <div>
                   <p className="text-gray-400 ml-10 mt-3">Target URL</p>
@@ -241,11 +241,11 @@ function ScanHistoryTable({ scans }: { scans: ScanHistoryItem[] }) {
                 </div>
               </div>
 
-              <div className="flex justify-center items-center">
+              <div className="flex justify-center">
                 <hr className="mt-5 w-[95%] text-gray-700"></hr>
               </div>
 
-              <div>
+              <div className="flex justify-between gap-10">
                 <div>
                   <p className="text-gray-400 ml-10 mt-3 mb-1">Risk Score</p>
                   <div className="flex items-center">
@@ -255,10 +255,23 @@ function ScanHistoryTable({ scans }: { scans: ScanHistoryItem[] }) {
                 </div>
 
                 <div>
-                  <p className="text-gray-400 ml-10 mt-3 mb-1">Risk Level</p>
-                  <div>
+                  <p className="text-gray-400 mt-3 mb-1">Risk Level</p>
 
+                  <div className="mt-3">
+                    <p className={getRiskLevelCardStyle(selectedReport.risk_level)}>{selectedReport.risk_level}</p>
                   </div>
+                </div>
+
+                <div>
+                  <p className="text-gray-400 mt-3 mb-1">Status Code</p>
+                  <div className="mt-3">
+                    <p className={getStatusCodeLevelCardStyle(selectedReport.status_code)} >{selectedReport.status_code}</p>
+                  </div>
+                </div>
+
+                <div className="">
+                  <p className="text-gray-400 mt-3 mb-1">Risk Summary</p>
+                  <p className="text-gray-300 max-w-[500] mr-5 mt-2">{selectedReport.risk_summary}</p>
                 </div>
 
 
