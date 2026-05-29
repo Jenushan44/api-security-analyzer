@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { ScanHistoryItem } from "../../types/scan";
-import { X, ExternalLink } from "lucide-react";
+import { X, ExternalLink, CircleCheck, CircleAlert, TriangleAlert, OctagonAlert, ArrowRight } from "lucide-react";
 
 function ScanHistoryTable({ scans }: { scans: ScanHistoryItem[] }) {
 
@@ -282,11 +282,47 @@ function ScanHistoryTable({ scans }: { scans: ScanHistoryItem[] }) {
             <div className="flex gap-10 w-[95%] m-auto">
 
               <div className="border-2 rounded-lg border-gray-700 h-[20%] w-[95%] m-auto mt-10 ">
-                <p>h1</p>
+                <p className="text-lg text-gray-200 ml-4 mt-2">Findings Overview</p>
+
+                <div className="flex flex-col items-center gap-1 py-2">
+                  <div className="flex items-center w-[95%] py-2 border border-gray-700/10 rounded-md bg-red-800/10">
+                    <OctagonAlert className="text-[#db1414] ml-2 w-8 h-8" />
+                    <p className="ml-4 text-2xl text-white">1</p>
+                    <p className="text-gray-400 ml-10">Critical</p>
+                  </div>
+
+                  <div className="flex items-center w-[95%] py-2 border border-gray-700/10 rounded-md bg-orange-800/10">
+                    <TriangleAlert className="text-[#EA580C] ml-2 w-8 h-8" />
+                    <p className="ml-4 text-2xl text-white">1</p>
+                    <p className="text-gray-400 ml-10">High</p>
+                  </div>
+
+                  <div className="flex items-center w-[95%] py-2 border border-gray-700/10 rounded-md bg-yellow-800/10">
+                    <CircleAlert className="text-[#FFBC3B] ml-2 w-8 h-8" />
+                    <p className="ml-4 text-2xl text-white">1</p>
+                    <p className="text-gray-400 ml-10">Medium</p>
+                  </div>
+
+                  <div className="flex items-center w-[95%] py-2 border border-gray-700/10 rounded-md bg-green-800/10">
+                    <CircleCheck className="text-[#16A34A] ml-2 w-8 h-8" />
+                    <p className="ml-4 text-2xl text-white">1</p>
+                    <p className="text-gray-400 ml-10">Low</p>
+                  </div>
+                </div>
+                <div className="flex justify-center">
+                  <hr className="w-[95%] text-gray-800 mt-2"></hr>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4 pb-2 mt-2">
+                    <p className="text-gray-400 text-lg ml-4">Total Findings</p>
+                    <p className="text-white text-xl">{selectedReport.total_findings}</p>
+                  </div>
+                  <button className="text-blue-400 flex items-center gap-1 mr-4 cursor-pointer">View all findings <ArrowRight className="w-4 h-4" /></button>
+                </div>
               </div>
 
               <div className="border-2 rounded-lg border-gray-700 h-[20%] w-[95%] m-auto mt-10 ">
-                <p>h1</p>
+                <p className="text-lg text-gray-200">Scan vs. Previous Scan</p>
               </div>
             </div>
 
