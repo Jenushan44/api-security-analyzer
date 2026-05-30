@@ -1,4 +1,6 @@
 export type Finding = {
+  id: number;
+  scan_id: number;
   title: string;
   severity: string;
   category: string;
@@ -34,6 +36,11 @@ export type ScanHistoryItem = {
   risk_score: number;
   risk_level: string;
   risk_summary: string;
-  total_findings: number;
+  total_findings?: number;
   created_at: string;
 }
+
+export type ScanReport = {
+  scan: ScanHistoryItem;
+  findings: Finding[];
+};

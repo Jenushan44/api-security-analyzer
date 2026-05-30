@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { ScanHistoryItem } from "../../types/scan";
+import { ScanHistoryItem, ScanReport } from "../../types/scan";
 import { X, ExternalLink, CircleCheck, CircleAlert, TriangleAlert, OctagonAlert, ArrowRight } from "lucide-react";
 
 function ScanHistoryTable({ scans }: { scans: ScanHistoryItem[] }) {
@@ -9,6 +9,9 @@ function ScanHistoryTable({ scans }: { scans: ScanHistoryItem[] }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedReport, setSelectedReport] = useState<ScanHistoryItem | null>(null);
+  const [selectedFullReport, setSelectedFullReport] = useState<ScanReport | null>(null);
+  const [reportLoading, setReportLoading] = useState(false);
+  const [reportError, setReportError] = useState<string | null>(null);
 
   const rowsPerPage = 10;
   const startIndex = (currentPage - 1) * rowsPerPage;
@@ -126,9 +129,23 @@ function ScanHistoryTable({ scans }: { scans: ScanHistoryItem[] }) {
     }
   }
 
-  function handleViewDetails(scan: ScanHistoryItem) {
+  async function handleViewDetails(scan: ScanHistoryItem) {
     setModalOpen(true)
     setSelectedReport(scan)
+    setSelectedFullReport(null);
+    setReportError(null);
+    setReportLoading(true);
+
+    try {
+      const response = await fetch(process.env.NEXT_PUBLIC_API_URL + `/scans/${scan.id}`);
+      const data = await response.json();
+      setSelectedFullReport(data);
+    } catch {
+      setReportError('Error');
+    } finally {
+      setReportLoading(false);
+    }
+
   }
 
 
@@ -249,7 +266,9 @@ function ScanHistoryTable({ scans }: { scans: ScanHistoryItem[] }) {
                 <div>
                   <p className="text-gray-400 ml-10 mt-3 mb-1">Risk Score</p>
                   <div className="flex items-center">
-                    <p className="text-blue-400 ml-10">{getRiskScoreGauge({ risk_score: selectedReport.risk_score })}</p>
+                    <div className="text-blue-400 ml-10">
+                      {getRiskScoreGauge({ risk_score: selectedReport.risk_score })}
+                    </div>
                     <p className="text-gray-400 mt-6">/100</p>
                   </div>
                 </div>
@@ -327,12 +346,42 @@ function ScanHistoryTable({ scans }: { scans: ScanHistoryItem[] }) {
             </div>
 
             <div className="border-2 rounded-xl border-gray-700 h-[20%] w-[95%] m-auto mt-10 ">
+              <table className="w-full">
+                <thead>
+                  <tr className="text-white bg-[#102034]">
+                    <th className="border border-[#1E293B] px-4 py-1 font-normal">SEVERITY</th>
+                    <th className="border border-[#1E293B] font-normal">FINDING</th>
+                    <th className="border border-[#1E293B] font-normal">ENDPOINT</th>
+                    <th className="border border-[#1E293B] font-normal">CATEGORY</th>
+                  </tr>
+                </thead>
 
+                <tbody className="bg-[#08172A]">
+                  {scans.length > 0 ? (selectedFullReport?.findings.slice(0, 5).map(((finding) => (
+                    <tr key={finding.id} className="text-gray-300 w-full px-4 py-3 text-sm">
+                      <td className="border border-[#1E293B] text-center px-4 py-3">
+                        <span className={getRiskLevelCardStyle(finding.severity)}>{finding.severity}</span>
+                      </td>
+                      <td className="border border-[#1E293B] px-4 py-3 text-center">{finding.title}</td>
+                      <td className="border border-[#1E293B] text-center px-4 py-3">{selectedFullReport.scan.target_url}</td>
+                      <td className="border border-[#1E293B] px-4 py-3 text-center">{finding.category}</td>
+                    </tr>)
+                  ))) : (
+                    Array.from({ length: 5 }).map((_, index) => (
+                      <tr key={index} className="text-gray-300">
+                        <td className="py-3 border border-[#1E293B] text-center"></td>
+                        <td className="py-3 border border-[#1E293B] text-center"></td>
+                        <td className="py-3 border border-[#1E293B] text-center"></td>
+                        <td className="py-3 border border-[#1E293B] text-center"></td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
             </div>
 
             <button className="flex gap-2 rounded-lg text-white border-2 border-gray-700 rounded-sm p-2 cursor-pointer ml-7 mt-3">Open Full Report <ExternalLink className="w-[20px]" /> </button>
           </div>
-
         </div>
       )}
 
