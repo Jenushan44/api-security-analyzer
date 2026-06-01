@@ -2,7 +2,7 @@ export type Finding = {
   id: number;
   scan_id: number;
   title: string;
-  severity: string;
+  severity: Severity;
   category: string;
   description: string;
   evidence: string;
@@ -44,3 +44,5 @@ export type ScanReport = {
   scan: ScanHistoryItem;
   findings: Finding[];
 };
+
+export type Severity = "Critical" | "High" | "Medium" | "Low";

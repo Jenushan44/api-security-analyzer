@@ -148,6 +148,13 @@ function ScanHistoryTable({ scans }: { scans: ScanHistoryItem[] }) {
 
   }
 
+  const topFindingsOrder = {
+    Critical: 4,
+    High: 3,
+    Medium: 2,
+    Low: 1,
+  }
+
 
 
   return (
@@ -357,24 +364,46 @@ function ScanHistoryTable({ scans }: { scans: ScanHistoryItem[] }) {
                 </thead>
 
                 <tbody className="bg-[#08172A]">
-                  {scans.length > 0 ? (selectedFullReport?.findings.slice(0, 5).map(((finding) => (
-                    <tr key={finding.id} className="text-gray-300 w-full px-4 py-3 text-sm">
-                      <td className="border border-[#1E293B] text-center px-4 py-3">
-                        <span className={getRiskLevelCardStyle(finding.severity)}>{finding.severity}</span>
+                  {reportLoading ? (
+                    <tr className="text-gray-300">
+                      <td colSpan={4} className="py-4 text-center border border-[#1E293B]">
+                        Loading findings...
                       </td>
-                      <td className="border border-[#1E293B] px-4 py-3 text-center">{finding.title}</td>
-                      <td className="border border-[#1E293B] text-center px-4 py-3">{selectedFullReport.scan.target_url}</td>
-                      <td className="border border-[#1E293B] px-4 py-3 text-center">{finding.category}</td>
-                    </tr>)
-                  ))) : (
-                    Array.from({ length: 5 }).map((_, index) => (
-                      <tr key={index} className="text-gray-300">
-                        <td className="py-3 border border-[#1E293B] text-center"></td>
-                        <td className="py-3 border border-[#1E293B] text-center"></td>
-                        <td className="py-3 border border-[#1E293B] text-center"></td>
-                        <td className="py-3 border border-[#1E293B] text-center"></td>
+                    </tr>
+                  ) : reportError ? (
+                    <tr className="text-gray-300">
+                      <td colSpan={4} className="py-4 text-center border border-[#1E293B]">
+                        Could not load findings.
+                      </td>
+                    </tr>
+                  ) : selectedFullReport && selectedFullReport.findings.length > 0 ? (
+                    selectedFullReport.findings.sort((a, b) => topFindingsOrder[b.severity] - topFindingsOrder[a.severity]).slice(0, 5).map((finding) => (
+                      <tr key={finding.id} className="text-gray-300 w-full px-4 py-3 text-sm">
+                        <td className="border border-[#1E293B] text-center px-4 py-3">
+                          <span className={getRiskLevelCardStyle(finding.severity)}>
+                            {finding.severity}
+                          </span>
+                        </td>
+
+                        <td className="border border-[#1E293B] px-4 py-3 text-center">
+                          {finding.title}
+                        </td>
+
+                        <td className="border border-[#1E293B] text-center px-4 py-3">
+                          {selectedFullReport.scan.target_url}
+                        </td>
+
+                        <td className="border border-[#1E293B] px-4 py-3 text-center">
+                          {finding.category}
+                        </td>
                       </tr>
                     ))
+                  ) : (
+                    <tr className="text-gray-300">
+                      <td colSpan={4} className="py-4 text-center border border-[#1E293B]">
+                        No findings found.
+                      </td>
+                    </tr>
                   )}
                 </tbody>
               </table>
