@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { ScanHistoryItem, ScanReport } from "../../types/scan";
+import { ScanHistoryItem, ScanReport, Finding } from "../../types/scan";
 import { X, ExternalLink, CircleCheck, CircleAlert, TriangleAlert, OctagonAlert, ArrowRight } from "lucide-react";
 
 function ScanHistoryTable({ scans }: { scans: ScanHistoryItem[] }) {
@@ -155,6 +155,30 @@ function ScanHistoryTable({ scans }: { scans: ScanHistoryItem[] }) {
     Low: 1,
   }
 
+  function severityCounts(findings: Finding[]) {
+    let criticalCount = 0;
+    let highCount = 0;
+    let mediumCount = 0;
+    let lowCount = 0;
+
+    for (let i = 0; i < findings.length; i++) {
+      if (findings[i].severity == "Critical") {
+        criticalCount += 1;
+      } else if (findings[i].severity == "High") {
+        highCount += 1;
+      } else if (findings[i].severity == "Medium") {
+        mediumCount += 1;
+      } else if (findings[i].severity == "Low") {
+        lowCount += 1;
+      }
+    }
+
+
+    return { Critical: criticalCount, High: highCount, Medium: mediumCount, Low: lowCount }
+  }
+
+  const counts = selectedFullReport ? severityCounts(selectedFullReport.findings) : { Critical: 0, High: 0, Medium: 0, Low: 0 }
+
 
 
   return (
@@ -239,7 +263,7 @@ function ScanHistoryTable({ scans }: { scans: ScanHistoryItem[] }) {
       {modalOpen && selectedReport && (
 
         <div className="fixed bg-black/60 flex items-center justify-center z-50 inset-0">
-          <div className="bg-[#102034] w-[60%] h-[80%] border rounded-lg ml-25">
+          <div className="bg-[#102034] w-[70%] h-[80%] border rounded-lg ml-25">
             <div className="flex items-center justify-between">
               <p className="ml-5 mt-4 text-white text-3xl font-semibold">Scan Report</p>
               <div>
@@ -313,25 +337,25 @@ function ScanHistoryTable({ scans }: { scans: ScanHistoryItem[] }) {
                 <div className="flex flex-col items-center gap-1 py-2">
                   <div className="flex items-center w-[95%] py-2 border border-gray-700/10 rounded-md bg-red-800/10">
                     <OctagonAlert className="text-[#db1414] ml-2 w-8 h-8" />
-                    <p className="ml-4 text-2xl text-white">1</p>
+                    <p className="ml-4 text-2xl text-white">{counts.Critical}</p>
                     <p className="text-gray-400 ml-10">Critical</p>
                   </div>
 
                   <div className="flex items-center w-[95%] py-2 border border-gray-700/10 rounded-md bg-orange-800/10">
                     <TriangleAlert className="text-[#EA580C] ml-2 w-8 h-8" />
-                    <p className="ml-4 text-2xl text-white">1</p>
+                    <p className="ml-4 text-2xl text-white">{counts.High}</p>
                     <p className="text-gray-400 ml-10">High</p>
                   </div>
 
                   <div className="flex items-center w-[95%] py-2 border border-gray-700/10 rounded-md bg-yellow-800/10">
                     <CircleAlert className="text-[#FFBC3B] ml-2 w-8 h-8" />
-                    <p className="ml-4 text-2xl text-white">1</p>
+                    <p className="ml-4 text-2xl text-white">{counts.Medium}</p>
                     <p className="text-gray-400 ml-10">Medium</p>
                   </div>
 
                   <div className="flex items-center w-[95%] py-2 border border-gray-700/10 rounded-md bg-green-800/10">
                     <CircleCheck className="text-[#16A34A] ml-2 w-8 h-8" />
-                    <p className="ml-4 text-2xl text-white">1</p>
+                    <p className="ml-4 text-2xl text-white">{counts.Low}</p>
                     <p className="text-gray-400 ml-10">Low</p>
                   </div>
                 </div>
