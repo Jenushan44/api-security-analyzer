@@ -77,13 +77,13 @@ function LatestScanCard({ latest_scan }: { latest_scan: string | null }) {
       </div>
 
       <div className='flex items-center gap-6'>
-        <div className='flex flex-col items-center'>
+        <div className='flex flex-col'>
           {(latest_scan == null) ? (
             <p className='text-[50px] text-[#374151] font-semibold'>-</p>
           ) :
             <p className='text-[18px] text-white font-semibold'>{formatScanDate(latest_scan)}</p>
           }
-          <p className='text-white text-sm text-center'>{getTimeAgo(latest_scan)}</p>
+          <p className='text-white text-sm'>{getTimeAgo(latest_scan)}</p>
         </div>
 
         <div className=" border border-green-500/30 border-3 rounded-3xl p-3 bg-green-500/10 flex items-center justify-center">
