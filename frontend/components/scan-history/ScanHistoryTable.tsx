@@ -263,7 +263,7 @@ function ScanHistoryTable({ scans }: { scans: ScanHistoryItem[] }) {
       {modalOpen && selectedReport && (
 
         <div className="fixed bg-black/60 flex items-center justify-center z-50 inset-0">
-          <div className="bg-[#102034] w-[70%] h-[80%] border rounded-lg ml-25">
+          <div className="bg-[#102034] w-[70%] h-[80%] pb-50 border rounded-lg overflow-y-auto modal-scrollbar">
             <div className="flex items-center justify-between">
               <p className="ml-5 mt-4 text-white text-3xl font-semibold">Scan Report</p>
               <div>
@@ -284,7 +284,7 @@ function ScanHistoryTable({ scans }: { scans: ScanHistoryItem[] }) {
                 </div>
 
                 <div className="mr-10">
-                  <p className="text-gray-400 ml-5 mt-3">Scan ID</p>
+                  <p className="text-gray-400 ml-5 mt-3">Scanned At</p>
                   <p className="text-blue-400 ml-5">{formatScanDate(selectedReport.created_at)}</p>
                 </div>
               </div>
@@ -331,7 +331,7 @@ function ScanHistoryTable({ scans }: { scans: ScanHistoryItem[] }) {
 
             <div className="flex gap-10 w-[95%] m-auto">
 
-              <div className="border-2 rounded-lg border-gray-700 h-[20%] w-[95%] m-auto mt-10 ">
+              <div className="border-2 rounded-lg border-gray-700 w-[95%] m-auto mt-10 ">
                 <p className="text-lg text-gray-200 ml-4 mt-2">Findings Overview</p>
 
                 <div className="flex flex-col items-center gap-1 py-2">
@@ -371,12 +371,12 @@ function ScanHistoryTable({ scans }: { scans: ScanHistoryItem[] }) {
                 </div>
               </div>
 
-              <div className="border-2 rounded-lg border-gray-700 h-[20%] w-[95%] m-auto mt-10 ">
+              <div className="border-2 rounded-lg border-gray-700 w-[95%] m-auto mt-10 ">
                 <p className="text-lg text-gray-200">Scan vs. Previous Scan</p>
               </div>
             </div>
 
-            <div className="border-2 rounded-xl border-gray-700 h-[20%] w-[95%] m-auto mt-10 ">
+            <div className="border-2 rounded-xl border-gray-700 w-[95%] m-auto mt-10 ">
               <table className="w-full">
                 <thead>
                   <tr className="text-white bg-[#102034]">
@@ -432,8 +432,9 @@ function ScanHistoryTable({ scans }: { scans: ScanHistoryItem[] }) {
                 </tbody>
               </table>
             </div>
-
-            <button className="flex gap-2 rounded-lg text-white border-2 border-gray-700 rounded-sm p-2 cursor-pointer ml-7 mt-3">Open Full Report <ExternalLink className="w-[20px]" /> </button>
+            <div className="w-[95%] mt-3 flex justify-start mx-auto mt-4">
+              <button className="flex gap-2 rounded-lg text-white border-2 border-gray-700 rounded-sm p-2 cursor-pointer">Open Full Report <ExternalLink className="w-[20px]" /> </button>
+            </div>
           </div>
         </div>
       )}
