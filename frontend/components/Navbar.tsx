@@ -15,6 +15,8 @@ function Navbar() {
         </div>
         <Link className="flex items-center text-lg rounded-md text-gray-300 p-2 py-3 ml-7 w-[90%] text-center flex gap-2 hover:bg-[#102344] hover:text-[#296bd6]" href="/"> <House className="mt-1" /> Dashboard</Link>
         <Link className="flex items-center text-lg rounded-md text-gray-300 p-2 py-3 ml-7 w-[90%] text-center flex gap-2 hover:bg-[#102344] hover:text-[#296bd6]" href="/scans"> <History className="mt-1" /> Scan History</Link>
+        <Link className="flex items-center text-lg rounded-md text-gray-300 p-2 py-3 ml-7 w-[90%] text-center flex gap-2 hover:bg-[#102344] hover:text-[#296bd6]" href="reports"> <History className="mt-1" /> Reports</Link>
+
       </div>
     </div>
   )
