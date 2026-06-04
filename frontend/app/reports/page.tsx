@@ -45,10 +45,26 @@ export default function ScanRecordPage() {
           <p>All Report Types</p>
           <p className="mr-2">Filters</p>
         </div>
+
+
         <div>
           <p className="text-white">Pinned Reports</p>
+          <div className="flex gap-4">
+            {reports.slice(0, 4).map((report) => (
+              <div className="border border-white" key={report.id}>
+                <p className="text-white">{report.id} </p>
+                <p className="text-white">{report.target_url} </p>
+                <p className="text-white">{report.risk_level} </p>
+                <p className="text-white">{report.risk_score} </p>
+                <p className="text-white">{report.total_findings} </p>
+                <p className="text-white">{report.created_at} </p>
+              </div>
+            ))}
+          </div>
           <p className="text-white">Reports loaded: {reports.length}</p>
         </div>
+
+
       </div>
     </div>
   )
