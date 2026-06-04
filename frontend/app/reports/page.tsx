@@ -1,14 +1,55 @@
+"use client"
 import Navbar from "../../components/Navbar"
+import { ScanHistoryItem } from "../../types/scan";
+import { useState, useEffect } from "react";
 
+export default function ScanRecordPage() {
+  const [selectedReport, setSelectedReport] = useState<ScanHistoryItem | null>(null);
+  const [reports, setReports] = useState<ScanHistoryItem[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-export default function getScanRecord() {
+  async function fetchReport() {
+
+    setLoading(true);
+    try {
+      const response = await fetch(process.env.NEXT_PUBLIC_API_URL + "/scans")
+      const data = await response.json();
+      setReports(data);
+      if (data.length() > 0) {
+        setSelectedReport(data[0]);
+      }
+
+    } catch {
+      setError('Error retrieving report')
+    } finally {
+      setLoading(false);
+    }
+
+  }
+
+  useEffect(() => {
+    fetchReport()
+  }, [])
 
   return (
 
     <div className="flex">
       <Navbar />
-
-      <p className="text-white">Scan Report page</p>
+      <div className="w-full flex-1">
+        <p className="text-white text-[35px] font-semibold ml-6 mt-2">Scan Reports</p>
+        <p className="text-gray-400 ml-6 mt-2">Browse, preview and manage generated reports.</p>
+        <div className="w-full bg-[#102034] text-white flex justify-between">
+          <p className="ml-2">Search bar</p>
+          <p>Date</p>
+          <p>All Report Types</p>
+          <p className="mr-2">Filters</p>
+        </div>
+        <div>
+          <p className="text-white">Pinned Reports</p>
+          <p className="text-white">Reports loaded: {reports.length}</p>
+        </div>
+      </div>
     </div>
   )
 }
