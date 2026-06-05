@@ -2,7 +2,7 @@
 import Navbar from "../../components/Navbar"
 import { ScanHistoryItem } from "../../types/scan";
 import { useState, useEffect } from "react";
-import { Download, Share2, Pencil } from 'lucide-react';
+import { Download, Share2, Pencil, X, Shield, File, ChartColumnIncreasing, ChartPie } from 'lucide-react';
 
 
 export default function ScanRecordPage() {
@@ -10,6 +10,8 @@ export default function ScanRecordPage() {
   const [reports, setReports] = useState<ScanHistoryItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [modal, setModal] = useState(false);
+
 
   async function fetchReport() {
 
@@ -18,7 +20,7 @@ export default function ScanRecordPage() {
       const response = await fetch(process.env.NEXT_PUBLIC_API_URL + "/scans")
       const data = await response.json();
       setReports(data);
-      if (data.length() > 0) {
+      if (data.length > 0) {
         setSelectedReport(data[0]);
       }
 
@@ -74,12 +76,78 @@ export default function ScanRecordPage() {
                   <div className="flex justify-between">
                     <button className="p-1 text-blue-400 cursor-pointer"> <Download /> </button>
                     <button className="p-1 text-white cursor-pointer"> <Share2 /> </button>
-                    <button className="p-1 text-red-800 cursor-pointer"> <Pencil /> </button>
-
+                    <button onClick={() => { setModal(true); setSelectedReport(report); }} className="p-1 text-red-800 cursor-pointer"> <Pencil /> </button>
                   </div>
                 </div>
-              ))}
+
+
+
+
+
+              ))
+
+
+
+
+              }
             </div>
+
+            {modal && selectedReport && (
+              <div className="fixed bg-black/60 flex items-center justify-center z-50 inset-0">
+                <div className="bg-[#102034] w-[35%] h-[29%] pb-50 border rounded-lg">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-white text-xl ml-6 mt-5">Edit Report</p>
+                    </div>
+                    <button onClick={() => { setSelectedReport(null); setModal(false); }} className="text-white cursor-pointer mr-2 mb-2" ><X /></button>
+
+                  </div>
+                  <div>
+                    <p className="text-gray-400 ml-6">Update the report title, type and icon.</p>
+                  </div>
+
+                  <div className="flex justify-between">
+                    <div>
+                      <p className="ml-6 text-white mt-6">Report Title</p>
+                      <input className="placeholder-white w-full border border-gray-800 rounded-md ml-5 mt-1 pl-1 cursor-pointer py-1 px-2" placeholder="Report title" ></input>
+                    </div>
+
+                    <div className="mr-6">
+                      <p className="mr-6 text-white mt-6">Report Type</p>
+                      <select className="placeholder-white w-full border border-gray-800 rounded-md mr-5 mt-1 pl-1 cursor-pointer py-1 px-2 text-white" >
+                        <option>Security Assessment</option>
+                        <option>Executive Summary</option>
+                        <option>Compliance Review</option>
+                      </select>
+                    </div>
+
+
+                  </div>
+
+                  <div>
+                    <p className="ml-6 text-white mt-6">Report Icon</p>
+                    <div className="flex items-center gap-3 ml-6 mt-2">
+                      <Shield className="text-white border w-[13%] h-[13%] py-1 px-3 cursor-pointer" />
+                      <File className="text-white border w-[13%] h-[13%] py-1 px-3 cursor-pointer " />
+                      <ChartColumnIncreasing className="text-white border w-[13%] h-[13%] py-1 px-3 cursor-pointer" />
+                      <ChartPie className="border text-white w-[13%] h-[13%] py-1 px-3 cursor-pointer" />
+                    </div>
+                  </div>
+
+                  <div>
+                    <p className="ml-6 text-white mt-6">Notes</p>
+                    <input placeholder="Add any optional notes ..." className="placeholder-white h-16 border border-gray-700 w-[90%] ml-6 mr-6 pl-2 pb-8"></input>
+                  </div>
+
+                  <div className="flex justify-end gap-3 mr-6 mt-8">
+                    <button className="cursor-pointer border text-lg rounded-md text-white px-4 py-2">Cancel</button>
+                    <button className="cursor-pointer border-[#2a77f5] rounded-md text-lg text-white px-4 py-2 bg-[#2a77f5]">Save Changes</button>
+
+                  </div>
+
+                </div>
+              </div>
+            )}
 
           </div>
         </div>
