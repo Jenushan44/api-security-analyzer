@@ -2,6 +2,8 @@
 import Navbar from "../../components/Navbar"
 import { ScanHistoryItem } from "../../types/scan";
 import { useState, useEffect } from "react";
+import { Download, Share2, Pencil } from 'lucide-react';
+
 
 export default function ScanRecordPage() {
   const [selectedReport, setSelectedReport] = useState<ScanHistoryItem | null>(null);
@@ -61,7 +63,25 @@ export default function ScanRecordPage() {
               </div>
             ))}
           </div>
-          <p className="text-white">Reports loaded: {reports.length}</p>
+          <div className="bg-[#102034] mt-5 mx-5">
+            <p className="text-gray-200">All Reports ({reports.length})</p>
+            <div className="flex flex-wrap gap-5">
+
+              {reports.map((report) => (
+                <div key={report.id} className="border border-white">
+                  <p className="text-white">Logo</p>
+                  <p className="text-white">title</p>
+                  <div className="flex justify-between">
+                    <button className="p-1 text-blue-400 cursor-pointer"> <Download /> </button>
+                    <button className="p-1 text-white cursor-pointer"> <Share2 /> </button>
+                    <button className="p-1 text-red-800 cursor-pointer"> <Pencil /> </button>
+
+                  </div>
+                </div>
+              ))}
+            </div>
+
+          </div>
         </div>
 
 
