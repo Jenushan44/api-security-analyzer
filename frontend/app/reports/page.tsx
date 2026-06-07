@@ -13,6 +13,9 @@ export default function ScanRecordPage() {
   const [modal, setModal] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
   const [reportTitles, setReportTitles] = useState<Record<number, string>>({});
+  const [modalType, setModalType] = useState("");
+  const [reportType, setReportType] = useState<Record<number, string>>({});
+
 
   async function fetchReport() {
 
@@ -40,6 +43,7 @@ export default function ScanRecordPage() {
   function saveChangesButton() {
     if (selectedReport) {
       setReportTitles({ ...reportTitles, [selectedReport.id]: modalTitle });
+      setReportType({ ...reportType, [selectedReport.id]: modalType });
     }
   }
 
@@ -79,10 +83,12 @@ export default function ScanRecordPage() {
                 <div key={report.id} className="border border-white">
                   <p className="text-white">Logo</p>
                   <p className="text-white">{reportTitles[report.id] || `Scan Report #${report.id}`} </p>
+                  <p className="text-white">{reportType[report.id] || "Report Type"} </p>
+
                   <div className="flex justify-between">
                     <button className="p-1 text-blue-400 cursor-pointer"> <Download /> </button>
                     <button className="p-1 text-white cursor-pointer"> <Share2 /> </button>
-                    <button onClick={() => { setModal(true); setSelectedReport(report); setModalTitle(reportTitles[report.id] || `Scan Report #${report.id}`); }} className="p-1 text-red-800 cursor-pointer"> <Pencil /> </button>
+                    <button onClick={() => { setModal(true); setSelectedReport(report); setModalTitle(reportTitles[report.id] || `Scan Report #${report.id}`); setModalType(reportType[report.id] || `Report Type`); }} className="p-1 text-red-800 cursor-pointer"> <Pencil /> </button>
                   </div>
                 </div>
               ))
@@ -96,7 +102,7 @@ export default function ScanRecordPage() {
                     <div>
                       <p className="text-white text-xl ml-6 mt-5">Edit Report</p>
                     </div>
-                    <button onClick={() => { setSelectedReport(null); setModal(false); setModalTitle(""); }} className="text-white cursor-pointer mr-2 mb-2" ><X /></button>
+                    <button onClick={() => { setSelectedReport(null); setModal(false); setModalTitle(""); setModalType(""); }} className="text-white cursor-pointer mr-2 mb-2" ><X /></button>
 
                   </div>
                   <div>
@@ -111,7 +117,8 @@ export default function ScanRecordPage() {
 
                     <div className="mr-6">
                       <p className="mr-6 text-white mt-6">Report Type</p>
-                      <select className="placeholder-white w-full border border-gray-800 rounded-md mr-5 mt-1 pl-1 cursor-pointer py-1 px-2 text-white" >
+                      <select className="placeholder-white w-full border border-gray-800 rounded-md mr-5 mt-1 pl-1 cursor-pointer py-1 px-2 text-white" value={modalType} onChange={(e) => setModalType(e.target.value)} >
+                        <option></option>
                         <option>Security Assessment</option>
                         <option>Executive Summary</option>
                         <option>Compliance Review</option>
