@@ -15,6 +15,8 @@ export default function ScanRecordPage() {
   const [reportTitles, setReportTitles] = useState<Record<number, string>>({});
   const [modalType, setModalType] = useState("");
   const [reportType, setReportType] = useState<Record<number, string>>({});
+  const [modalIcon, setModalIcon] = useState("shield");
+  const [reportIcon, setReportIcon] = useState<Record<number, string>>({});
 
 
   async function fetchReport() {
@@ -40,10 +42,27 @@ export default function ScanRecordPage() {
     fetchReport()
   }, [])
 
+  function modalIconHelper(iconName: string) {
+    if (iconName == "Shield") {
+      return <Shield />
+    } else if (iconName == "File") {
+      return <File />
+    } else if (iconName == "ChartColumnIncreasing") {
+      return <ChartColumnIncreasing />
+    } else if (iconName == "ChartPie") {
+      return <ChartPie />
+    } else {
+      return <Shield />
+    }
+
+
+  }
+
   function saveChangesButton() {
     if (selectedReport) {
       setReportTitles({ ...reportTitles, [selectedReport.id]: modalTitle });
       setReportType({ ...reportType, [selectedReport.id]: modalType });
+      setReportIcon({ ...reportIcon, [selectedReport.id]: modalIcon });
     }
   }
 
@@ -81,14 +100,14 @@ export default function ScanRecordPage() {
 
               {reports.map((report) => (
                 <div key={report.id} className="border border-white">
-                  <p className="text-white">Logo</p>
+                  <p className="text-white">{modalIconHelper(reportIcon[report.id] || "Shield")}</p>
                   <p className="text-white">{reportTitles[report.id] || `Scan Report #${report.id}`} </p>
                   <p className="text-white">{reportType[report.id] || "Report Type"} </p>
 
                   <div className="flex justify-between">
                     <button className="p-1 text-blue-400 cursor-pointer"> <Download /> </button>
                     <button className="p-1 text-white cursor-pointer"> <Share2 /> </button>
-                    <button onClick={() => { setModal(true); setSelectedReport(report); setModalTitle(reportTitles[report.id] || `Scan Report #${report.id}`); setModalType(reportType[report.id] || `Report Type`); }} className="p-1 text-red-800 cursor-pointer"> <Pencil /> </button>
+                    <button onClick={() => { setModal(true); setSelectedReport(report); setModalTitle(reportTitles[report.id] || `Scan Report #${report.id}`); setModalType(reportType[report.id] || `Report Type`); setModalIcon(reportType[report.id] || `Logo`); }} className="p-1 text-red-800 cursor-pointer"> <Pencil /> </button>
                   </div>
                 </div>
               ))
@@ -129,10 +148,10 @@ export default function ScanRecordPage() {
                   <div>
                     <p className="ml-6 text-white mt-6">Report Icon</p>
                     <div className="flex items-center gap-3 ml-6 mt-2">
-                      <Shield className="text-white border w-[13%] h-[13%] py-1 px-3 cursor-pointer" />
-                      <File className="text-white border w-[13%] h-[13%] py-1 px-3 cursor-pointer " />
-                      <ChartColumnIncreasing className="text-white border w-[13%] h-[13%] py-1 px-3 cursor-pointer" />
-                      <ChartPie className="border text-white w-[13%] h-[13%] py-1 px-3 cursor-pointer" />
+                      <Shield onClick={() => setModalIcon("Shield")} className="text-white border w-[13%] h-[13%] py-1 px-3 cursor-pointer" />
+                      <File onClick={() => setModalIcon("File")} className="text-white border w-[13%] h-[13%] py-1 px-3 cursor-pointer " />
+                      <ChartColumnIncreasing onClick={() => setModalIcon("ChartColumnIncreasing")} className="text-white border w-[13%] h-[13%] py-1 px-3 cursor-pointer" />
+                      <ChartPie onClick={() => setModalIcon("ChartPie")} className="border text-white w-[13%] h-[13%] py-1 px-3 cursor-pointer" />
                     </div>
                   </div>
 
