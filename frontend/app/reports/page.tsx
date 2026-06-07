@@ -11,7 +11,8 @@ export default function ScanRecordPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [modal, setModal] = useState(false);
-
+  const [modalTitle, setModalTitle] = useState("");
+  const [reportTitles, setReportTitles] = useState<Record<number, string>>({});
 
   async function fetchReport() {
 
@@ -36,8 +37,13 @@ export default function ScanRecordPage() {
     fetchReport()
   }, [])
 
-  return (
+  function saveChangesButton() {
+    if (selectedReport) {
+      setReportTitles({ ...reportTitles, [selectedReport.id]: modalTitle });
+    }
+  }
 
+  return (
     <div className="flex">
       <Navbar />
       <div className="w-full flex-1">
@@ -72,23 +78,14 @@ export default function ScanRecordPage() {
               {reports.map((report) => (
                 <div key={report.id} className="border border-white">
                   <p className="text-white">Logo</p>
-                  <p className="text-white">title</p>
+                  <p className="text-white">{reportTitles[report.id] || `Scan Report #${report.id}`} </p>
                   <div className="flex justify-between">
                     <button className="p-1 text-blue-400 cursor-pointer"> <Download /> </button>
                     <button className="p-1 text-white cursor-pointer"> <Share2 /> </button>
-                    <button onClick={() => { setModal(true); setSelectedReport(report); }} className="p-1 text-red-800 cursor-pointer"> <Pencil /> </button>
+                    <button onClick={() => { setModal(true); setSelectedReport(report); setModalTitle(reportTitles[report.id] || `Scan Report #${report.id}`); }} className="p-1 text-red-800 cursor-pointer"> <Pencil /> </button>
                   </div>
                 </div>
-
-
-
-
-
               ))
-
-
-
-
               }
             </div>
 
@@ -99,7 +96,7 @@ export default function ScanRecordPage() {
                     <div>
                       <p className="text-white text-xl ml-6 mt-5">Edit Report</p>
                     </div>
-                    <button onClick={() => { setSelectedReport(null); setModal(false); }} className="text-white cursor-pointer mr-2 mb-2" ><X /></button>
+                    <button onClick={() => { setSelectedReport(null); setModal(false); setModalTitle(""); }} className="text-white cursor-pointer mr-2 mb-2" ><X /></button>
 
                   </div>
                   <div>
@@ -109,7 +106,7 @@ export default function ScanRecordPage() {
                   <div className="flex justify-between">
                     <div>
                       <p className="ml-6 text-white mt-6">Report Title</p>
-                      <input className="placeholder-white w-full border border-gray-800 rounded-md ml-5 mt-1 pl-1 cursor-pointer py-1 px-2" placeholder="Report title" ></input>
+                      <input className="placeholder-white w-full text-gray-300 border border-gray-800 rounded-md ml-5 mt-1 pl-1 cursor-pointer py-1 px-2" value={modalTitle} onChange={(e) => setModalTitle(e.target.value)} placeholder="Report title" ></input>
                     </div>
 
                     <div className="mr-6">
@@ -120,8 +117,6 @@ export default function ScanRecordPage() {
                         <option>Compliance Review</option>
                       </select>
                     </div>
-
-
                   </div>
 
                   <div>
@@ -141,7 +136,7 @@ export default function ScanRecordPage() {
 
                   <div className="flex justify-end gap-3 mr-6 mt-8">
                     <button className="cursor-pointer border text-lg rounded-md text-white px-4 py-2">Cancel</button>
-                    <button className="cursor-pointer border-[#2a77f5] rounded-md text-lg text-white px-4 py-2 bg-[#2a77f5]">Save Changes</button>
+                    <button className="cursor-pointer border-[#2a77f5] rounded-md text-lg text-white px-4 py-2 bg-[#2a77f5]" onClick={saveChangesButton}>Save Changes</button>
 
                   </div>
 
