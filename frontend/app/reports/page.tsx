@@ -15,7 +15,7 @@ export default function ScanRecordPage() {
   const [reportTitles, setReportTitles] = useState<Record<number, string>>({});
   const [modalType, setModalType] = useState("");
   const [reportType, setReportType] = useState<Record<number, string>>({});
-  const [modalIcon, setModalIcon] = useState("shield");
+  const [modalIcon, setModalIcon] = useState("Shield");
   const [reportIcon, setReportIcon] = useState<Record<number, string>>({});
 
 
@@ -107,7 +107,7 @@ export default function ScanRecordPage() {
                   <div className="flex justify-between">
                     <button className="p-1 text-blue-400 cursor-pointer"> <Download /> </button>
                     <button className="p-1 text-white cursor-pointer"> <Share2 /> </button>
-                    <button onClick={() => { setModal(true); setSelectedReport(report); setModalTitle(reportTitles[report.id] || `Scan Report #${report.id}`); setModalType(reportType[report.id] || `Report Type`); setModalIcon(reportType[report.id] || `Logo`); }} className="p-1 text-red-800 cursor-pointer"> <Pencil /> </button>
+                    <button onClick={() => { setModal(true); setSelectedReport(report); setModalTitle(reportTitles[report.id] || `Scan Report #${report.id}`); setModalType(reportType[report.id] || `Report Type`); setModalIcon(reportIcon[report.id] || `Shield`); }} className="p-1 text-red-800 cursor-pointer"> <Pencil /> </button>
                   </div>
                 </div>
               ))
@@ -121,7 +121,7 @@ export default function ScanRecordPage() {
                     <div>
                       <p className="text-white text-xl ml-6 mt-5">Edit Report</p>
                     </div>
-                    <button onClick={() => { setSelectedReport(null); setModal(false); setModalTitle(""); setModalType(""); }} className="text-white cursor-pointer mr-2 mb-2" ><X /></button>
+                    <button onClick={() => { setSelectedReport(null); setModal(false); setModalTitle(""); setModalType(""); setModalIcon("Shield") }} className="text-white cursor-pointer mr-2 mb-2" ><X /></button>
 
                   </div>
                   <div>
@@ -161,7 +161,7 @@ export default function ScanRecordPage() {
                   </div>
 
                   <div className="flex justify-end gap-3 mr-6 mt-8">
-                    <button className="cursor-pointer border text-lg rounded-md text-white px-4 py-2">Cancel</button>
+                    <button className="cursor-pointer border text-lg rounded-md text-white px-4 py-2" onClick={() => { setSelectedReport(null); setModal(false); setModalTitle(""); setModalType(""); setModalIcon("Sheild") }}>Cancel</button>
                     <button className="cursor-pointer border-[#2a77f5] rounded-md text-lg text-white px-4 py-2 bg-[#2a77f5]" onClick={saveChangesButton}>Save Changes</button>
 
                   </div>
