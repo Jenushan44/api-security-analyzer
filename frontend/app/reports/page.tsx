@@ -148,10 +148,10 @@ export default function ScanRecordPage() {
                   <div>
                     <p className="ml-6 text-white mt-6">Report Icon</p>
                     <div className="flex items-center gap-3 ml-6 mt-2">
-                      <Shield onClick={() => setModalIcon("Shield")} className="text-white border w-[13%] h-[13%] py-1 px-3 cursor-pointer" />
-                      <File onClick={() => setModalIcon("File")} className="text-white border w-[13%] h-[13%] py-1 px-3 cursor-pointer " />
-                      <ChartColumnIncreasing onClick={() => setModalIcon("ChartColumnIncreasing")} className="text-white border w-[13%] h-[13%] py-1 px-3 cursor-pointer" />
-                      <ChartPie onClick={() => setModalIcon("ChartPie")} className="border text-white w-[13%] h-[13%] py-1 px-3 cursor-pointer" />
+                      <Shield onClick={() => setModalIcon("Shield")} className="text-white border w-[13%] h-[13%] py-1 px-3 hover:border-blue-400 hover:text-blue-400 cursor-pointer" />
+                      <File onClick={() => setModalIcon("File")} className="text-white border w-[13%] h-[13%] py-1 px-3 cursor-pointer hover:border-blue-400 hover:text-blue-400" />
+                      <ChartColumnIncreasing onClick={() => setModalIcon("ChartColumnIncreasing")} className="text-white border w-[13%] h-[13%] py-1 px-3 cursor-pointer hover:border-blue-400 hover:text-blue-400" />
+                      <ChartPie onClick={() => setModalIcon("ChartPie")} className="border text-white w-[13%] h-[13%] py-1 px-3 cursor-pointer hover:border-blue-400 hover:text-blue-400" />
                     </div>
                   </div>
 
