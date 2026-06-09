@@ -2,7 +2,7 @@
 import Navbar from "../../components/Navbar"
 import { ScanHistoryItem } from "../../types/scan";
 import { useState, useEffect } from "react";
-import { Download, Share2, Pencil, X, Shield, File, ChartColumnIncreasing, ChartPie } from 'lucide-react';
+import { Download, Share2, Pencil, X, Shield, File, ChartColumnIncreasing, ChartPie, Star } from 'lucide-react';
 
 
 export default function ScanRecordPage() {
@@ -107,15 +107,33 @@ export default function ScanRecordPage() {
             <div className="flex flex-wrap gap-5">
 
               {reports.map((report) => (
-                <div key={report.id} className="border border-white">
-                  <p className="text-white">{modalIconHelper(reportIcon[report.id] || "Shield")}</p>
-                  <p className="text-white">{reportTitles[report.id] || `Scan Report #${report.id}`} </p>
-                  <p className="text-white">{reportType[report.id] || "Report Type"} </p>
+                <div key={report.id} className="border border-gray-700 bg-[#071525] hover:border-blue-400 hover:bg-[#0b1c31] cursor-pointer relative p-4 h-60 w-50 rounded-md transition">
+                  <div className="flex items-center justify-between">
 
-                  <div className="flex justify-between">
-                    <button className="p-1 text-blue-400 cursor-pointer"> <Download /> </button>
-                    <button className="p-1 text-white cursor-pointer"> <Share2 /> </button>
-                    <button onClick={() => { setModal(true); setSelectedReport(report); setModalTitle(reportTitles[report.id] || `Scan Report #${report.id}`); setModalType(reportType[report.id] || `Report Type`); setModalIcon(reportIcon[report.id] || `Shield`); }} className="p-1 text-red-800 cursor-pointer"> <Pencil /> </button>
+                    <div className="text-white bg-blue-500/10 p-2 border border-blue-400/30 rounded-md">
+                      {modalIconHelper(reportIcon[report.id] || "Shield")}
+                    </div>
+                    <div className="text-gray-400 absolute top-3 right-3">
+                      <Star size={20} />
+                    </div>
+                  </div>
+
+                  <p className="text-white mt-4 font-semibold">{reportTitles[report.id] || `Scan Report #${report.id}`} </p>
+                  <p className="text-gray-400 truncate text-sm">{report.target_url}</p>
+                  <p className="text-gray-500 text-xs mt-1"> {new Date(report.created_at).toLocaleString()}</p>
+                  <div className="flex items-center gap-2 mt-3">
+                    <span className="text-xs text-red-400 bg-red-500/10 border border-red-500/30 rounded-full px-2 py-1">
+                      {report.risk_level}
+                    </span>
+
+                    <span className="text-xs text-gray-400">
+                      Score: {report.risk_score}
+                    </span>
+                  </div>
+                  <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
+                    <button className="p-1 text-blue-400 cursor-pointer hover:bg-blue-400/10 rounded-md"> <Download size={20} /> </button>
+                    <button className="p-1 text-white cursor-pointer hover:bg-white/10 rounded-md"> <Share2 size={20} /> </button>
+                    <button onClick={(e) => { setModal(true); setSelectedReport(report); setModalTitle(reportTitles[report.id] || `Scan Report #${report.id}`); setModalType(reportType[report.id] || `Report Type`); setModalIcon(reportIcon[report.id] || `Shield`); }} className="p-1 text-red-500 cursor-pointer hover:bg-red-500/10 rounded-md"> <Pencil size={20} /> </button>
                   </div>
                 </div>
               ))
