@@ -66,6 +66,14 @@ export default function ScanRecordPage() {
     }
   }
 
+  function getIconButtonStyle(iconName: string) {
+    if (modalIcon == iconName) {
+      return "border-blue-400 text-blue-400 bg-blue-500/10"
+    }
+
+    return "border-white text-white";
+  }
+
   return (
     <div className="flex">
       <Navbar />
@@ -148,10 +156,10 @@ export default function ScanRecordPage() {
                   <div>
                     <p className="ml-6 text-white mt-6">Report Icon</p>
                     <div className="flex items-center gap-3 ml-6 mt-2">
-                      <Shield onClick={() => setModalIcon("Shield")} className="text-white border w-[13%] h-[13%] py-1 px-3 hover:border-blue-400 hover:text-blue-400 cursor-pointer" />
-                      <File onClick={() => setModalIcon("File")} className="text-white border w-[13%] h-[13%] py-1 px-3 cursor-pointer hover:border-blue-400 hover:text-blue-400" />
-                      <ChartColumnIncreasing onClick={() => setModalIcon("ChartColumnIncreasing")} className="text-white border w-[13%] h-[13%] py-1 px-3 cursor-pointer hover:border-blue-400 hover:text-blue-400" />
-                      <ChartPie onClick={() => setModalIcon("ChartPie")} className="border text-white w-[13%] h-[13%] py-1 px-3 cursor-pointer hover:border-blue-400 hover:text-blue-400" />
+                      <Shield onClick={() => setModalIcon("Shield")} className={`text-white border w-[13%] h-[13%] py-1 px-3 hover:border-blue-400 hover:text-blue-400 cursor-pointer ${getIconButtonStyle("Shield")}`} />
+                      <File onClick={() => setModalIcon("File")} className={`text-white border w-[13%] h-[13%] py-1 px-3 cursor-pointer hover:border-blue-400 hover:text-blue-400 ${getIconButtonStyle("File")}`} />
+                      <ChartColumnIncreasing onClick={() => setModalIcon("ChartColumnIncreasing")} className={`text-white border w-[13%] h-[13%] py-1 px-3 cursor-pointer hover:border-blue-400 hover:text-blue-400 ${getIconButtonStyle("ChartColumnIncreasing")} `} />
+                      <ChartPie onClick={() => setModalIcon("ChartPie")} className={`border text-white w-[13%] h-[13%] py-1 px-3 cursor-pointer hover:border-blue-400 hover:text-blue-400 ${getIconButtonStyle("ChartPie")} `} />
                     </div>
                   </div>
 
@@ -161,7 +169,7 @@ export default function ScanRecordPage() {
                   </div>
 
                   <div className="flex justify-end gap-3 mr-6 mt-8">
-                    <button className="cursor-pointer border text-lg rounded-md text-white px-4 py-2" onClick={() => { setSelectedReport(null); setModal(false); setModalTitle(""); setModalType(""); setModalIcon("Sheild") }}>Cancel</button>
+                    <button className="cursor-pointer border text-lg rounded-md text-white px-4 py-2" onClick={() => { setSelectedReport(null); setModal(false); setModalTitle(""); setModalType(""); setModalIcon("Shield") }}>Cancel</button>
                     <button className="cursor-pointer border-[#2a77f5] rounded-md text-lg text-white px-4 py-2 bg-[#2a77f5]" onClick={saveChangesButton}>Save Changes</button>
 
                   </div>
@@ -175,6 +183,6 @@ export default function ScanRecordPage() {
 
 
       </div>
-    </div>
+    </div >
   )
 }
