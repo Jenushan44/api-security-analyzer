@@ -90,15 +90,26 @@ export default function ScanRecordPage() {
 
         <div>
           <p className="text-white">Pinned Reports</p>
-          <div className="flex gap-4">
+          <div className="flex gap-4 px-5">
             {reports.slice(0, 4).map((report) => (
-              <div className="border border-white" key={report.id}>
-                <p className="text-white">{report.id} </p>
-                <p className="text-white">{report.target_url} </p>
-                <p className="text-white">{report.risk_level} </p>
-                <p className="text-white">{report.risk_score} </p>
-                <p className="text-white">{report.total_findings} </p>
-                <p className="text-white">{report.created_at} </p>
+              <div className="relative border border-gray-700 bg-[#071525] hover:border-blue-400 hover:bg-[#0b1c31] cursor-pointer rounded-md p-4 w-64 h-24 transition" onClick={() => setSelectedReport(report)} key={report.id}>
+                <div className="flex items-center gap-3">
+                  <div className="text-white bg-blue-500/10 p-2 border border-blue-400/30 rounded-md">
+                    {modalIconHelper(reportIcon[report.id] || "Shield")}
+                  </div>
+
+                  <div className="min-w-0">
+                    <p className="text-white font-semibold text-sm truncate">{reportTitles[report.id] || `Scan Report #${report.id}`}</p>
+                    <p className="text-gray-400 text-xs truncate">{report.target_url}</p>
+
+                    <div className="flex items-center gap-2 mt-2">
+                      <span className="text-red-400 text-[10px] bg-red-500/10 px-2 border border-red-500/30 rounded-full py-0.5">{report.risk_level}</span>
+                      <span className="text-gray-400 text-[10px]">Score: {report.risk_score}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <Star className="absolute top-3 right-3 text-yellow-400" fill="yellow" size={16} />
               </div>
             ))}
           </div>
