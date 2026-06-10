@@ -89,10 +89,10 @@ export default function ScanRecordPage() {
 
 
         <div>
-          <p className="text-white">Pinned Reports</p>
+          <p className="text-white mt-4 mb-2 ml-5">Pinned Reports</p>
           <div className="flex gap-4 px-5">
             {reports.slice(0, 4).map((report) => (
-              <div className="relative border border-gray-700 bg-[#071525] hover:border-blue-400 hover:bg-[#0b1c31] cursor-pointer rounded-md p-4 w-64 h-24 transition" onClick={() => setSelectedReport(report)} key={report.id}>
+              <div className={`relative border border-gray-700 bg-[#071525] hover:border-blue-400 hover:bg-[#0b1c31] cursor-pointer rounded-md p-4 w-64 h-24 transition ${selectedReport?.id === report.id ? "border-blue-400 bg-[#0b1c31]" : "border-gray-700"}`} onClick={() => setSelectedReport(report)} key={report.id}>
                 <div className="flex items-center gap-3">
                   <div className="text-white bg-blue-500/10 p-2 border border-blue-400/30 rounded-md">
                     {modalIconHelper(reportIcon[report.id] || "Shield")}
@@ -118,7 +118,7 @@ export default function ScanRecordPage() {
             <div className="flex flex-wrap gap-5">
 
               {reports.map((report) => (
-                <div key={report.id} className="border border-gray-700 bg-[#071525] hover:border-blue-400 hover:bg-[#0b1c31] cursor-pointer relative p-4 h-60 w-50 rounded-md transition">
+                <div key={report.id} onClick={() => setSelectedReport(report)} className={`border bg-[#071525] hover:border-blue-400 hover:bg-[#0b1c31] cursor-pointer relative p-4 h-60 w-50 rounded-md transition ${selectedReport?.id === report.id ? "border-blue-400 bg-[#0b1c31]" : "border-gray-700"}`}>
                   <div className="flex items-center justify-between">
 
                     <div className="text-white bg-blue-500/10 p-2 border border-blue-400/30 rounded-md">
