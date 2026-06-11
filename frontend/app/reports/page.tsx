@@ -17,7 +17,7 @@ export default function ScanRecordPage() {
   const [reportType, setReportType] = useState<Record<number, string>>({});
   const [modalIcon, setModalIcon] = useState("Shield");
   const [reportIcon, setReportIcon] = useState<Record<number, string>>({});
-
+  const [pinnedReportIds, setPinnedReportIds] = useState<number[]>([]);
 
   async function fetchReport() {
 
@@ -74,6 +74,17 @@ export default function ScanRecordPage() {
     return "border-white text-white";
   }
 
+  function togglePinnedReport(reportId: number) {
+    if (pinnedReportIds.includes(reportId)) {
+      setPinnedReportIds(pinnedReportIds.filter((id) => id !== reportId));
+    } else {
+      setPinnedReportIds([...pinnedReportIds, reportId])
+    }
+  }
+
+
+  const pinnedReports = reports.filter((report) => pinnedReportIds.includes(report.id));
+
   return (
     <div className="flex">
       <Navbar />
@@ -91,7 +102,7 @@ export default function ScanRecordPage() {
         <div>
           <p className="text-white mt-4 mb-2 ml-5">Pinned Reports</p>
           <div className="flex gap-4 px-5">
-            {reports.slice(0, 4).map((report) => (
+            {pinnedReports.map((report) => (
               <div className={`relative border border-gray-700 bg-[#071525] hover:border-blue-400 hover:bg-[#0b1c31] cursor-pointer rounded-md p-4 w-64 h-24 transition ${selectedReport?.id === report.id ? "border-blue-400 bg-[#0b1c31]" : "border-gray-700"}`} onClick={() => setSelectedReport(report)} key={report.id}>
                 <div className="flex items-center gap-3">
                   <div className="text-white bg-blue-500/10 p-2 border border-blue-400/30 rounded-md">
@@ -124,9 +135,9 @@ export default function ScanRecordPage() {
                     <div className="text-white bg-blue-500/10 p-2 border border-blue-400/30 rounded-md">
                       {modalIconHelper(reportIcon[report.id] || "Shield")}
                     </div>
-                    <div className="text-gray-400 absolute top-3 right-3">
-                      <Star size={20} />
-                    </div>
+
+                    <button className="text-gray-400 absolute cursor-pointer hover:text-yellow-400 top-3 right-3" onClick={(e) => { togglePinnedReport(report.id); }} > <Star className={pinnedReportIds.includes(report.id) ? "text-yellow-400" : "text-gray-400"} fill={pinnedReportIds.includes(report.id) ? "yellow" : "none"} size={20} /> </button>
+
                   </div>
 
                   <p className="text-white mt-4 font-semibold">{reportTitles[report.id] || `Scan Report #${report.id}`} </p>
