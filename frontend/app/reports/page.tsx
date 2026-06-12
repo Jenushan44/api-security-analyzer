@@ -2,7 +2,7 @@
 import Navbar from "../../components/Navbar"
 import { ScanHistoryItem } from "../../types/scan";
 import { useState, useEffect } from "react";
-import { Download, Share2, Pencil, X, Shield, File, ChartColumnIncreasing, ChartPie, Star } from 'lucide-react';
+import { Download, Share2, Pencil, X, Shield, File, ChartColumnIncreasing, ChartPie, Star, Search } from 'lucide-react';
 
 
 export default function ScanRecordPage() {
@@ -18,6 +18,7 @@ export default function ScanRecordPage() {
   const [modalIcon, setModalIcon] = useState("Shield");
   const [reportIcon, setReportIcon] = useState<Record<number, string>>({});
   const [pinnedReportIds, setPinnedReportIds] = useState<number[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   async function fetchReport() {
 
@@ -85,14 +86,26 @@ export default function ScanRecordPage() {
 
   const pinnedReports = reports.filter((report) => pinnedReportIds.includes(report.id));
 
+  const filteredReports = reports.filter((report) => {
+    const title = reportTitles[report.id] || `Scan Report #${report.id}`;
+    return (
+      title.toLowerCase().includes(searchTerm.toLowerCase()) || report.target_url.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
+
   return (
     <div className="flex">
       <Navbar />
       <div className="w-full flex-1">
         <p className="text-white text-[35px] font-semibold ml-6 mt-2">Scan Reports</p>
         <p className="text-gray-400 ml-6 mt-2">Browse, preview and manage generated reports.</p>
-        <div className="w-full bg-[#102034] text-white flex justify-between">
-          <p className="ml-2">Search bar</p>
+        <div className="w-full bg-[#102034] text-white flex items-center gap-5 px-4 py-3">
+
+          <div className="relative w-80">
+            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input className="ml-2 border border-gray-400 py-1 px-5 bg-[#071525] text-white rounded-md" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder=" Search reports by name, API target..."></input>
+          </div>
+
           <p>Date</p>
           <p>All Report Types</p>
           <p className="mr-2">Filters</p>
@@ -129,7 +142,7 @@ export default function ScanRecordPage() {
               <p className="text-gray-200">All Reports ({reports.length})</p>
               <div className="flex flex-wrap gap-5">
 
-                {reports.map((report) => (
+                {filteredReports.map((report) => (
                   <div key={report.id} onClick={() => setSelectedReport(report)} className={`border bg-[#071525] hover:border-blue-400 hover:bg-[#0b1c31] cursor-pointer relative p-4 h-60 w-50 rounded-md transition ${selectedReport?.id === report.id ? "border-blue-400 bg-[#0b1c31]" : "border-gray-700"}`}>
                     <div className="flex items-center justify-between">
 
