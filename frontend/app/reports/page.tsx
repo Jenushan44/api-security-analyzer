@@ -103,7 +103,7 @@ export default function ScanRecordPage() {
 
           <div className="relative w-80">
             <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-            <input className="ml-2 border border-gray-400 py-1 px-5 bg-[#071525] text-white rounded-md" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder=" Search reports by name, API target..."></input>
+            <input className="w-full border border-gray-700 bg-[#071525] text-white rounded-md py-2 pl-10 pr-3 text-sm placeholder-gray-500" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search reports by name, API target..."></input>
           </div>
 
           <p>Date</p>
