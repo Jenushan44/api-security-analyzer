@@ -141,42 +141,42 @@ export default function ScanRecordPage() {
             }
             <hr className="text-gray-600 mt-4"></hr>
 
-            <div className="flex mx-5 mt-5 gap-5">
+            <div className="flex mx-5 mt-5 gap-5 pb-5 min-h-[200px]">
               <div className="flex-1">
                 <p className="text-gray-200 mb-5">All Reports ({reports.length})</p>
                 <div className="flex flex-wrap gap-5">
+                  {filteredReports.length == 0 ? <p className="text-gray-400">No reports found</p> :
+                    filteredReports.map((report) => (
+                      <div key={report.id} onClick={() => setSelectedReport(report)} className={`border bg-[#071525] hover:border-blue-400 hover:bg-[#0b1c31] cursor-pointer relative p-4 h-60 w-50 rounded-md transition ${selectedReport?.id === report.id ? "border-blue-400 bg-[#0b1c31]" : "border-gray-700"}`}>
+                        <div className="flex items-center justify-between">
 
-                  {filteredReports.map((report) => (
-                    <div key={report.id} onClick={() => setSelectedReport(report)} className={`border bg-[#071525] hover:border-blue-400 hover:bg-[#0b1c31] cursor-pointer relative p-4 h-60 w-50 rounded-md transition ${selectedReport?.id === report.id ? "border-blue-400 bg-[#0b1c31]" : "border-gray-700"}`}>
-                      <div className="flex items-center justify-between">
+                          <div className="text-white bg-blue-500/10 p-2 border border-blue-400/30 rounded-md">
+                            {modalIconHelper(reportIcon[report.id] || "Shield")}
+                          </div>
 
-                        <div className="text-white bg-blue-500/10 p-2 border border-blue-400/30 rounded-md">
-                          {modalIconHelper(reportIcon[report.id] || "Shield")}
+                          <button className="text-gray-400 absolute cursor-pointer hover:text-yellow-400 top-3 right-3" onClick={(e) => { e.stopPropagation(); togglePinnedReport(report.id); }} > <Star className={pinnedReportIds.includes(report.id) ? "text-yellow-400" : "text-gray-400"} fill={pinnedReportIds.includes(report.id) ? "yellow" : "none"} size={20} /> </button>
+
                         </div>
 
-                        <button className="text-gray-400 absolute cursor-pointer hover:text-yellow-400 top-3 right-3" onClick={(e) => { e.stopPropagation(); togglePinnedReport(report.id); }} > <Star className={pinnedReportIds.includes(report.id) ? "text-yellow-400" : "text-gray-400"} fill={pinnedReportIds.includes(report.id) ? "yellow" : "none"} size={20} /> </button>
+                        <p className="text-white mt-4 font-semibold">{reportTitles[report.id] || `Scan Report #${report.id}`} </p>
+                        <p className="text-gray-400 truncate text-sm">{report.target_url}</p>
+                        <p className="text-gray-500 text-xs mt-1"> {new Date(report.created_at).toLocaleString()}</p>
+                        <div className="flex items-center gap-2 mt-3">
+                          <span className="text-xs text-red-400 bg-red-500/10 border border-red-500/30 rounded-full px-2 py-1">
+                            {report.risk_level}
+                          </span>
 
+                          <span className="text-xs text-gray-400">
+                            Score: {report.risk_score}
+                          </span>
+                        </div>
+                        <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
+                          <button className="p-1 text-blue-400 cursor-pointer hover:bg-blue-400/10 rounded-md"> <Download size={20} /> </button>
+                          <button className="p-1 text-white cursor-pointer hover:bg-white/10 rounded-md"> <Share2 size={20} /> </button>
+                          <button onClick={(e) => { setModal(true); setSelectedReport(report); setModalTitle(reportTitles[report.id] || `Scan Report #${report.id}`); setModalType(reportType[report.id] || `Report Type`); setModalIcon(reportIcon[report.id] || `Shield`); }} className="p-1 text-red-500 cursor-pointer hover:bg-red-500/10 rounded-md"> <Pencil size={20} /> </button>
+                        </div>
                       </div>
-
-                      <p className="text-white mt-4 font-semibold">{reportTitles[report.id] || `Scan Report #${report.id}`} </p>
-                      <p className="text-gray-400 truncate text-sm">{report.target_url}</p>
-                      <p className="text-gray-500 text-xs mt-1"> {new Date(report.created_at).toLocaleString()}</p>
-                      <div className="flex items-center gap-2 mt-3">
-                        <span className="text-xs text-red-400 bg-red-500/10 border border-red-500/30 rounded-full px-2 py-1">
-                          {report.risk_level}
-                        </span>
-
-                        <span className="text-xs text-gray-400">
-                          Score: {report.risk_score}
-                        </span>
-                      </div>
-                      <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
-                        <button className="p-1 text-blue-400 cursor-pointer hover:bg-blue-400/10 rounded-md"> <Download size={20} /> </button>
-                        <button className="p-1 text-white cursor-pointer hover:bg-white/10 rounded-md"> <Share2 size={20} /> </button>
-                        <button onClick={(e) => { setModal(true); setSelectedReport(report); setModalTitle(reportTitles[report.id] || `Scan Report #${report.id}`); setModalType(reportType[report.id] || `Report Type`); setModalIcon(reportIcon[report.id] || `Shield`); }} className="p-1 text-red-500 cursor-pointer hover:bg-red-500/10 rounded-md"> <Pencil size={20} /> </button>
-                      </div>
-                    </div>
-                  ))
+                    ))
                   }
                 </div>
 
@@ -237,28 +237,27 @@ export default function ScanRecordPage() {
                 )}
 
               </div>
-              <div className="border border-gray-700 bg-[#071525] rounded-md p-4 w-80 h-fit sticky top-5">
-                <p className="text-white text-lg font-semibold">Report Preview</p>
-
-                {selectedReport && (
-                  <div>
-                    <p className="text-gray-400 mt-4 text-sm">Title</p>
-                    <p className="text-white">{reportTitles[selectedReport.id] || `Scan Report #${selectedReport.id}`}</p>
-                    <p className="text-gray-400 text-sm mt-4">Target URL</p>
-                    <p className="text-blue-400 text-sm break-all">{selectedReport.target_url}</p>
-                    <p className="text-gray-400 mt-4 text-sm">Risk Score</p>
-                    <p className="text-white">{selectedReport.risk_score}/100</p>
-                    <p className="text-gray-400 mt-4 text-sm">Findings</p>
-                    <p className="text-white">{selectedReport.total_findings}</p>
-                    <p className="text-gray-400 mt-4 text-sm">Scanned At</p>
-                    <p className="text-white text-sm">{new Date(selectedReport.created_at).toLocaleString()}</p>
-                  </div>
-                )}
-              </div>
+              {filteredReports.length != 0 &&
+                <div className="border border-gray-700 bg-[#071525] rounded-md p-4 w-80 h-fit sticky top-5">
+                  <p className="text-white text-lg font-semibold">Report Preview</p>
+                  {selectedReport && (
+                    <div>
+                      <p className="text-gray-400 mt-4 text-sm">Title</p>
+                      <p className="text-white">{reportTitles[selectedReport.id] || `Scan Report #${selectedReport.id}`}</p>
+                      <p className="text-gray-400 text-sm mt-4">Target URL</p>
+                      <p className="text-blue-400 text-sm break-all">{selectedReport.target_url}</p>
+                      <p className="text-gray-400 mt-4 text-sm">Risk Score</p>
+                      <p className="text-white">{selectedReport.risk_score}/100</p>
+                      <p className="text-gray-400 mt-4 text-sm">Findings</p>
+                      <p className="text-white">{selectedReport.total_findings}</p>
+                      <p className="text-gray-400 mt-4 text-sm">Scanned At</p>
+                      <p className="text-white text-sm">{new Date(selectedReport.created_at).toLocaleString()}</p>
+                    </div>
+                  )}
+                </div>
+              }
             </div>
-
           </div>
-
         </div>
       </div>
     </div >
