@@ -103,7 +103,7 @@ export default function ScanRecordPage() {
         <p className="text-white text-[35px] font-semibold ml-6 mt-2">Scan Reports</p>
         <p className="text-gray-400 ml-6 mb-5">Browse, preview and manage generated reports.</p>
         <div className="flex gap-5">
-          <div className="border border-gray-700 ml-6 rounded-xl overflow-auto w-[650px] shrink-0">
+          <div className="border border-gray-700 ml-6 rounded-xl overflow-auto w-[540px] shrink-0">
             <div className="w-full bg-[#102034] text-white gap-5 px-4 py-3">
               <div className="relative w-80">
                 <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -155,7 +155,7 @@ export default function ScanRecordPage() {
               <div className="flex mx-5 mt-5 gap-5 pb-5 min-h-[200px]">
                 <div className="flex-1">
                   <p className="text-gray-200 mb-5">All Reports ({reports.length})</p>
-                  <div>
+                  <div className="modal-scrollbar max-h-[calc(100vh-410px)] overflow-y-auto pr-2">
                     {filteredReports.length == 0 ? <p className="text-gray-400">No reports found</p> :
                       filteredReports.map((report) => (
                         <div key={report.id} onClick={() => setSelectedReport(report)} className={`border bg-[#071525] hover:border-blue-400 hover:bg-[#0b1c31] cursor-pointer relative p-4 rounded-md transition ${selectedReport?.id === report.id ? "border-blue-400 bg-[#0b1c31]" : "border-gray-700"}`}>
