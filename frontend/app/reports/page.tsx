@@ -19,6 +19,7 @@ export default function ScanRecordPage() {
   const [reportIcon, setReportIcon] = useState<Record<number, string>>({});
   const [pinnedReportIds, setPinnedReportIds] = useState<number[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedReportType, setSelectedReportType] = useState("All Report Types");
 
   async function fetchReport() {
 
@@ -88,9 +89,11 @@ export default function ScanRecordPage() {
 
   const filteredReports = reports.filter((report) => {
     const title = reportTitles[report.id] || `Scan Report #${report.id}`;
-    return (
-      title.toLowerCase().includes(searchTerm.toLowerCase()) || report.target_url.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const currentReportType = reportType[report.id] || "Report Type";
+    const matchesSearch = title.toLowerCase().includes(searchTerm.toLowerCase()) || report.target_url.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesReportType = selectedReportType === "All Report Types" || currentReportType === selectedReportType;
+
+    return matchesSearch && matchesReportType;
   });
 
   return (
@@ -106,7 +109,12 @@ export default function ScanRecordPage() {
               <input className="w-full border border-gray-700 bg-[#071525] text-white rounded-md py-2 pl-10 pr-3 text-sm placeholder-gray-500" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search reports by name, API target..."></input>
             </div>
             <p>Date</p>
-            <p>All Report Types</p>
+            <select value={selectedReportType} onChange={(e) => setSelectedReportType(e.target.value)} className="bg-[#071525] border border-gray-700 text-gray-200 rounded-md py-2 pl-2 px-1 pr-2 text-sm cursor-pointer">
+              <option>All Report Types</option>
+              <option>Security Assessment</option>
+              <option>Executive Summary</option>
+              <option>Compliance Review</option>
+            </select>
             <p className="mr-2">Filters</p>
           </div>
 
@@ -202,7 +210,7 @@ export default function ScanRecordPage() {
 
                         <div className="mr-6">
                           <p className="mr-6 text-white mt-6">Report Type</p>
-                          <select className="placeholder-white w-full border border-gray-800 rounded-md mr-5 mt-1 pl-1 cursor-pointer py-1 px-2 text-white" value={modalType} onChange={(e) => setModalType(e.target.value)} >
+                          <select className="bg-[#102034] placeholder-white w-full border border-gray-800 rounded-md mr-5 mt-1 pl-1 cursor-pointer py-1 px-2 text-white" value={modalType} onChange={(e) => setModalType(e.target.value)} >
                             <option></option>
                             <option>Security Assessment</option>
                             <option>Executive Summary</option>
