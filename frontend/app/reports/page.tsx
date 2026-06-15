@@ -125,27 +125,31 @@ export default function ScanRecordPage() {
             <div>
               <p className="text-white mt-4 mb-2 ml-5 flex items-center gap-1.5"><Pin className="rotate-50 text-gray-400 mt-0.5" size={20} /> Pinned Reports</p>
               {pinnedReports.length == 0 ? <p className="text-gray-400 ml-6">No pinned reports yet. Click a star on any report to pin it. </p> :
-
-                <div className="flex gap-4 px-5 min-h-[100px]">
+                <div className="px-5 space-y-2">
                   {pinnedReports.map((report) => (
-                    <div className={`relative border border-gray-700 bg-[#071525] hover:border-blue-400 hover:bg-[#0b1c31] cursor-pointer rounded-md p-4 w-64 h-24 transition ${selectedReport?.id === report.id ? "border-blue-400 bg-[#0b1c31]" : "border-gray-700"}`} onClick={() => setSelectedReport(report)} key={report.id}>
-                      <div className="flex items-center gap-3">
+                    <div key={report.id} onClick={() => setSelectedReport(report)} className={`border bg-[#071525] hover:border-blue-400 hover:bg-[#0b1c31] cursor-pointer p-4 rounded-md transition ${selectedReport?.id === report.id ? "border-blue-400 bg-[#0b1c31]" : "border-gray-700"}`}>
+                      <div className="flex items-center">
                         <div className="text-white bg-blue-500/10 p-2 border border-blue-400/30 rounded-md">
                           {modalIconHelper(reportIcon[report.id] || "Shield")}
                         </div>
 
-                        <div className="min-w-0">
-                          <p className="text-white font-semibold text-sm truncate">{reportTitles[report.id] || `Scan Report #${report.id}`}</p>
-                          <p className="text-gray-400 text-xs truncate">{report.target_url}</p>
-
-                          <div className="flex items-center gap-2 mt-2">
-                            <span className="text-red-400 text-[10px] bg-red-500/10 px-2 border border-red-500/30 rounded-full py-0.5">{report.risk_level}</span>
-                            <span className="text-gray-400 text-[10px]">Score: {report.risk_score}</span>
-                          </div>
+                        <div className="min-w-0 ml-4">
+                          <p className="text-white font-semibold text-sm">{reportTitles[report.id] || `Scan Report #${report.id}`}</p>
+                          <p className="text-gray-400 truncate text-sm">{report.target_url}</p>
                         </div>
-                      </div>
 
-                      <Star className="absolute top-3 right-3 text-yellow-400" fill="yellow" size={16} />
+                        <span className="text-xs text-red-400 bg-red-500/10 border border-red-500/30 rounded-full px-2 py-1 ml-4">
+                          {report.risk_level}
+                        </span>
+
+                        <p className="text-gray-500 text-xs mt-1 ml-4">
+                          {new Date(report.created_at).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", })}
+                        </p>
+
+                        <button className="ml-4 text-yellow-400 cursor-pointer hover:text-yellow-300 shrink-0" onClick={(e) => { e.stopPropagation(); togglePinnedReport(report.id); }}>
+                          <Star fill="yellow" size={20} />
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
