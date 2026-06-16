@@ -159,10 +159,10 @@ export default function ScanRecordPage() {
               <div className="flex mx-5 mt-5 gap-5 pb-5 min-h-[200px]">
                 <div className="flex-1">
                   <p className="text-gray-200 mb-5">All Reports ({reports.length})</p>
-                  <div className="modal-scrollbar max-h-[calc(100vh-410px)] overflow-y-auto pr-2">
+                  <div className="modal-scrollbar max-h-[calc(100vh-100px)] overflow-y-auto pr-2">
                     {filteredReports.length == 0 ? <p className="text-gray-400">No reports found</p> :
                       filteredReports.map((report) => (
-                        <div key={report.id} onClick={() => setSelectedReport(report)} className={`border bg-[#071525] hover:border-blue-400 hover:bg-[#0b1c31] cursor-pointer relative p-4 rounded-md transition ${selectedReport?.id === report.id ? "border-blue-400 bg-[#0b1c31]" : "border-gray-700"}`}>
+                        <div key={report.id} onClick={() => setSelectedReport(report)} className={`mb-2 border bg-[#071525] hover:border-blue-400 hover:bg-[#0b1c31] cursor-pointer relative p-4 rounded-md transition ${selectedReport?.id === report.id ? "border-blue-400 bg-[#0b1c31]" : "border-gray-700"}`}>
                           <div className="flex items-center">
                             <div className="text-white bg-blue-500/10 p-2 border border-blue-400/30 rounded-md">
                               {modalIconHelper(reportIcon[report.id] || "Shield")}
@@ -246,25 +246,185 @@ export default function ScanRecordPage() {
               </div>
             </div>
           </div>
-          {filteredReports.length != 0 &&
-            <div className="border border-gray-700 bg-[#071525] rounded-md p-4 w-80 h-fit sticky top-5">
-              <p className="text-white text-lg font-semibold">Report Preview</p>
-              {selectedReport && (
+
+          {filteredReports.length !== 0 && (
+            <div className="border border-gray-700 bg-[#071525] rounded-md p-5 flex-1 mr-6 h-fit sticky top-5">
+              {selectedReport ? (
                 <div>
-                  <p className="text-gray-400 mt-4 text-sm">Title</p>
-                  <p className="text-white">{reportTitles[selectedReport.id] || `Scan Report #${selectedReport.id}`}</p>
-                  <p className="text-gray-400 text-sm mt-4">Target URL</p>
-                  <p className="text-blue-400 text-sm break-all">{selectedReport.target_url}</p>
-                  <p className="text-gray-400 mt-4 text-sm">Risk Score</p>
-                  <p className="text-white">{selectedReport.risk_score}/100</p>
-                  <p className="text-gray-400 mt-4 text-sm">Findings</p>
-                  <p className="text-white">{selectedReport.total_findings}</p>
-                  <p className="text-gray-400 mt-4 text-sm">Scanned At</p>
-                  <p className="text-white text-sm">{new Date(selectedReport.created_at).toLocaleString()}</p>
+                  <div className="flex items-start justify-between mb-5">
+                    <div>
+                      <div className="flex items-center gap-3">
+                        <p className="text-3xl font-semibold text-white">{reportTitles[selectedReport.id] || `Scan Report #${selectedReport.id}`}</p>
+                        <span className="text-sm text-red-400 bg-red-500/10 border border-red-500/30 rounded-md px-3 py-1">{selectedReport.risk_level}</span>
+                      </div>
+
+                      <p className="text-gray-400 text-sm mt-2">{new Date(selectedReport.created_at).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", })}{" "} • {selectedReport.total_findings} findings • Scan ID: {selectedReport.id} </p>
+                    </div>
+
+                    <div className="flex gap-2">
+                      <button className="border border-gray-700 text-white text-sm px-4 py-2 rounded-md hover:border-blue-400 hover:text-blue-400">Download PDF</button>
+                      <button className="border border-gray-700 text-white text-sm px-4 py-2 rounded-md hover:border-blue-400 hover:text-blue-400">Export JSON</button>
+                      <button className="border border-gray-700 text-white text-sm px-4 py-2 rounded-md hover:border-blue-400 hover:text-blue-400">Share</button>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-6 border-b border-gray-700 mb-5">
+                    <p className="text-blue-400 border-b-2 border-blue-400 pb-3 text-sm">Overview</p>
+                    <p className="text-gray-400 pb-3 text-sm">Findings ({selectedReport.total_findings})</p>
+                    <p className="text-gray-400 pb-3 text-sm">Headers</p>
+                    <p className="text-gray-400 pb-3 text-sm">Timeline</p>
+                    <p className="text-gray-400 pb-3 text-sm">Raw Response</p>
+                  </div>
+
+                  <div className="grid grid-cols-4 gap-4 mb-5">
+                    <div className="border border-gray-700 rounded-md p-4">
+                      <p className="text-gray-400 text-sm mb-3">Risk Score</p>
+                      <div className="w-20 h-20 rounded-full border-4 border-red-500 flex items-center justify-center">
+                        <div className="text-center">
+                          <p className="text-white text-2xl font-semibold">{selectedReport.risk_score}</p>
+                          <p className="text-gray-400 text-xs">/100</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="border border-gray-700 rounded-md p-4">
+                      <p className="text-gray-400 text-sm">Risk Level</p>
+                      <p className="text-red-400 bg-red-500/10 border border-red-500/30 rounded-md inline-block px-3 py-2 text-xl font-semibold mt-5">{selectedReport.risk_level}</p>
+                      <p className="text-red-400 text-sm mt-2">Highest</p>
+
+
+                    </div>
+
+                    <div className="border border-gray-700 rounded-md p-4">
+
+                      <p className="text-gray-400 text-sm">Total Findings</p>
+                      <p className="text-white text-4xl font-semibold mt-5">{selectedReport.total_findings}</p>
+                      <p className="text-gray-400 text-sm mt-2">Issues Found</p>
+                    </div>
+
+                    <div className="border border-gray-700 rounded-md p-4">
+                      <p className="text-gray-400 text-sm">Affected Endpoint</p>
+
+
+                      <p className="text-blue-400 text-sm break-all mt-5">{selectedReport.target_url}</p>
+                      <p className="text-gray-400 text-sm mt-2">GET /auth/login</p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-4 mb-5">
+                    <div className="col-span-2 space-y-4">
+                      <div className="border border-gray-700 rounded-md p-4">
+                        <p className="text-white font-semibold mb-2">Executive Summary</p>
+                        <p className="text-gray-400 text-sm leading-6">This API has critical security issues that</p>
+                      </div>
+
+                      <div className="border border-gray-700 rounded-md">
+
+                        <div className="flex items-center justify-between p-4 border-b border-gray-700">
+                          <p className="text-white font-semibold">Top Findings</p>
+                          <p className="text-blue-400 text-sm">View all findings →</p>
+                        </div>
+
+                        <div className="divide-y divide-gray-700">
+                          {[["Authentication Token Exposure", "API returns JWT tokens in response bodies", "Critical", "/auth/login"], ["Missing Content Security Policy", "Content-Security-Policy header is not set", "Critical", "/"], ["Insecure Direct Object Reference", "User can access other users’ resources", "High", "/users/{id}"], ["Missing HSTS Header", "Strict-Transport-Security header is not set", "High", "/"], ["Excessive Permissions", "API key has more permissions than required", "Medium", "/admin/*"],].map(([title, desc, severity, endpoint]) => (
+                            <div key={title} className="flex items-center justify-between p-4">
+                              <div>
+                                <div className="flex items-center gap-2">
+                                  <p className="text-white text-sm font-semibold">{title}</p>
+                                  <span className={`text-xs border rounded-full px-2 py-0.5 ${severity === "Critical" ? "text-red-400 border-red-500/30 bg-red-500/10" : severity === "High" ? "text-orange-400 border-orange-500/30 bg-orange-500/10" : "text-yellow-400 border-yellow-500/30 bg-yellow-500/10"}`}>{severity}</span>
+                                </div>
+                                <p className="text-gray-400 text-xs mt-1">{desc}</p>
+
+                              </div>
+
+                              <p className="text-gray-400 text-xs">{endpoint}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <div className="space-y-4">
+                      <div className="border border-gray-700 rounded-md p-4">
+                        <p className="text-white font-semibold mb-4">Risk Breakdown</p>
+
+                        <div className="flex items-center gap-4">
+                          <div className="w-24 h-24 rounded-full border-[14px] border-red-500 flex items-center justify-center">
+                            <div className="w-10 h-10 rounded-full bg-[#071525]"></div>
+                          </div>
+
+                          <div className="space-y-2 text-sm">
+                            <p className="text-red-400">● 3 Critical</p>
+                            <p className="text-orange-400">● 4 High</p>
+                            <p className="text-yellow-400">● 1 Medium</p>
+                            <p className="text-green-400">● 1 Low</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="border border-gray-700 rounded-md p-4">
+                        <p className="text-white font-semibold mb-4">Scan Information</p>
+
+                        <div className="space-y-3 text-sm">
+                          <div className="flex justify-between gap-4">
+                            <p className="text-gray-400">Target URL</p>
+                            <p className="text-blue-400 text-right break-all">{selectedReport.target_url}</p>
+                          </div>
+
+                          <div className="flex justify-between">
+                            <p className="text-gray-400">Target Type</p>
+                            <p className="text-white">API Endpoint</p>
+                          </div>
+
+                          <div className="flex justify-between">
+                            <p className="text-gray-400">Scan Type</p>
+                            <p className="text-white">Full Scan</p>
+                          </div>
+
+                          <div className="flex justify-between">
+                            <p className="text-gray-400">Environment</p>
+                            <p className="text-white">Development</p>
+                          </div>
+
+                          <div className="flex justify-between">
+                            <p className="text-gray-400">Status Code</p>
+                            <p className="text-green-400">{selectedReport.status_code}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="border border-gray-700 rounded-md p-4">
+                    <div className="flex items-center justify-between mb-4">
+                      <p className="text-white font-semibold">Security Recommendations</p>
+                      <p className="text-blue-400 text-sm">View all recommendations →</p>
+                    </div>
+
+                    <div className="grid grid-cols-4 gap-4">
+                      {[["Fix Authentication Issues", "Ensure tokens are stored securely and not exposed in responses.", "High", "red"], ["Implement Security Headers", "Add missing security headers including CSP and HSTS.", "High", "orange"], ["Review Access Controls", "Implement proper authorization checks and object-level permissions.", "Medium", "yellow"], ["Enable Rate Limiting", "Add rate limiting to prevent brute force and abuse.", "Medium", "green"],].map(([title, desc, priority, color]) => (
+                        <div key={title} className="bg-[#0b1c31] border border-gray-700 rounded-md p-4">
+                          <p className="text-white font-semibold text-sm">{title}</p>
+
+                          <p className="text-gray-400 text-sm mt-3 leading-5">{desc}</p>
+                          <p className={`text-xs mt-4 inline-block px-2 py-1 rounded ${color === "red" ? "text-red-400 bg-red-500/10" : color === "orange" ? "text-orange-400 bg-orange-500/10" : color === "yellow" ? "text-yellow-400 bg-yellow-500/10" : "text-green-400 bg-green-500/10"}`}>Priority: {priority} </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="h-[500px] flex items-center justify-center text-center">
+                  <div>
+                    <Shield className="text-gray-500 mx-auto mb-4" size={48} />
+                    <p className="text-white text-xl font-semibold">Select a report</p>
+                    <p className="text-gray-400 mt-2">Choose a report from the list to view its findings and recommendations.</p>
+                  </div>
                 </div>
               )}
             </div>
-          }
+          )}
         </div>
       </div>
 
