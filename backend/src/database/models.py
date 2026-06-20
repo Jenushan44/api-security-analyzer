@@ -11,6 +11,7 @@ class Base(DeclarativeBase):
 class Scan(Base): 
   __tablename__ = "scans"
   id = Column(Integer, primary_key = True)
+  user_id = Column(String)
   target_url = Column(Text)  
   status_code = Column(Integer)
   risk_score = Column(Integer)

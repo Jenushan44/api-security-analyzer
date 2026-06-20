@@ -7,6 +7,7 @@ import { ScanHistoryItem, ScanResult } from "../../types/scan";
 import CriticalScansCard from "@/components/scan-history/CriticalScansCard";
 import LatestScanCard from "@/components/scan-history/LatestScanCard";
 import ScanHistoryTable from '@/components/scan-history/ScanHistoryTable';
+import { auth } from "../firebase";
 
 export default function ScanHistory() {
 
@@ -19,13 +20,23 @@ export default function ScanHistory() {
   let latest_scan: string | null = null;
 
   async function fetchScans() {
-    const response = await fetch(process.env.NEXT_PUBLIC_API_URL + "/scans",
-      {
-        method: "GET",
-      })
+    const userId = auth.currentUser?.uid;
+
+    if (!userId) {
+      setScans([]);
+      return;
+    }
+
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/scans?user_id=${userId}`, { method: "GET", });
 
     const data = await response.json();
-    setScans(data);
+
+    if (Array.isArray(data)) {
+      setScans(data);
+    } else {
+      console.log(data);
+      setScans([]);
+    }
   }
 
   useEffect(() => {

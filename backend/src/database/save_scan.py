@@ -1,10 +1,11 @@
 from database.connection import SessionLocal 
 from database.models import Scan, Finding
 
-def save_scan_result(target_url, status_code, risk, findings): 
+def save_scan_result(target_url, status_code, risk, findings, user_id): 
   db = SessionLocal()
   try: 
     new_scan = Scan(
+      user_id = user_id, 
       target_url = target_url, 
       status_code = status_code, 
       risk_score = risk["risk_score"], 

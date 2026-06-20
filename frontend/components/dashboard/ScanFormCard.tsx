@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { ScanResult } from "../../types/scan";
 import { Globe, Play } from 'lucide-react';
+import { auth } from "../../app/firebase";
 
 function ScanFormCard({ setResult }: { setResult: (result: ScanResult | null) => void; }) {
 
@@ -27,13 +28,23 @@ function ScanFormCard({ setResult }: { setResult: (result: ScanResult | null) =>
     setResult(null);
 
     try {
+      const userId = auth.currentUser?.uid;
+
+      if (!userId) {
+        setError("User is not logged in");
+        return;
+      }
+
       const response = await fetch(
         process.env.NEXT_PUBLIC_API_URL + "/scan",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ "url": apiUrl })
-        })
+          body: JSON.stringify({
+            url: apiUrl, user_id: userId,
+          }),
+        }
+      );
 
       let contentType = response.headers.get("content-type");
 

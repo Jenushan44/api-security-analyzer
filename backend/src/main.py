@@ -76,8 +76,7 @@ def scan(data: ScanRequest):
   check_auth_exposure(response_data, response.status_code, findings )
   check_rate_limiting(data.url, findings)
   risk = calculate_risk(findings)
-  scan_id = save_scan_result(data.url, response.status_code, risk, findings)
-  
+  scan_id = save_scan_result(data.url, response.status_code, risk, findings, data.user_id)  
   db = SessionLocal()
   try: 
     saved_scan = db.get(Scan, scan_id)
@@ -106,14 +105,14 @@ def scan(data: ScanRequest):
   }
 
 @app.get("/scans") 
-def get_scans(): 
+def get_scans(user_id: str): 
   scan_results = []
   db = SessionLocal()
   try: 
-    scans = db.query(Scan).order_by(Scan.created_at.desc()).limit(20).all() 
+    scans = db.query(Scan).filter(Scan.user_id == user_id).order_by(Scan.created_at.desc()).limit(20).all() 
     for scan in scans: 
       total_findings = db.query(Finding).filter(Finding.scan_id == scan.id).count()
-      scan_dict = {"id": scan.id, "target_url": scan.target_url, "status_code": scan.status_code, "risk_score": scan.risk_score, "risk_level": scan.risk_level, "risk_summary": scan.risk_summary, "created_at": scan.created_at, "total_findings": total_findings}
+      scan_dict = {"id": scan.id, "target_url": scan.target_url, "status_code": scan.status_code, "risk_score": scan.risk_score, "risk_level": scan.risk_level, "risk_summary": scan.risk_summary, "created_at": scan.created_at, "total_findings": total_findings, "user_id": scan.user_id}
       scan_results.append(scan_dict)
   finally: 
     db.close()
