@@ -179,6 +179,7 @@ export default function ScanRecordPage() {
     circleColor = "border-yellow-500";
   }
 
+
   return (
     <div className="flex">
       <Navbar />
@@ -242,7 +243,7 @@ export default function ScanRecordPage() {
               <div className="flex mx-5 mt-5 gap-5 pb-5 min-h-[200px]">
                 <div className="flex-1">
                   <p className="text-gray-200 mb-5">All Reports ({reports.length})</p>
-                  <div className="modal-scrollbar max-h-[calc(100vh-100px)] overflow-y-auto pr-2">
+                  <div className="modal-scrollbar max-h-[calc(100vh-420px)] overflow-y-auto pr-2">
                     {filteredReports.length == 0 ? <p className="text-gray-400">No reports found</p> :
                       filteredReports.map((report) => (
                         <div key={report.id} onClick={() => { setSelectedReport(report); fetchReportDetails(report.id); }} className={`mb-2 border bg-[#071525] hover:border-blue-400 hover:bg-[#0b1c31] cursor-pointer relative p-4 rounded-md transition ${selectedReport?.id === report.id ? "border-blue-400 bg-[#0b1c31]" : "border-gray-700"}`}>
