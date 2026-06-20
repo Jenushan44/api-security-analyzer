@@ -8,6 +8,7 @@ import CriticalScansCard from "@/components/scan-history/CriticalScansCard";
 import LatestScanCard from "@/components/scan-history/LatestScanCard";
 import ScanHistoryTable from '@/components/scan-history/ScanHistoryTable';
 import { auth } from "../firebase";
+import RequireLogin from "../../components/RequireLogin";
 
 export default function ScanHistory() {
 
@@ -61,20 +62,22 @@ export default function ScanHistory() {
   }
 
   return (
-    <div className="flex">
-      <Navbar />
-      <div className="w-full flex-1">
-        <p className="text-white text-[35px] font-semibold ml-6 mt-2">Scan History</p>
-        <p className="text-gray-400 text-[16px] ml-6">Review previous scans and track changes over time.</p>
-        <div className='grid grid-cols-1 md:grid-cols-4 2xl:grid-cols-4 gap-5 px-6 items-stretch'>
-          <TotalScansCard total_scans={scans.length === 0 ? null : scans.length} />
-          <AverageScoreCard averageScore={average_score} />
-          <CriticalScansCard critical_scans={critical_count} />
-          <LatestScanCard latest_scan={latest_scan} />
+    <RequireLogin>
+      <div className="flex">
+        <Navbar />
+        <div className="w-full flex-1">
+          <p className="text-white text-[35px] font-semibold ml-6 mt-2">Scan History</p>
+          <p className="text-gray-400 text-[16px] ml-6">Review previous scans and track changes over time.</p>
+          <div className='grid grid-cols-1 md:grid-cols-4 2xl:grid-cols-4 gap-5 px-6 items-stretch'>
+            <TotalScansCard total_scans={scans.length === 0 ? null : scans.length} />
+            <AverageScoreCard averageScore={average_score} />
+            <CriticalScansCard critical_scans={critical_count} />
+            <LatestScanCard latest_scan={latest_scan} />
+          </div>
+          <ScanHistoryTable scans={scans} />
         </div>
-        <ScanHistoryTable scans={scans} />
-      </div>
 
-    </div>
-  )
+      </div>
+    </RequireLogin>
+  );
 }

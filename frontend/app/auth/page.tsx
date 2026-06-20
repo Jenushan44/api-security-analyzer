@@ -4,7 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
-
+import Link from "next/link";
+import { ArrowLeft } from 'lucide-react';
 
 export default function AuthPage() {
   const router = useRouter();
@@ -41,6 +42,11 @@ export default function AuthPage() {
 
   return (
     <div className="min-h-screen bg-[#070F1B] flex items-center justify-center">
+
+      <Link href="/" className="flex items-center text-[18px] text-gray-400 gap-1 hover:text-blue-400 text-sm fixed top-3 left-3">
+        <ArrowLeft className="mt-1" size={25} /> Back to Dashboard
+      </Link>
+
       <div className="bg-[#071525] border border-gray-700 rounded-xl p-8 w-[400px]">
         <h1 className="text-white text-3xl font-semibold mb-2">API Security Analyzer</h1>
         <p className="text-gray-400 mb-6">Log in or create an account.</p>
