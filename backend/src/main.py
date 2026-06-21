@@ -120,7 +120,7 @@ def get_scans(user_id: str):
   return scan_results
 
 @app.get("/scans/{scan_id}")
-def get_scan_report(scan_id: int): 
+def get_scan_report(scan_id: int, user_id: str): 
   db = SessionLocal()
   finding_list = []
   try: 
@@ -130,6 +130,12 @@ def get_scan_report(scan_id: int):
       return {
         "error": True, 
         "message": "Scan not found"
+      }
+    
+    if scan_search.user_id != user_id:
+      return {
+        "error": True,
+        "message": "You do not have access to this scan"
       }
     
     finding_search = db.query(Finding).filter(Finding.scan_id == scan_id).all()
@@ -149,7 +155,7 @@ def get_scan_report(scan_id: int):
   }
 
 @app.delete("/scans/{scan_id}")
-def delete_scan(scan_id: int): 
+def delete_scan(scan_id: int, user_id: str): 
   db = SessionLocal()
   
   try: 
@@ -158,6 +164,12 @@ def delete_scan(scan_id: int):
       return {
         "error": True, 
         "message": "Scan not found"
+      }
+    
+    if scan_search.user_id != user_id:
+      return {
+        "error": True,
+        "message": "You do not have access to delete this scan"
       }
     
     finding_search = db.query(Finding).filter(Finding.scan_id == scan_id).all()

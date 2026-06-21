@@ -95,7 +95,14 @@ export default function ScanRecordPage() {
 
   async function fetchReportDetails(scanId: number) {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/scans/${scanId}`);
+      const userId = auth.currentUser?.uid;
+
+      if (!userId) {
+        setError("User is not logged in");
+        return;
+      }
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/scans/${scanId}?user_id=${userId}`);
       const data = await response.json();
       setSelectedReportDetails(data);
     } catch {
@@ -186,6 +193,33 @@ export default function ScanRecordPage() {
     circleColor = "border-yellow-500";
   }
 
+
+  async function deleteSelectedReport() {
+
+
+    if (!selectedReport) return;
+
+    const userId = auth.currentUser?.uid;
+
+    if (!userId) {
+      setError("User is not logged in");
+      return;
+    }
+
+    const confirmDelete = confirm("Are you sure you want to delete this scan report?");
+    if (!confirmDelete) return;
+
+    try {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/scans/${selectedReport.id}?user_id=${userId}`, { method: "DELETE", });
+
+      const updatedReports = reports.filter((report) => report.id !== selectedReport.id);
+      setReports(updatedReports);
+      setSelectedReport(updatedReports.length > 0 ? updatedReports[0] : null);
+      setSelectedReportDetails(null);
+    } catch {
+      setError("Error deleting report");
+    }
+  }
 
   return (
     <RequireLogin>
@@ -355,6 +389,7 @@ export default function ScanRecordPage() {
 
                       <div className="flex gap-2">
                         <button className="border border-gray-700 text-white text-sm px-4 py-2 rounded-md hover:border-blue-400 hover:text-blue-400">Download PDF</button>
+                        <button onClick={deleteSelectedReport} className="border border-red-500/40 text-red-400 text-sm px-4 py-2 rounded-md cursor-pointer hover:bg-red-500/10">Delete</button>
                       </div>
                     </div>
 
