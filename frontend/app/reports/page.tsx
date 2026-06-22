@@ -2,7 +2,7 @@
 import Navbar from "../../components/Navbar"
 import { ScanHistoryItem } from "../../types/scan";
 import { useState, useEffect } from "react";
-import { Download, Share2, Pencil, X, Shield, File, ChartColumnIncreasing, ChartPie, Star, Search, Pin } from 'lucide-react';
+import { Pencil, X, Shield, File, ChartColumnIncreasing, ChartPie, Star, Search, Pin } from 'lucide-react';
 import RequireLogin from "../../components/RequireLogin";
 import { auth } from "../firebase";
 
@@ -22,6 +22,7 @@ export default function ScanRecordPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedReportType, setSelectedReportType] = useState("All Report Types");
   const [selectedReportDetails, setSelectedReportDetails] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState("Overview");
 
   async function fetchReport() {
 
@@ -74,6 +75,7 @@ export default function ScanRecordPage() {
       setReportTitles({ ...reportTitles, [selectedReport.id]: modalTitle });
       setReportType({ ...reportType, [selectedReport.id]: modalType });
       setReportIcon({ ...reportIcon, [selectedReport.id]: modalIcon });
+      setModal(false);
     }
   }
 
@@ -272,6 +274,10 @@ export default function ScanRecordPage() {
                             {new Date(report.created_at).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", })}
                           </p>
 
+                          <button onClick={(e) => { e.stopPropagation(); setSelectedReport(report); setModal(true); setModalTitle(reportTitles[report.id] || `Scan Report #${report.id}`); setModalType(reportType[report.id] || ""); setModalIcon(reportIcon[report.id] || "Shield"); }} className="ml-2 text-gray-400 cursor-pointer hover:text-blue-400 shrink-0">
+                            <Pencil size={18} />
+                          </button>
+
                           <button className="ml-4 text-yellow-400 cursor-pointer hover:text-yellow-300 shrink-0" onClick={(e) => { e.stopPropagation(); togglePinnedReport(report.id); }}>
                             <Star fill="yellow" size={20} />
                           </button>
@@ -305,7 +311,7 @@ export default function ScanRecordPage() {
 
                               <button className="ml-4 text-gray-400 cursor-pointer hover:text-yellow-400 shrink-0" onClick={(e) => { e.stopPropagation(); togglePinnedReport(report.id); }} > <Star className={pinnedReportIds.includes(report.id) ? "text-yellow-400" : "text-gray-400"} fill={pinnedReportIds.includes(report.id) ? "yellow" : "none"} size={20} /> </button>
 
-                              {/*       <button onClick={(e) => { setModal(true); setSelectedReport(report); setModalTitle(reportTitles[report.id] || `Scan Report #${report.id}`); setModalType(reportType[report.id] || `Report Type`); setModalIcon(reportIcon[report.id] || `Shield`); }} className="p-1 text-red-500 cursor-pointer hover:bg-red-500/10 rounded-md"> <Pencil size={20} /> </button> */}
+                              <button onClick={(e) => { e.stopPropagation(); setModal(true); setSelectedReport(report); setModalTitle(reportTitles[report.id] || `Scan Report #${report.id}`); setModalType(reportType[report.id] || ""); setModalIcon(reportIcon[report.id] || `Shield`); }} className="p-1 text-red-500 cursor-pointer hover:bg-red-500/10 rounded-md"> <Pencil size={20} /> </button>
                             </div>
                           </div>
                         ))
@@ -319,7 +325,7 @@ export default function ScanRecordPage() {
                             <div>
                               <p className="text-white text-xl ml-6 mt-5">Edit Report</p>
                             </div>
-                            <button onClick={() => { setSelectedReport(null); setModal(false); setModalTitle(""); setModalType(""); setModalIcon("Shield") }} className="text-white cursor-pointer mr-2 mb-2" ><X /></button>
+                            <button onClick={() => { setModal(false); setModalTitle(""); setModalType(""); setModalIcon("Shield") }} className="text-white cursor-pointer mr-2 mb-2" ><X /></button>
 
                           </div>
                           <div>
@@ -359,7 +365,7 @@ export default function ScanRecordPage() {
                           </div>
 
                           <div className="flex justify-end gap-3 mr-6 mt-8">
-                            <button className="cursor-pointer border text-lg rounded-md text-white px-4 py-2" onClick={() => { setSelectedReport(null); setModal(false); setModalTitle(""); setModalType(""); setModalIcon("Shield") }}>Cancel</button>
+                            <button className="cursor-pointer border text-lg rounded-md text-white px-4 py-2" onClick={() => { setModal(false); setModalTitle(""); setModalType(""); setModalIcon("Shield") }}>Cancel</button>
                             <button className="cursor-pointer border-[#2a77f5] rounded-md text-lg text-white px-4 py-2 bg-[#2a77f5]" onClick={saveChangesButton}>Save Changes</button>
 
                           </div>
@@ -394,162 +400,200 @@ export default function ScanRecordPage() {
                     </div>
 
                     <div className="flex gap-6 border-b border-gray-700 mb-5">
-                      <p className="text-blue-400 border-b-2 border-blue-400 pb-3 text-sm">Overview</p>
-                      <p className="text-gray-400 pb-3 text-sm">Findings ({selectedReport.total_findings})</p>
-                      <p className="text-gray-400 pb-3 text-sm">Headers</p>
-                      <p className="text-gray-400 pb-3 text-sm">Timeline</p>
-                      <p className="text-gray-400 pb-3 text-sm">Raw Response</p>
+                      {["Overview", "Findings", "Raw Response"].map((tab) => (
+                        <button key={tab} onClick={() => setActiveTab(tab)} className={`pb-3 text-sm cursor-pointer ${activeTab === tab ? "text-blue-400 border-b-2 border-blue-400" : "text-gray-400"}`}>
+                          {tab === "Findings" ? `Findings (${selectedReport.total_findings})` : tab}
+                        </button>
+                      ))}
                     </div>
 
-                    <div className="grid grid-cols-4 gap-4 mb-5">
-                      <div className="border border-gray-700 rounded-md p-4">
-                        <p className="text-gray-400 text-sm mb-3">Risk Score</p>
-                        <div className="w-20 h-20 rounded-full border-4 border-red-500 flex items-center justify-center">
-                          <div className="text-center">
-                            <p className="text-white text-2xl font-semibold">{selectedReport.risk_score}</p>
-                            <p className="text-gray-400 text-xs">/100</p>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="border border-gray-700 rounded-md p-4">
-                        <p className="text-gray-400 text-sm">Risk Level</p>
-                        <p className="text-red-400 bg-red-500/10 border border-red-500/30 rounded-md inline-block px-3 py-2 text-xl font-semibold mt-5">{selectedReport.risk_level}</p>
-                        <p className="text-red-400 text-sm mt-2">Highest</p>
-
-
-                      </div>
-
-                      <div className="border border-gray-700 rounded-md p-4">
-
-                        <p className="text-gray-400 text-sm">Total Findings</p>
-                        <p className="text-white text-4xl font-semibold mt-5">{selectedReport.total_findings}</p>
-                        <p className="text-gray-400 text-sm mt-2">Issues Found</p>
-                      </div>
-
-                      <div className="border border-gray-700 rounded-md p-4">
-                        <p className="text-gray-400 text-sm">Affected Endpoint</p>
-
-
-                        <p className="text-blue-400 text-sm break-all mt-5">{selectedReport.target_url}</p>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-3 gap-4 mb-5">
-                      <div className="col-span-2 space-y-4">
-                        <div className="border border-gray-700 rounded-md p-4">
-                          <p className="text-white font-semibold mb-2">Executive Summary</p>
-                          <p className="text-gray-400 text-sm leading-6">This scan found {selectedReport.total_findings} security issues on{" "}<span className="text-blue-400 break-all">{selectedReport.target_url}</span>. Review the findings below and apply the recommended fixes to reduce the overall risk level.</p>
-                        </div>
-
-                        <div className="border border-gray-700 rounded-md">
-
-                          <div className="flex items-center justify-between p-4 border-b border-gray-700">
-                            <p className="text-white font-semibold">Top Findings</p>
-                            <p className="text-blue-400 text-sm">View all findings →</p>
-                          </div>
-
-                          <div className="divide-y divide-gray-700">
-                            {selectedReportDetails?.findings?.length > 0 ? (
-                              selectedReportDetails.findings.slice(0, 5).map((finding: any) => (
-                                <div key={finding.id} className="flex items-center justify-between p-4">
-                                  <div>
-                                    <div className="flex items-center gap-2">
-                                      <p className="text-white text-sm font-semibold">{finding.title}</p>
-                                      <span className={`text-xs border rounded-full px-2 py-0.5 ${getSeverityStyle(finding.severity)}`}>
-                                        {finding.severity}
-                                      </span>
-                                    </div>
-
-                                    <p className="text-gray-400 text-xs mt-1">{finding.description}</p>
-                                  </div>
-
-                                  <p className="text-gray-400 text-xs">{finding.endpoint || "/"}</p>
-                                </div>
-                              ))
-                            ) : (
-                              <p className="text-gray-400 text-sm p-4">No detailed findings available for this scan.</p>
-                            )}
-                          </div>
-                        </div>
-
-                      </div>
-
-                      <div className="space-y-4">
-                        <div className="border border-gray-700 rounded-md p-4">
-                          <p className="text-white font-semibold mb-4">Risk Breakdown</p>
-
-                          <div className="flex items-center gap-4">
-                            <div className={`w-24 h-24 rounded-full border-[14px] ${circleColor} flex items-center justify-center`}>
+                    {activeTab === "Overview" && (
+                      <div>
+                        <div className="grid grid-cols-4 gap-4 mb-5">
+                          <div className="border border-gray-700 rounded-md p-4">
+                            <p className="text-gray-400 text-sm mb-3">Risk Score</p>
+                            <div className="w-20 h-20 rounded-full border-4 border-red-500 flex items-center justify-center">
                               <div className="text-center">
-                                <p className="text-white text-xl font-semibold">
-                                  {selectedReportDetails?.findings?.length || 0}
-                                </p>
-                                <p className="text-gray-400 text-xs">issues</p>
+                                <p className="text-white text-2xl font-semibold">{selectedReport.risk_score}</p>
+                                <p className="text-gray-400 text-xs">/100</p>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="border border-gray-700 rounded-md p-4">
+                            <p className="text-gray-400 text-sm">Risk Level</p>
+                            <p className="text-red-400 bg-red-500/10 border border-red-500/30 rounded-md inline-block px-3 py-2 text-xl font-semibold mt-5">{selectedReport.risk_level}</p>
+                            <p className="text-red-400 text-sm mt-2">Highest</p>
+
+
+                          </div>
+
+                          <div className="border border-gray-700 rounded-md p-4">
+
+                            <p className="text-gray-400 text-sm">Total Findings</p>
+                            <p className="text-white text-4xl font-semibold mt-5">{selectedReport.total_findings}</p>
+                            <p className="text-gray-400 text-sm mt-2">Issues Found</p>
+                          </div>
+
+                          <div className="border border-gray-700 rounded-md p-4">
+                            <p className="text-gray-400 text-sm">Affected Endpoint</p>
+
+
+                            <p className="text-blue-400 text-sm truncate break-all mt-5">{selectedReport.target_url}</p>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-3 gap-4 mb-5">
+                          <div className="col-span-2">
+                            <div className="border border-gray-700 rounded-md p-4">
+                              <p className="text-white font-semibold mb-2">Executive Summary</p>
+                              <p className="text-gray-400 text-sm leading-6">This scan found {selectedReport.total_findings} security issues on{" "}<span className="text-blue-400 break-all">{selectedReport.target_url}</span>. Review the findings below and apply the recommended fixes to reduce the overall risk level.</p>
+
+                              <div className="border border-gray-700 rounded-md">
+
+                                <div className="flex items-center justify-between p-4 border-b border-gray-700">
+                                  <p className="text-white font-semibold">Top Findings</p>
+                                  <p className="text-blue-400 text-sm">View all findings →</p>
+                                </div>
+
+                                <div className="divide-y divide-gray-700">
+                                  {selectedReportDetails?.findings?.length > 0 ? (
+                                    selectedReportDetails.findings.slice(0, 5).map((finding: any) => (
+                                      <div key={finding.id} className="flex items-center justify-between p-4">
+                                        <div>
+                                          <div className="flex items-center gap-2">
+                                            <p className="text-white text-sm font-semibold">{finding.title}</p>
+                                            <span className={`text-xs border rounded-full px-2 py-0.5 ${getSeverityStyle(finding.severity)}`}>
+                                              {finding.severity}
+                                            </span>
+                                          </div>
+
+                                          <p className="text-gray-400 text-xs mt-1">{finding.evidence || finding.recommendation}</p>
+                                        </div>
+
+                                        <p className="text-gray-400 text-xs">{finding.endpoint || "/"}</p>
+                                      </div>
+                                    ))
+                                  ) : (
+                                    <p className="text-gray-400 text-sm p-4">No detailed findings available for this scan.</p>
+                                  )}
+                                </div>
+                              </div>
+
+                            </div>
+                            <div className="space-y-4">
+                              <div className="border border-gray-700 rounded-md p-4">
+                                <div className="flex items-center justify-between mb-4">
+                                  <p className="text-white font-semibold">Security Recommendations</p>
+                                  <p className="text-blue-400 text-sm">View all recommendations →</p>
+                                </div>
+                                <div className="grid grid-cols-4 gap-4">
+                                  {getRecommendations(selectedReportDetails?.findings).map(([title, desc, priority]) => (
+                                    <div key={title} className="bg-[#0b1c31] border border-gray-700 rounded-md p-4">
+                                      <p className="text-white font-semibold text-sm">{title}</p>
+
+                                      <p className="text-gray-400 text-sm mt-3 leading-5">{desc}</p>
+
+                                      <p className={`text-xs mt-4 inline-block px-2 py-1 rounded border ${getSeverityStyle(priority)}`}>
+                                        Priority: {priority}
+                                      </p>
+                                    </div>
+                                  ))}
+                                </div>
+
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="space-y-4">
+                            <div className="border border-gray-700 rounded-md p-4">
+                              <p className="text-white font-semibold mb-4">Risk Breakdown</p>
+
+                              <div className="flex items-center gap-4">
+                                <div className={`w-24 h-24 rounded-full border-[14px] ${circleColor} flex items-center justify-center`}>
+                                  <div className="text-center">
+                                    <p className="text-white text-xl font-semibold">
+                                      {selectedReportDetails?.findings?.length || 0}
+                                    </p>
+                                    <p className="text-gray-400 text-xs">issues</p>
+                                  </div>
+                                </div>
+
+                                <div className="space-y-2 text-sm">
+                                  <p className="text-red-400">● {criticalCount} Critical</p>
+                                  <p className="text-orange-400">● {highCount} High</p>
+                                  <p className="text-yellow-400">● {mediumCount} Medium</p>
+                                  <p className="text-green-400">● {lowCount} Low</p>
+                                </div>
                               </div>
                             </div>
 
-                            <div className="space-y-2 text-sm">
-                              <p className="text-red-400">● {criticalCount} Critical</p>
-                              <p className="text-orange-400">● {highCount} High</p>
-                              <p className="text-yellow-400">● {mediumCount} Medium</p>
-                              <p className="text-green-400">● {lowCount} Low</p>
+                            <div className="border border-gray-700 rounded-md p-4">
+                              <p className="text-white font-semibold mb-4">Scan Information</p>
+
+                              <div className="flex justify-between gap-4">
+                                <p className="text-gray-400">Target URL</p>
+                                <p className="text-blue-400 text-right truncate break-all">{selectedReport.target_url}</p>
+                              </div>
+
+                              <div className="flex justify-between">
+                                <p className="text-gray-400">Status Code</p>
+                                <p className="text-green-400">{selectedReport.status_code}</p>
+                              </div>
+
+                              <div className="flex justify-between">
+                                <p className="text-gray-400">Risk Level</p>
+                                <p className="text-white">{selectedReport.risk_level}</p>
+                              </div>
+
+                              <div className="flex justify-between">
+                                <p className="text-gray-400">Risk Score</p>
+                                <p className="text-white">{selectedReport.risk_score}/100</p>
+                              </div>
+
+                              <div className="flex justify-between">
+                                <p className="text-gray-400">Findings</p>
+                                <p className="text-white">{selectedReport.total_findings}</p>
+                              </div>
+
+                              <div className="flex justify-between">
+                                <p className="text-gray-400">Scan ID</p>
+                                <p className="text-white">{selectedReport.id}</p>
+                              </div>
                             </div>
                           </div>
-                        </div>
 
-                        <div className="border border-gray-700 rounded-md p-4">
-                          <p className="text-white font-semibold mb-4">Scan Information</p>
-
-                          <div className="space-y-3 text-sm">
-                            <div className="flex justify-between gap-4">
-                              <p className="text-gray-400">Target URL</p>
-                              <p className="text-blue-400 text-right break-all">{selectedReport.target_url}</p>
-                            </div>
-
-                            <div className="flex justify-between">
-                              <p className="text-gray-400">Target Type</p>
-                              <p className="text-white">API Endpoint</p>
-                            </div>
-
-                            <div className="flex justify-between">
-                              <p className="text-gray-400">Scan Type</p>
-                              <p className="text-white">Full Scan</p>
-                            </div>
-
-                            <div className="flex justify-between">
-                              <p className="text-gray-400">Environment</p>
-                              <p className="text-white">Development</p>
-                            </div>
-
-                            <div className="flex justify-between">
-                              <p className="text-gray-400">Status Code</p>
-                              <p className="text-green-400">{selectedReport.status_code}</p>
-                            </div>
-                          </div>
                         </div>
                       </div>
-                    </div>
+                    )}
+                    {activeTab === "Findings" && (
+                      <div className="border border-gray-700 rounded-md">
+                        <div className="p-4 border-b border-gray-700">
+                          <p className="text-white font-semibold">All Findings</p>
+                        </div>
 
-                    <div className="border border-gray-700 rounded-md p-4">
-                      <div className="flex items-center justify-between mb-4">
-                        <p className="text-white font-semibold">Security Recommendations</p>
-                        <p className="text-blue-400 text-sm">View all recommendations →</p>
+                        <div className="divide-y divide-gray-700">
+                          {selectedReportDetails?.findings?.map((finding: any) => (
+                            <div key={finding.id} className="p-4">
+                              <p className="text-white font-semibold">{finding.title}</p>
+                              <p className="text-gray-400 mt-2">
+                                {finding.evidence || finding.recommendation}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                      <div className="grid grid-cols-4 gap-4">
-                        {getRecommendations(selectedReportDetails?.findings).map(([title, desc, priority]) => (
-                          <div key={title} className="bg-[#0b1c31] border border-gray-700 rounded-md p-4">
-                            <p className="text-white font-semibold text-sm">{title}</p>
+                    )}
 
-                            <p className="text-gray-400 text-sm mt-3 leading-5">{desc}</p>
+                    {activeTab === "Raw Response" && (
+                      <div className="border border-gray-700 rounded-md p-4">
+                        <p className="text-white font-semibold mb-4">Raw Response</p>
 
-                            <p className={`text-xs mt-4 inline-block px-2 py-1 rounded border ${getSeverityStyle(priority)}`}>
-                              Priority: {priority}
-                            </p>
-                          </div>
-                        ))}
+                        <div className="bg-[#0b1c31] border border-gray-700 rounded-md p-4 text-xs text-gray-300 overflow-auto max-h-[600px] whitespace-pre-wrap">
+                          {JSON.stringify(selectedReportDetails, null, 2)}
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 ) : (
                   <div className="h-[500px] flex items-center justify-center text-center">
@@ -564,8 +608,7 @@ export default function ScanRecordPage() {
             )}
           </div>
         </div>
-
-      </div >
-    </RequireLogin>
+      </div>
+    </RequireLogin >
   );
 }
