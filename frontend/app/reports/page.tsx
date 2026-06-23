@@ -2,7 +2,7 @@
 import Navbar from "../../components/Navbar"
 import { ScanHistoryItem } from "../../types/scan";
 import { useState, useEffect } from "react";
-import { Pencil, X, Shield, File, ChartColumnIncreasing, ChartPie, Star, Search, Pin } from 'lucide-react';
+import { Pencil, X, Shield, File, ChartColumnIncreasing, ChartPie, Star, Search, Pin, ArrowRight } from 'lucide-react';
 import RequireLogin from "../../components/RequireLogin";
 import { auth } from "../firebase";
 
@@ -231,7 +231,7 @@ export default function ScanRecordPage() {
           <p className="text-white text-[35px] font-semibold ml-6 mt-2">Scan Reports</p>
           <p className="text-gray-400 ml-6 mb-5">Browse, preview and manage generated reports.</p>
           <div className="flex gap-5">
-            <div className="border border-gray-700 ml-6 rounded-xl overflow-auto w-[540px] shrink-0">
+            <div className="border border-gray-700 ml-6 rounded-xl overflow-auto w-[480px] shrink-0">
               <div className="w-full bg-[#102034] text-white gap-5 px-4 py-3">
                 <div className="relative w-80">
                   <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -271,7 +271,7 @@ export default function ScanRecordPage() {
                           </span>
 
                           <p className="text-gray-500 text-xs mt-1 ml-4">
-                            {new Date(report.created_at).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", })}
+                            {new Date(report.created_at).toLocaleDateString("en-US", { month: "2-digit", day: "2-digit", year: "2-digit", })}
                           </p>
 
                           <button onClick={(e) => { e.stopPropagation(); setSelectedReport(report); setModal(true); setModalTitle(reportTitles[report.id] || `Scan Report #${report.id}`); setModalType(reportType[report.id] || ""); setModalIcon(reportIcon[report.id] || "Shield"); }} className="ml-2 text-gray-400 cursor-pointer hover:text-blue-400 shrink-0">
@@ -300,18 +300,17 @@ export default function ScanRecordPage() {
                                 {modalIconHelper(reportIcon[report.id] || "Shield")}
                               </div>
 
-                              <div className="min-w-0 ml-4">
-                                <p className="text-white font-semibold text-sm">{reportTitles[report.id] || `Scan Report #${report.id}`} </p>
+                              <div className="min-w-0 ml-4 w-[160px] overflow-hidden">
+                                <p className="text-white font-semibold text-sm">{reportTitles[report.id] || `Scan Report #${report.id}`}</p>
                                 <p className="text-gray-400 truncate text-sm">{report.target_url}</p>
                               </div>
 
-                              <span className="text-xs text-red-400 bg-red-500/10 border border-red-500/30 rounded-full px-2 py-1 ml-4">{report.risk_level}</span>
+                              <p className="text-xs text-red-400 bg-red-500/10 border border-red-500/30 rounded-full px-2 py-1 ml-4">{report.risk_level}</p>
+                              <p className="text-gray-500 text-xs mt-1 ml-4"> {new Date(report.created_at).toLocaleDateString("en-US", { month: "2-digit", day: "2-digit", year: "2-digit", })}</p>
 
-                              <p className="text-gray-500 text-xs mt-1 ml-4"> {new Date(report.created_at).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric", })}</p>
-
+                              <button onClick={(e) => { e.stopPropagation(); setModal(true); setSelectedReport(report); setModalTitle(reportTitles[report.id] || `Scan Report #${report.id}`); setModalType(reportType[report.id] || ""); setModalIcon(reportIcon[report.id] || `Shield`); }} className="ml-2 text-gray-400 cursor-pointer hover:text-blue-400 shrink-0"> <Pencil size={20} /> </button>
                               <button className="ml-4 text-gray-400 cursor-pointer hover:text-yellow-400 shrink-0" onClick={(e) => { e.stopPropagation(); togglePinnedReport(report.id); }} > <Star className={pinnedReportIds.includes(report.id) ? "text-yellow-400" : "text-gray-400"} fill={pinnedReportIds.includes(report.id) ? "yellow" : "none"} size={20} /> </button>
 
-                              <button onClick={(e) => { e.stopPropagation(); setModal(true); setSelectedReport(report); setModalTitle(reportTitles[report.id] || `Scan Report #${report.id}`); setModalType(reportType[report.id] || ""); setModalIcon(reportIcon[report.id] || `Shield`); }} className="p-1 text-red-500 cursor-pointer hover:bg-red-500/10 rounded-md"> <Pencil size={20} /> </button>
                             </div>
                           </div>
                         ))
@@ -453,7 +452,7 @@ export default function ScanRecordPage() {
 
                                 <div className="flex items-center justify-between p-4 border-b border-gray-700">
                                   <p className="text-white font-semibold">Top Findings</p>
-                                  <p className="text-blue-400 text-sm">View all findings →</p>
+                                  <button onClick={() => setActiveTab("Findings")} className="text-blue-400 text-sm flex cursor-pointer">View all findings <ArrowRight size={21} /></button>
                                 </div>
 
                                 <div className="divide-y divide-gray-700">
@@ -608,7 +607,7 @@ export default function ScanRecordPage() {
             )}
           </div>
         </div>
-      </div>
+      </div >
     </RequireLogin >
   );
 }
