@@ -132,39 +132,6 @@ export default function ScanRecordPage() {
   }
 
 
-  function getRecommendations(findings: any[] = []) {
-    const titles = findings.map((finding) => finding.title?.toLowerCase() || "");
-    const recommendations = [];
-
-    if (titles.some((title) => title.includes("header") || title.includes("csp") || title.includes("hsts"))) {
-      recommendations.push(["Implement Security Headers", "Add CSP, HSTS, X-Frame-Options, and X-Content-Type-Options headers.", "High", "orange"]);
-
-    }
-
-
-
-    if (titles.some((title) => title.includes("auth") || title.includes("token"))) {
-      recommendations.push(["Fix Authentication Issues", "Avoid exposing tokens or sensitive authentication data in API responses.", "High", "red"]);
-    }
-
-    if (titles.some((title) => title.includes("cors"))) {
-
-      recommendations.push(["Restrict CORS", "Limit allowed origins instead of using broad wildcard access.", "Medium", "yellow"]);
-    }
-
-    if (titles.some((title) => title.includes("cookie"))) {
-
-
-      recommendations.push(["Secure Cookies", "Use Secure, HttpOnly, and SameSite flags for sensitive cookies.", "Medium", "yellow"]);
-
-    }
-
-
-    return recommendations.length > 0 ? recommendations : [["Review API Security", "Review the scan findings and apply security best practices.", "Medium", "yellow"]];
-
-
-  }
-
 
   let criticalCount = 0;
   let highCount = 0;
@@ -225,12 +192,12 @@ export default function ScanRecordPage() {
 
   return (
     <RequireLogin>
-      <div className="flex">
+      <div className="flex h-screen overflow-hidden">
         <Navbar />
-        <div className="flex-1 ">
+        <div className="flex-1 overflow-y-auto">
           <p className="text-white text-[35px] font-semibold ml-6 mt-2">Scan Reports</p>
           <p className="text-gray-400 ml-6 mb-5">Browse, preview and manage generated reports.</p>
-          <div className="flex gap-5">
+          <div className="flex gap-5 min-w-0">
             <div className="border border-gray-700 ml-6 rounded-xl overflow-auto w-[480px] shrink-0">
               <div className="w-full bg-[#102034] text-white gap-5 px-4 py-3">
                 <div className="relative w-80">
@@ -379,7 +346,7 @@ export default function ScanRecordPage() {
             </div>
 
             {filteredReports.length !== 0 && (
-              <div className="border border-gray-700 bg-[#071525] rounded-md p-5 flex-1 mr-6 h-fit sticky top-5">
+              <div className="modal-scrollbar border border-gray-700 bg-[#071525] rounded-md p-5 flex-1 min-w-0 mr-6 sticky top-5 max-h-[calc(100vh-120px)] overflow-y-auto">
                 {selectedReport ? (
                   <div>
                     <div className="flex items-start justify-between mb-5">
@@ -422,8 +389,6 @@ export default function ScanRecordPage() {
                           <div className="border border-gray-700 rounded-md p-4">
                             <p className="text-gray-400 text-sm">Risk Level</p>
                             <p className="text-red-400 bg-red-500/10 border border-red-500/30 rounded-md inline-block px-3 py-2 text-xl font-semibold mt-5">{selectedReport.risk_level}</p>
-                            <p className="text-red-400 text-sm mt-2">Highest</p>
-
 
                           </div>
 
@@ -438,7 +403,7 @@ export default function ScanRecordPage() {
                             <p className="text-gray-400 text-sm">Affected Endpoint</p>
 
 
-                            <p className="text-blue-400 text-sm truncate break-all mt-5">{selectedReport.target_url}</p>
+                            <p className="text-blue-400 text-sm break-all mt-5">{selectedReport.target_url}</p>
                           </div>
                         </div>
 
@@ -479,28 +444,6 @@ export default function ScanRecordPage() {
                                 </div>
                               </div>
 
-                            </div>
-                            <div className="space-y-4">
-                              <div className="border border-gray-700 rounded-md p-4">
-                                <div className="flex items-center justify-between mb-4">
-                                  <p className="text-white font-semibold">Security Recommendations</p>
-                                  <p className="text-blue-400 text-sm">View all recommendations →</p>
-                                </div>
-                                <div className="grid grid-cols-4 gap-4">
-                                  {getRecommendations(selectedReportDetails?.findings).map(([title, desc, priority]) => (
-                                    <div key={title} className="bg-[#0b1c31] border border-gray-700 rounded-md p-4">
-                                      <p className="text-white font-semibold text-sm">{title}</p>
-
-                                      <p className="text-gray-400 text-sm mt-3 leading-5">{desc}</p>
-
-                                      <p className={`text-xs mt-4 inline-block px-2 py-1 rounded border ${getSeverityStyle(priority)}`}>
-                                        Priority: {priority}
-                                      </p>
-                                    </div>
-                                  ))}
-                                </div>
-
-                              </div>
                             </div>
                           </div>
 
@@ -563,6 +506,28 @@ export default function ScanRecordPage() {
                           </div>
 
                         </div>
+
+                        <div className="space-y-4 min-w-0">
+                          <div className="border border-gray-700 rounded-md p-4">
+                            <div className="flex items-center justify-between mb-4">
+                              <p className="text-white font-semibold">Security Recommendations</p>
+                            </div>
+
+                            <div className="flex gap-4 overflow-x-auto pb-2 modal-scrollbar">
+                              {selectedReportDetails?.findings?.map((finding: any) => (
+
+                                <div key={finding.id} className="bg-[#0b1c31] border border-gray-700 rounded-md p-4 min-w-[280px] max-w-[280px] shrink-0">
+                                  <p className="text-white font-semibold text-sm">{finding.title}</p>
+
+                                  <p className="text-gray-400 text-sm mt-3 leading-5">{finding.recommendation || "No recommendation available."}</p>
+                                  <p className={`text-xs mt-4 inline-block px-2 py-1 rounded border ${getSeverityStyle(finding.severity)}`}>Priority: {finding.severity}</p>
+
+                                </div>
+                              ))}
+                            </div>
+
+                          </div>
+                        </div>
                       </div>
                     )}
                     {activeTab === "Findings" && (
@@ -588,7 +553,7 @@ export default function ScanRecordPage() {
                       <div className="border border-gray-700 rounded-md p-4">
                         <p className="text-white font-semibold mb-4">Raw Response</p>
 
-                        <div className="bg-[#0b1c31] border border-gray-700 rounded-md p-4 text-xs text-gray-300 overflow-auto max-h-[600px] whitespace-pre-wrap">
+                        <div className="modal-scrollbar bg-[#0b1c31] border border-gray-700 rounded-md p-4 text-xs text-gray-300 overflow-auto max-h-[600px] whitespace-pre-wrap">
                           {JSON.stringify(selectedReportDetails, null, 2)}
                         </div>
                       </div>
