@@ -248,7 +248,7 @@ function ScanHistoryTable({ scans }: { scans: ScanHistoryItem[] }) {
 
         <div className="flex justify-between items-center pt-5 pb-5 w-full bg-[#08172A] border border-gray-800">
           <div className="flex items-center">
-            <p className="text-white ml-5">Showing {startIndex + 1} to {endIndex} of {scans.length} scans</p>
+            <p className="text-white ml-5">Showing {scans.length === 0 ? 0 : startIndex + 1} to {startIndex + visibleScans.length} of {scans.length} scans</p>
           </div>
           <div className="flex items-center mr-35">
             <button className="cursor-pointer text-white border rounded-md p-2 px-3" onClick={previousButton}>Previous</button>
