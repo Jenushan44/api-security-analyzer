@@ -197,8 +197,8 @@ export default function ScanRecordPage() {
         <div className="flex-1 overflow-y-auto">
           <p className="text-white text-[35px] font-semibold ml-6 mt-2">Scan Reports</p>
           <p className="text-gray-400 ml-6 mb-5">Browse, preview and manage generated reports.</p>
-          <div className="flex gap-5 min-w-0">
-            <div className="border border-gray-700 ml-6 rounded-xl overflow-auto w-[480px] shrink-0">
+          <div className="flex gap-5 min-w-0 items-start">
+            <div className="border border-gray-700 ml-6 rounded-xl w-[480px] shrink-0 h-[calc(100vh-120px)] overflow-hidden">
               <div className="w-full bg-[#102034] text-white gap-5 px-4 py-3">
                 <div className="relative w-80">
                   <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -258,7 +258,7 @@ export default function ScanRecordPage() {
                 <div className="flex mx-5 mt-5 gap-5 pb-5 min-h-[200px]">
                   <div className="flex-1">
                     <p className="text-gray-200 mb-5">All Reports ({reports.length})</p>
-                    <div className="modal-scrollbar max-h-[calc(100vh-420px)] overflow-y-auto pr-2">
+                    <div className="modal-scrollbar h-[calc(100vh-420px)] overflow-y-auto pr-2">
                       {filteredReports.length == 0 ? <p className="text-gray-400">No reports found</p> :
                         filteredReports.map((report) => (
                           <div key={report.id} onClick={() => { setSelectedReport(report); fetchReportDetails(report.id); }} className={`mb-2 border bg-[#071525] hover:border-blue-400 hover:bg-[#0b1c31] cursor-pointer relative p-4 rounded-md transition ${selectedReport?.id === report.id ? "border-blue-400 bg-[#0b1c31]" : "border-gray-700"}`}>
@@ -360,7 +360,6 @@ export default function ScanRecordPage() {
                       </div>
 
                       <div className="flex gap-2">
-                        <button className="border border-gray-700 text-white text-sm px-4 py-2 rounded-md hover:border-blue-400 hover:text-blue-400">Download PDF</button>
                         <button onClick={deleteSelectedReport} className="border border-red-500/40 text-red-400 text-sm px-4 py-2 rounded-md cursor-pointer hover:bg-red-500/10">Delete</button>
                       </div>
                     </div>
