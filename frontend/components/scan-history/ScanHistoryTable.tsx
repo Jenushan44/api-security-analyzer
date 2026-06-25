@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { ScanHistoryItem, ScanReport, Finding } from "../../types/scan";
 import { X, ExternalLink, CircleCheck, CircleAlert, TriangleAlert, OctagonAlert, ArrowRight } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 function ScanHistoryTable({ scans }: { scans: ScanHistoryItem[] }) {
 
@@ -18,6 +19,7 @@ function ScanHistoryTable({ scans }: { scans: ScanHistoryItem[] }) {
   const endIndex = startIndex + rowsPerPage;
   const visibleScans = scans.slice(startIndex, endIndex);
   const totalPages = Math.ceil(scans.length / rowsPerPage);
+  const router = useRouter();
 
   function getRiskLevelCardStyle(severity: string) {
 
@@ -222,7 +224,7 @@ function ScanHistoryTable({ scans }: { scans: ScanHistoryItem[] }) {
                   </div>
                 </td>
                 <td className="border border-[#1E293B] px-4 py-2 text-center ">
-                  <button className="cursor-pointer text-blue-500 border border-gray-800 rounded-md p-2" onClick={() => handleViewDetails(scan)}>
+                  <button className="cursor-pointer text-blue-500 border border-gray-800 rounded-md p-2" onClick={() => router.push(`/reports?scanId=${scan.id}`)}>
                     View Details
                   </button>
                 </td>
