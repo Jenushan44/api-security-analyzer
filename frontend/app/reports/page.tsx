@@ -70,12 +70,32 @@ export default function ScanRecordPage() {
 
   }
 
-  function saveChangesButton() {
-    if (selectedReport) {
+  async function saveChangesButton() {
+    if (!selectedReport) return;
+
+    const userId = auth.currentUser?.uid;
+
+    if (!userId) {
+      setError("User is not logged in");
+      return;
+    }
+
+    try {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/scans/${selectedReport.id}?user_id=${userId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ report_title: modalTitle, report_type: modalType, report_icon: modalIcon, notes: "", }),
+      });
+
       setReportTitles({ ...reportTitles, [selectedReport.id]: modalTitle });
       setReportType({ ...reportType, [selectedReport.id]: modalType });
       setReportIcon({ ...reportIcon, [selectedReport.id]: modalIcon });
+
       setModal(false);
+    } catch {
+      setError("Error saving report changes");
     }
   }
 
@@ -116,7 +136,7 @@ export default function ScanRecordPage() {
   const pinnedReports = reports.filter((report) => pinnedReportIds.includes(report.id));
 
   const filteredReports = reports.filter((report) => {
-    const title = reportTitles[report.id] || `Scan Report #${report.id}`;
+    const title = reportTitles[report.id] || report.report_title || `Scan Report #${report.id}`;
     const currentReportType = reportType[report.id] || "Report Type";
     const matchesSearch = title.toLowerCase().includes(searchTerm.toLowerCase()) || report.target_url.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesReportType = selectedReportType === "All Report Types" || currentReportType === selectedReportType;
@@ -200,19 +220,18 @@ export default function ScanRecordPage() {
           <div className="flex gap-5 min-w-0 items-start">
             <div className="border border-gray-700 ml-6 rounded-xl w-[480px] shrink-0 h-[calc(100vh-120px)] overflow-hidden">
               <div className="w-full bg-[#102034] text-white gap-5 px-4 py-3">
-                <div className="relative w-80">
-                  <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                  <input className="w-full border border-gray-700 bg-[#071525] text-white rounded-md py-2 pl-10 pr-3 text-sm placeholder-gray-500" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search reports by name, API target..."></input>
-                </div>
-                <div className="flex items-center justify-between mt-4">
-                  <p>Date</p>
-                  <select value={selectedReportType} onChange={(e) => setSelectedReportType(e.target.value)} className="bg-[#071525] border border-gray-700 text-gray-200 rounded-md py-2 pl-2 px-1 pr-2 text-sm cursor-pointer">
+                <div className="flex items-center gap-3 w-full">
+                  <div className="relative flex-1">
+                    <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <input className="w-full border border-gray-700 bg-[#071525] text-white rounded-md py-2 pl-10 pr-3 text-sm placeholder-gray-500" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search reports by name, API target..." />
+                  </div>
+
+                  <select value={selectedReportType} onChange={(e) => setSelectedReportType(e.target.value)} className="w-[220px] shrink-0 bg-[#071525] border border-gray-700 text-gray-200 rounded-md py-2 px-2 text-sm cursor-pointer">
                     <option>All Report Types</option>
                     <option>Security Assessment</option>
                     <option>Executive Summary</option>
                     <option>Compliance Review</option>
                   </select>
-                  <p className="mr-2">Filters</p>
                 </div>
               </div>
 
@@ -241,7 +260,7 @@ export default function ScanRecordPage() {
                             {new Date(report.created_at).toLocaleDateString("en-US", { month: "2-digit", day: "2-digit", year: "2-digit", })}
                           </p>
 
-                          <button onClick={(e) => { e.stopPropagation(); setSelectedReport(report); setModal(true); setModalTitle(reportTitles[report.id] || `Scan Report #${report.id}`); setModalType(reportType[report.id] || ""); setModalIcon(reportIcon[report.id] || "Shield"); }} className="ml-2 text-gray-400 cursor-pointer hover:text-blue-400 shrink-0">
+                          <button onClick={(e) => { e.stopPropagation(); setSelectedReport(report); setModal(true); setModalTitle(reportTitles[report.id] || report.report_title || `Scan Report #${report.id}`); setModalType(reportType[report.id] || report.report_type || ""); setModalIcon(reportIcon[report.id] || report.report_icon || "Shield"); }} className="ml-2 text-gray-400 cursor-pointer hover:text-blue-400 shrink-0">
                             <Pencil size={18} />
                           </button>
 
@@ -275,7 +294,7 @@ export default function ScanRecordPage() {
                               <p className="text-xs text-red-400 bg-red-500/10 border border-red-500/30 rounded-full px-2 py-1 ml-4">{report.risk_level}</p>
                               <p className="text-gray-500 text-xs mt-1 ml-4"> {new Date(report.created_at).toLocaleDateString("en-US", { month: "2-digit", day: "2-digit", year: "2-digit", })}</p>
 
-                              <button onClick={(e) => { e.stopPropagation(); setModal(true); setSelectedReport(report); setModalTitle(reportTitles[report.id] || `Scan Report #${report.id}`); setModalType(reportType[report.id] || ""); setModalIcon(reportIcon[report.id] || `Shield`); }} className="ml-2 text-gray-400 cursor-pointer hover:text-blue-400 shrink-0"> <Pencil size={20} /> </button>
+                              <button onClick={(e) => { e.stopPropagation(); setModal(true); setSelectedReport(report); setModalTitle(reportTitles[report.id] || report.report_title || `Scan Report #${report.id}`); setModalType(reportType[report.id] || report.report_type || ""); setModalIcon(reportIcon[report.id] || `Shield`); }} className="ml-2 text-gray-400 cursor-pointer hover:text-blue-400 shrink-0"> <Pencil size={20} /> </button>
                               <button className="ml-4 text-gray-400 cursor-pointer hover:text-yellow-400 shrink-0" onClick={(e) => { e.stopPropagation(); togglePinnedReport(report.id); }} > <Star className={pinnedReportIds.includes(report.id) ? "text-yellow-400" : "text-gray-400"} fill={pinnedReportIds.includes(report.id) ? "yellow" : "none"} size={20} /> </button>
 
                             </div>
@@ -286,7 +305,7 @@ export default function ScanRecordPage() {
 
                     {modal && selectedReport && (
                       <div className="fixed bg-black/60 flex items-center justify-center z-50 inset-0">
-                        <div className="bg-[#102034] w-[35%] h-[29%] pb-50 border rounded-lg">
+                        <div className="bg-[#102034] w-[520px] min-h-[520px] border border-gray-700 rounded-lg p-6">
                           <div className="flex items-center justify-between">
                             <div>
                               <p className="text-white text-xl ml-6 mt-5">Edit Report</p>

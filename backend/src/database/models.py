@@ -18,6 +18,10 @@ class Scan(Base):
   risk_level = Column(String)
   risk_summary = Column(Text)
   created_at = Column(DateTime, default = datetime.now)
+  report_title = Column(String)
+  report_type = Column(String)
+  report_icon = Column(String)
+  notes = Column(Text)
 
 
 # Finding represents one row in the findings database table. 

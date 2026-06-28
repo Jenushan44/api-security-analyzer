@@ -38,6 +38,10 @@ export type ScanHistoryItem = {
   risk_summary: string;
   total_findings?: number;
   created_at: string;
+  report_title?: string | null;
+  report_type?: string | null;
+  report_icon?: string | null;
+  notes?: string | null;
 }
 
 export type ScanReport = {

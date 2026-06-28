@@ -1,6 +1,6 @@
 from fastapi import FastAPI 
 import requests
-from schemas import ScanRequest
+from schemas import ScanRequest, UpdateScanRequest
 from scanner.rules import security_header
 from scanner.findings import add_finding
 from scanner.sensitive_data import scan_sensitive_keys
@@ -112,7 +112,7 @@ def get_scans(user_id: str):
     scans = db.query(Scan).filter(Scan.user_id == user_id).order_by(Scan.created_at.desc()).limit(20).all() 
     for scan in scans: 
       total_findings = db.query(Finding).filter(Finding.scan_id == scan.id).count()
-      scan_dict = {"id": scan.id, "target_url": scan.target_url, "status_code": scan.status_code, "risk_score": scan.risk_score, "risk_level": scan.risk_level, "risk_summary": scan.risk_summary, "created_at": scan.created_at, "total_findings": total_findings, "user_id": scan.user_id}
+      scan_dict = {"id": scan.id, "target_url": scan.target_url, "status_code": scan.status_code, "risk_score": scan.risk_score, "risk_level": scan.risk_level, "risk_summary": scan.risk_summary, "created_at": scan.created_at, "total_findings": total_findings, "user_id": scan.user_id, "report_title": scan.report_title, "report_type": scan.report_type, "report_icon": scan.report_icon, "notes": scan.notes,}
       scan_results.append(scan_dict)
   finally: 
     db.close()
@@ -140,8 +140,9 @@ def get_scan_report(scan_id: int, user_id: str):
     
     finding_search = db.query(Finding).filter(Finding.scan_id == scan_id).all()
 
-    scan_dict = {"id": scan_search.id, "target_url": scan_search.target_url, "status_code": scan_search.status_code, "risk_score": scan_search.risk_score, "risk_level": scan_search.risk_level, "risk_summary": scan_search.risk_summary, "created_at": scan_search.created_at}
-
+    scan_dict = { "id": scan_search.id, "target_url": scan_search.target_url, "status_code": scan_search.status_code, "risk_score": scan_search.risk_score, "risk_level": scan_search.risk_level, "risk_summary": scan_search.risk_summary, "created_at": scan_search.created_at, "report_title": scan_search.report_title, "report_type": scan_search.report_type, "report_icon": scan_search.report_icon, "notes": scan_search.notes,}
+ 
+ 
     for finding in finding_search: 
       finding_dict = {"id": finding.id, "scan_id": finding.scan_id, "title": finding.title, "severity": finding.severity, "category": finding.category, "evidence": finding.evidence, "recommendation": finding.recommendation}
       finding_list.append(finding_dict)
@@ -186,4 +187,43 @@ def delete_scan(scan_id: int, user_id: str):
   return {
     "message": "Scan successfully deleted",
     "scan_id": scan_id,
+  }
+
+@app.patch("/scans/{scan_id}")
+def update_scan(scan_id: int, user_id: str, data: UpdateScanRequest):
+  db = SessionLocal()
+
+  try:
+
+    scan_search = db.get(Scan, scan_id)
+
+    if scan_search == None:
+      return {
+        "error": True,
+        "message": "Scan not found"
+      }
+
+    if scan_search.user_id != user_id:
+      return {
+        "error": True,
+        "message": "You do not have access to edit this scan"
+      }
+
+    scan_search.report_title = data.report_title
+    scan_search.report_type = data.report_type
+    scan_search.report_icon = data.report_icon
+
+
+    scan_search.notes = data.notes
+
+    db.commit()
+
+  finally:
+    
+    
+    db.close()
+
+  return {
+    "message": "Scan updated successfully",
+    "scan_id": scan_id
   }
