@@ -23,6 +23,7 @@ export default function ScanRecordPage() {
   const [selectedReportType, setSelectedReportType] = useState("All Report Types");
   const [selectedReportDetails, setSelectedReportDetails] = useState<any>(null);
   const [activeTab, setActiveTab] = useState("Overview");
+  const [modalNotes, setModalNotes] = useState("");
 
   async function fetchReport() {
 
@@ -86,12 +87,17 @@ export default function ScanRecordPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ report_title: modalTitle, report_type: modalType, report_icon: modalIcon, notes: "", }),
+        body: JSON.stringify({ report_title: modalTitle, report_type: modalType, report_icon: modalIcon, notes: modalNotes, }),
       });
 
       setReportTitles({ ...reportTitles, [selectedReport.id]: modalTitle });
       setReportType({ ...reportType, [selectedReport.id]: modalType });
       setReportIcon({ ...reportIcon, [selectedReport.id]: modalIcon });
+
+      const updatedReport = { ...selectedReport, report_title: modalTitle, report_type: modalType, report_icon: modalIcon, notes: modalNotes, };
+
+      setSelectedReport(updatedReport);
+      setReports(reports.map((report) => report.id === selectedReport.id ? updatedReport : report));
 
       setModal(false);
     } catch {
@@ -137,7 +143,7 @@ export default function ScanRecordPage() {
 
   const filteredReports = reports.filter((report) => {
     const title = reportTitles[report.id] || report.report_title || `Scan Report #${report.id}`;
-    const currentReportType = reportType[report.id] || "Report Type";
+    const currentReportType = reportType[report.id] || report.report_type || "Report Type";
     const matchesSearch = title.toLowerCase().includes(searchTerm.toLowerCase()) || report.target_url.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesReportType = selectedReportType === "All Report Types" || currentReportType === selectedReportType;
 
@@ -244,11 +250,11 @@ export default function ScanRecordPage() {
                       <div key={report.id} onClick={() => { setSelectedReport(report); fetchReportDetails(report.id); }} className={`border bg-[#071525] hover:border-blue-400 hover:bg-[#0b1c31] cursor-pointer p-4 rounded-md transition ${selectedReport?.id === report.id ? "border-blue-400 bg-[#0b1c31]" : "border-gray-700"}`}>
                         <div className="flex items-center">
                           <div className="text-white bg-blue-500/10 p-2 border border-blue-400/30 rounded-md">
-                            {modalIconHelper(reportIcon[report.id] || "Shield")}
+                            {modalIconHelper(reportIcon[report.id] || report.report_icon || "Shield")}
                           </div>
 
                           <div className="min-w-0 ml-4">
-                            <p className="text-white font-semibold text-sm">{reportTitles[report.id] || `Scan Report #${report.id}`}</p>
+                            <p className="text-white font-semibold text-sm">{reportTitles[report.id] || report.report_title || `Scan Report #${report.id}`}</p>
                             <p className="text-gray-400 truncate text-sm">{report.target_url}</p>
                           </div>
 
@@ -260,7 +266,7 @@ export default function ScanRecordPage() {
                             {new Date(report.created_at).toLocaleDateString("en-US", { month: "2-digit", day: "2-digit", year: "2-digit", })}
                           </p>
 
-                          <button onClick={(e) => { e.stopPropagation(); setSelectedReport(report); setModal(true); setModalTitle(reportTitles[report.id] || report.report_title || `Scan Report #${report.id}`); setModalType(reportType[report.id] || report.report_type || ""); setModalIcon(reportIcon[report.id] || report.report_icon || "Shield"); }} className="ml-2 text-gray-400 cursor-pointer hover:text-blue-400 shrink-0">
+                          <button onClick={(e) => { e.stopPropagation(); setSelectedReport(report); setModal(true); setModalTitle(reportTitles[report.id] || report.report_title || `Scan Report #${report.id}`); setModalType(reportType[report.id] || report.report_type || ""); setModalIcon(reportIcon[report.id] || report.report_icon || "Shield"); setModalNotes(report.notes || ""); }} className="ml-2 text-gray-400 cursor-pointer hover:text-blue-400 shrink-0">
                             <Pencil size={18} />
                           </button>
 
@@ -283,18 +289,18 @@ export default function ScanRecordPage() {
                           <div key={report.id} onClick={() => { setSelectedReport(report); fetchReportDetails(report.id); }} className={`mb-2 border bg-[#071525] hover:border-blue-400 hover:bg-[#0b1c31] cursor-pointer relative p-4 rounded-md transition ${selectedReport?.id === report.id ? "border-blue-400 bg-[#0b1c31]" : "border-gray-700"}`}>
                             <div className="flex items-center">
                               <div className="text-white bg-blue-500/10 p-2 border border-blue-400/30 rounded-md">
-                                {modalIconHelper(reportIcon[report.id] || "Shield")}
+                                {modalIconHelper(reportIcon[report.id] || report.report_icon || "Shield")}
                               </div>
 
                               <div className="min-w-0 ml-4 w-[160px] overflow-hidden">
-                                <p className="text-white font-semibold text-sm">{reportTitles[report.id] || `Scan Report #${report.id}`}</p>
+                                <p className="text-white font-semibold text-sm">{reportTitles[report.id] || report.report_title || `Scan Report #${report.id}`}</p>
                                 <p className="text-gray-400 truncate text-sm">{report.target_url}</p>
                               </div>
 
                               <p className="text-xs text-red-400 bg-red-500/10 border border-red-500/30 rounded-full px-2 py-1 ml-4">{report.risk_level}</p>
                               <p className="text-gray-500 text-xs mt-1 ml-4"> {new Date(report.created_at).toLocaleDateString("en-US", { month: "2-digit", day: "2-digit", year: "2-digit", })}</p>
 
-                              <button onClick={(e) => { e.stopPropagation(); setModal(true); setSelectedReport(report); setModalTitle(reportTitles[report.id] || report.report_title || `Scan Report #${report.id}`); setModalType(reportType[report.id] || report.report_type || ""); setModalIcon(reportIcon[report.id] || `Shield`); }} className="ml-2 text-gray-400 cursor-pointer hover:text-blue-400 shrink-0"> <Pencil size={20} /> </button>
+                              <button onClick={(e) => { e.stopPropagation(); setModal(true); setSelectedReport(report); setModalTitle(reportTitles[report.id] || report.report_title || `Scan Report #${report.id}`); setModalType(reportType[report.id] || report.report_type || ""); setModalIcon(reportIcon[report.id] || report.report_icon || `Shield`); setModalNotes(report.notes || ""); }} className="ml-2 text-gray-400 cursor-pointer hover:text-blue-400 shrink-0"> <Pencil size={20} /> </button>
                               <button className="ml-4 text-gray-400 cursor-pointer hover:text-yellow-400 shrink-0" onClick={(e) => { e.stopPropagation(); togglePinnedReport(report.id); }} > <Star className={pinnedReportIds.includes(report.id) ? "text-yellow-400" : "text-gray-400"} fill={pinnedReportIds.includes(report.id) ? "yellow" : "none"} size={20} /> </button>
 
                             </div>
@@ -346,7 +352,7 @@ export default function ScanRecordPage() {
 
                           <div>
                             <p className="ml-6 text-white mt-6">Notes</p>
-                            <input placeholder="Add any optional notes ..." className="placeholder-white h-16 border border-gray-700 w-[90%] ml-6 mr-6 pl-2 pb-8"></input>
+                            <input placeholder="Add any optional notes ..." className="text-white placeholder-white h-16 border border-gray-700 w-[90%] ml-6 mr-6 pl-2 pb-8" value={modalNotes} onChange={(e) => setModalNotes(e.target.value)}></input>
                           </div>
 
                           <div className="flex justify-end gap-3 mr-6 mt-8">
@@ -371,7 +377,7 @@ export default function ScanRecordPage() {
                     <div className="flex items-start justify-between mb-5">
                       <div>
                         <div className="flex items-center gap-3">
-                          <p className="text-3xl font-semibold text-white">{reportTitles[selectedReport.id] || `Scan Report #${selectedReport.id}`}</p>
+                          <p className="text-3xl font-semibold text-white">{reportTitles[selectedReport.id] || selectedReport.report_title || `Scan Report #${selectedReport.id}`}</p>
                           <span className="text-sm text-red-400 bg-red-500/10 border border-red-500/30 rounded-md px-3 py-1">{selectedReport.risk_level}</span>
                         </div>
 
