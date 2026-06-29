@@ -1,6 +1,7 @@
 from scanner.rules import sensitive_keys 
 from scanner.findings import add_finding
 
+# Recursively scan JSON responses for sensitive key names such as tokens, passwords or secrets
 def scan_sensitive_keys(response_data, findings): 
   if isinstance(response_data, dict):
     for key in response_data.keys(): 

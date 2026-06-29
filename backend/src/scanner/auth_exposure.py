@@ -1,5 +1,6 @@
 from scanner.findings import add_finding
 
+# Recursively searches nested JSOn responses for account fields that may show auth data exposure. 
 def contains_auth_exposure(response_data): 
   
   auth_exposure_keys = ["username", "email", "role", "user_id", "account_id"]
@@ -24,6 +25,7 @@ def contains_auth_exposure(response_data):
           return True
   return False 
 
+# Only flags auth exposure when the endpoint returns a successful response. 
 def check_auth_exposure(response_data, status_code, findings): 
   if status_code != 200: 
     return 
