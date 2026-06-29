@@ -33,23 +33,16 @@ app.add_middleware(
 
 @app.get("/") 
 def root():
-  return {"message": "Test"}
+  return {"message": "API Security Analyzer backend is running"}
 
-@app.get("/fake-user") 
-def test(): 
-  return {
-    "credentials": {
-      "password": "123",
-    },
-    "access_token": "test-token", 
-    "username": "test-user",
-  }
-
+# Runs all scanner checks aginst provided URL and saves scan under current Firebase user.
 @app.post("/scan") 
 def scan(data: ScanRequest):
   findings = []
   start_time = time.perf_counter()
 
+
+  # Only scan http/https urls to avoid invalid request URLs. 
   if data.url.startswith("https://") or data.url.startswith("http://"):
     try: 
       response = requests.get(data.url, timeout = 5)
@@ -75,9 +68,12 @@ def scan(data: ScanRequest):
   scan_sensitive_keys(response_data, findings)
   check_auth_exposure(response_data, response.status_code, findings )
   check_rate_limiting(data.url, findings)
+  
+  #Convert the findings into overall risk score
   risk = calculate_risk(findings)
   scan_id = save_scan_result(data.url, response.status_code, risk, findings, data.user_id)  
   db = SessionLocal()
+
   try: 
     saved_scan = db.get(Scan, scan_id)
     created_at = saved_scan.created_at.isoformat() if saved_scan else None 
@@ -109,6 +105,7 @@ def get_scans(user_id: str):
   scan_results = []
   db = SessionLocal()
   try: 
+    # returns the current user's most recent scan summaries
     scans = db.query(Scan).filter(Scan.user_id == user_id).order_by(Scan.created_at.desc()).limit(20).all() 
     for scan in scans: 
       total_findings = db.query(Finding).filter(Finding.scan_id == scan.id).count()
@@ -119,6 +116,7 @@ def get_scans(user_id: str):
   
   return scan_results
 
+# Returns one scan with its full findings only if it belongs to the current user
 @app.get("/scans/{scan_id}")
 def get_scan_report(scan_id: int, user_id: str): 
   db = SessionLocal()
@@ -189,12 +187,12 @@ def delete_scan(scan_id: int, user_id: str):
     "scan_id": scan_id,
   }
 
+# Updates user report without changing original scan findings
 @app.patch("/scans/{scan_id}")
 def update_scan(scan_id: int, user_id: str, data: UpdateScanRequest):
   db = SessionLocal()
 
   try:
-
     scan_search = db.get(Scan, scan_id)
 
     if scan_search == None:
@@ -212,15 +210,11 @@ def update_scan(scan_id: int, user_id: str, data: UpdateScanRequest):
     scan_search.report_title = data.report_title
     scan_search.report_type = data.report_type
     scan_search.report_icon = data.report_icon
-
-
     scan_search.notes = data.notes
 
     db.commit()
 
   finally:
-    
-    
     db.close()
 
   return {
