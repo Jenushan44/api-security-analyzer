@@ -9,7 +9,6 @@ import { auth } from "../firebase";
 export default function ScanRecordPage() {
   const [selectedReport, setSelectedReport] = useState<ScanHistoryItem | null>(null);
   const [reports, setReports] = useState<ScanHistoryItem[]>([]);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [modal, setModal] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
@@ -27,7 +26,6 @@ export default function ScanRecordPage() {
 
   async function fetchReport() {
 
-    setLoading(true);
     try {
       const userId = auth.currentUser?.uid;
 
@@ -45,8 +43,6 @@ export default function ScanRecordPage() {
 
     } catch {
       setError('Error retrieving report')
-    } finally {
-      setLoading(false);
     }
 
   }
@@ -71,6 +67,7 @@ export default function ScanRecordPage() {
 
   }
 
+  // Save report edits to the backend and update state right away. 
   async function saveChangesButton() {
     if (!selectedReport) return;
 
@@ -141,6 +138,7 @@ export default function ScanRecordPage() {
 
   const pinnedReports = reports.filter((report) => pinnedReportIds.includes(report.id));
 
+  // Apply search and report type filters to the saved report list. 
   const filteredReports = reports.filter((report) => {
     const title = reportTitles[report.id] || report.report_title || `Scan Report #${report.id}`;
     const currentReportType = reportType[report.id] || report.report_type || "Report Type";

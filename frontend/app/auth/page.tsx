@@ -20,12 +20,8 @@ export default function AuthPage() {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
       router.push("/");
-    } catch (error: any) {
-      console.log(error);
-      console.log(error.code);
-      console.log(error.message);
-
-      setError(error.code);
+    } catch (error) {
+      setError("Could not create account. Check your email and password.");
     }
   }
 
