@@ -24,7 +24,7 @@ function LatestFindingsCard({ result }: { result: ScanResult | null }) {
   }
 
   return (
-    <div className="w-full bg-[#0B1624] min-h-[750px] border border-gray-800 border-1 rounded-xl flex flex-col px-6 gap-8">
+    <div className="w-full bg-[#0B1624] border border-gray-800 rounded-xl flex flex-col px-6 pb-6 gap-8">
       <div className="flex gap-2 mt-5">
         <List className="text-white" />
         <p className="text-white tracking-wide">LATEST FINDINGS</p>

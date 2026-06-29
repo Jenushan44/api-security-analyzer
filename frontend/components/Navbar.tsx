@@ -18,7 +18,7 @@ function Navbar() {
   }, []);
 
   return (
-    <div className="flex sm:w-[60px] md:w-[260px] lg:w-[320px] min-h-screen bg-[#09172b] border-r border-gray-800">
+    <div className="sticky top-0 flex sm:w-[60px] md:w-[260px] lg:w-[320px] h-screen shrink-0 bg-[#09172b] border-r border-gray-800">
       <div className="flex flex-col items-center w-full gap-y-5">
         <div className="flex items-center">
           <div className="flex gap-2 mt-5">
