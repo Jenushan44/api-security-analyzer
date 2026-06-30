@@ -281,7 +281,7 @@ export default function ScanRecordPage() {
                 <div className="flex mx-5 mt-5 gap-5 pb-5 flex-1 min-h-0">
                   <div className="flex flex-col flex-1 min-h-0">
                     <p className="text-gray-200 mb-5">All Reports ({reports.length})</p>
-                    <div className="modal-scrollbar flex-1 overflow-y-auto pr-2">
+                    <div className="modal-scrollbar flex-1 overflow-y-auto pr-2 pb-4">
                       {filteredReports.length == 0 ? <p className="text-gray-400">No reports found</p> :
                         filteredReports.map((report) => (
                           <div key={report.id} onClick={() => { setSelectedReport(report); fetchReportDetails(report.id); }} className={`mb-2 border bg-[#071525] hover:border-blue-400 hover:bg-[#0b1c31] cursor-pointer relative p-4 rounded-md transition ${selectedReport?.id === report.id ? "border-blue-400 bg-[#0b1c31]" : "border-gray-700"}`}>
@@ -429,48 +429,45 @@ export default function ScanRecordPage() {
                           </div>
                         </div>
 
-                        <div className="grid grid-cols-3 gap-4 mb-5">
-                          <div className="col-span-2">
-                            <div className="border border-gray-700 rounded-md p-4">
-                              <p className="text-white font-semibold mb-2">Executive Summary</p>
-                              <p className="text-gray-400 text-sm leading-6">This scan found {selectedReport.total_findings} security issues on{" "}<span className="text-blue-400 break-all">{selectedReport.target_url}</span>. Review the findings below and apply the recommended fixes to reduce the overall risk level.</p>
+                        <div className="space-y-4 mb-5">
+                          <div className="border border-gray-700 rounded-md p-4">
+                            <p className="text-white font-semibold mb-2">Executive Summary</p>
+                            <p className="text-gray-400 text-sm leading-6">This scan found {selectedReport.total_findings} security issues on{" "}<span className="text-blue-400 break-all">{selectedReport.target_url}</span>. Review the findings below and apply the recommended fixes to reduce the overall risk level.</p>
 
-                              <div className="border border-gray-700 rounded-md">
+                            <div className="border border-gray-700 rounded-md">
 
-                                <div className="flex items-center justify-between p-4 border-b border-gray-700">
-                                  <p className="text-white font-semibold">Top Findings</p>
-                                  <button onClick={() => setActiveTab("Findings")} className="text-blue-400 text-sm flex cursor-pointer">View all findings <ArrowRight size={21} /></button>
-                                </div>
-
-                                <div className="divide-y divide-gray-700">
-                                  {selectedReportDetails?.findings?.length > 0 ? (
-                                    selectedReportDetails.findings.slice(0, 5).map((finding: any) => (
-                                      <div key={finding.id} className="flex items-center justify-between p-4">
-                                        <div>
-                                          <div className="flex items-center gap-2">
-                                            <p className="text-white text-sm font-semibold">{finding.title}</p>
-                                            <span className={`text-xs border rounded-full px-2 py-0.5 ${getSeverityStyle(finding.severity)}`}>
-                                              {finding.severity}
-                                            </span>
-                                          </div>
-
-                                          <p className="text-gray-400 text-xs mt-1">{finding.evidence || finding.recommendation}</p>
-                                        </div>
-
-                                        <p className="text-gray-400 text-xs">{finding.endpoint || "/"}</p>
-                                      </div>
-                                    ))
-                                  ) : (
-                                    <p className="text-gray-400 text-sm p-4">No detailed findings available for this scan.</p>
-                                  )}
-                                </div>
+                              <div className="flex items-center justify-between p-4 border-b border-gray-700">
+                                <p className="text-white font-semibold">Top Findings</p>
+                                <button onClick={() => setActiveTab("Findings")} className="text-blue-400 text-sm flex cursor-pointer">View all findings <ArrowRight size={21} /></button>
                               </div>
 
+                              <div className="divide-y divide-gray-700">
+                                {selectedReportDetails?.findings?.length > 0 ? (
+                                  selectedReportDetails.findings.slice(0, 5).map((finding: any) => (
+                                    <div key={finding.id} className="flex items-center justify-between p-4">
+                                      <div>
+                                        <div className="flex items-center gap-2">
+                                          <p className="text-white text-sm font-semibold">{finding.title}</p>
+                                          <span className={`text-xs border rounded-full px-2 py-0.5 ${getSeverityStyle(finding.severity)}`}>
+                                            {finding.severity}
+                                          </span>
+                                        </div>
+
+                                        <p className="text-gray-400 text-xs mt-1">{finding.evidence || finding.recommendation}</p>
+                                      </div>
+
+                                      <p className="text-gray-400 text-xs">{finding.endpoint || "/"}</p>
+                                    </div>
+                                  ))
+                                ) : (
+                                  <p className="text-gray-400 text-sm p-4">No detailed findings available for this scan.</p>
+                                )}
+                              </div>
                             </div>
                           </div>
 
-                          <div className="space-y-4">
-                            <div className="border border-gray-700 rounded-md p-4">
+                          <div className="grid grid-cols-2 gap-4 items-stretch">
+                            <div className="border border-gray-700 rounded-md p-4 min-h-[300px]">
                               <p className="text-white font-semibold mb-4">Risk Breakdown</p>
 
                               <div className="flex items-center gap-4">
@@ -492,7 +489,7 @@ export default function ScanRecordPage() {
                               </div>
                             </div>
 
-                            <div className="border border-gray-700 rounded-md p-4">
+                            <div className="border border-gray-700 rounded-md p-4 min-h-[300px]">
                               <p className="text-white font-semibold mb-4">Scan Information</p>
 
                               <div className="flex justify-between gap-4">
