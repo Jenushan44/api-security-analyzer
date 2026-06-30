@@ -222,7 +222,7 @@ export default function ScanRecordPage() {
           <p className="text-white text-[35px] font-semibold ml-6 mt-2">Scan Reports</p>
           <p className="text-gray-400 ml-6 mb-5">Browse, preview and manage generated reports.</p>
           <div className="flex gap-5 min-w-0 items-start">
-            <div className="border border-gray-700 ml-6 rounded-xl w-[480px] shrink-0 h-[calc(100vh-120px)] overflow-hidden">
+            <div className="border border-gray-700 ml-6 rounded-xl w-[480px] shrink-0 h-[calc(100vh-120px)] overflow-hidden flex flex-col">
               <div className="w-full bg-[#102034] text-white gap-5 px-4 py-3">
                 <div className="flex items-center gap-3 w-full">
                   <div className="relative flex-1">
@@ -240,7 +240,7 @@ export default function ScanRecordPage() {
               </div>
 
 
-              <div>
+              <div className="flex flex-col h-full">
                 <p className="text-white mt-4 mb-2 ml-5 flex items-center gap-1.5"><Pin className="rotate-50 text-gray-400 mt-0.5" size={20} /> Pinned Reports</p>
                 {pinnedReports.length == 0 ? <p className="text-gray-400 ml-6">No pinned reports yet. Click a star on any report to pin it. </p> :
                   <div className="px-5 space-y-2">
@@ -278,10 +278,10 @@ export default function ScanRecordPage() {
                 }
                 <hr className="text-gray-600 mt-4"></hr>
 
-                <div className="flex mx-5 mt-5 gap-5 pb-5 min-h-[200px]">
-                  <div className="flex-1">
+                <div className="flex mx-5 mt-5 gap-5 pb-5 flex-1 min-h-0">
+                  <div className="flex flex-col flex-1 min-h-0">
                     <p className="text-gray-200 mb-5">All Reports ({reports.length})</p>
-                    <div className="modal-scrollbar h-[calc(100vh-420px)] overflow-y-auto pr-2">
+                    <div className="modal-scrollbar flex-1 overflow-y-auto pr-2">
                       {filteredReports.length == 0 ? <p className="text-gray-400">No reports found</p> :
                         filteredReports.map((report) => (
                           <div key={report.id} onClick={() => { setSelectedReport(report); fetchReportDetails(report.id); }} className={`mb-2 border bg-[#071525] hover:border-blue-400 hover:bg-[#0b1c31] cursor-pointer relative p-4 rounded-md transition ${selectedReport?.id === report.id ? "border-blue-400 bg-[#0b1c31]" : "border-gray-700"}`}>
