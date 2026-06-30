@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import Navbar from "../../components/Navbar"
 import TotalScansCard from "@/components/scan-history/TotalScansCard"
 import AverageScoreCard from "@/components/scan-history/AverageScoreCard";
-import { ScanHistoryItem, ScanResult } from "../../types/scan";
+import { ScanHistoryItem } from "../../types/scan";
 import CriticalScansCard from "@/components/scan-history/CriticalScansCard";
 import LatestScanCard from "@/components/scan-history/LatestScanCard";
 import ScanHistoryTable from '@/components/scan-history/ScanHistoryTable';
@@ -35,7 +35,6 @@ export default function ScanHistory() {
     if (Array.isArray(data)) {
       setScans(data);
     } else {
-      console.log(data);
       setScans([]);
     }
   }
