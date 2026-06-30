@@ -11,12 +11,14 @@ from scanner.auth_exposure import check_auth_exposure
 from scanner.cors import check_cors
 from scanner.cookies import check_cookie_security
 from database.save_scan import save_scan_result
-from database.connection import SessionLocal
-from database.models import Scan, Finding
+from database.connection import SessionLocal, engine
+from database.models import Scan, Finding, Base
 from fastapi.middleware.cors import CORSMiddleware
 import time
 
 app = FastAPI() 
+
+Base.metadata.create_all(bind=engine)
 
 app.add_middleware(
     CORSMiddleware,
