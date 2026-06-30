@@ -29,7 +29,7 @@ function LatestScanCard({ latest_scan }: { latest_scan: string | null }) {
       return "No scans yet";
     }
 
-    const scanDate = new Date(dateString);
+    const scanDate = new Date(dateString.endsWith("Z") ? dateString : dateString + "Z");
     const now = new Date();
 
     const differenceInMs = Math.max(0, now.getTime() - scanDate.getTime());

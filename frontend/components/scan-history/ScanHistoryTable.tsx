@@ -71,10 +71,10 @@ function ScanHistoryTable({ scans }: { scans: ScanHistoryItem[] }) {
       return "No scans yet";
     }
 
-    const scanDate = new Date(dateString);
+    const scanDate = new Date(dateString.endsWith("Z") ? dateString : dateString + "Z");
     const now = new Date();
 
-    const differenceInMs = now.getTime() - scanDate.getTime();
+    const differenceInMs = Math.max(0, now.getTime() - scanDate.getTime());
     const differenceInSeconds = Math.floor(differenceInMs / 1000);
     const differenceInMinutes = Math.floor(differenceInSeconds / 60);
 
@@ -184,7 +184,7 @@ function ScanHistoryTable({ scans }: { scans: ScanHistoryItem[] }) {
 
 
   return (
-    <div className="px-6 mt-5">
+    <div className="px-6 mt-5 mb-5">
       <div className="border rounded-lg border-gray-800 overflow-hidden">
         <table className="w-full">
           <thead>
