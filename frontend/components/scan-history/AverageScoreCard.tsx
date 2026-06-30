@@ -47,7 +47,7 @@ function AverageScoreCard({ averageScore }: { averageScore: number | null }) {
             <p className='text-[50px] text-[#374151] font-semibold'>-</p>
           ) :
             <div className="flex items-center">
-              <p className='text-[45px] text-white font-semibold'>{averageScore}</p>
+              <p className='text-[45px] text-white font-semibold'>{averageScore.toFixed(1)}</p>
               <p className="text-[15px] text-gray-400 translate-y-2.5">/100</p>
             </div>
           }
