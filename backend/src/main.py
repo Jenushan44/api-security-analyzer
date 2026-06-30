@@ -28,7 +28,6 @@ app.add_middleware(
       "http://127.0.0.1:3000",
       "http://127.0.0.1:3001",
       "https://api-security-analyzer.vercel.app",
-      "https://api-security-analyzer-2a8qe30cb-jenushan.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
