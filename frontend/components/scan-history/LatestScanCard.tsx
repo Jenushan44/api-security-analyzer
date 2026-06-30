@@ -32,7 +32,7 @@ function LatestScanCard({ latest_scan }: { latest_scan: string | null }) {
     const scanDate = new Date(dateString);
     const now = new Date();
 
-    const differenceInMs = now.getTime() - scanDate.getTime();
+    const differenceInMs = Math.max(0, now.getTime() - scanDate.getTime());
     const differenceInSeconds = Math.floor(differenceInMs / 1000);
     const differenceInMinutes = Math.floor(differenceInSeconds / 60);
 
