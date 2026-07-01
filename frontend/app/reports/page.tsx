@@ -281,7 +281,7 @@ export default function ScanRecordPage() {
                 <div className="flex mx-5 mt-5 gap-5 pb-5 flex-1 min-h-0">
                   <div className="flex flex-col flex-1 min-h-0">
                     <p className="text-gray-200 mb-5">All Reports ({reports.length})</p>
-                    <div className="modal-scrollbar flex-1 overflow-y-auto pr-2 pb-4">
+                    <div className="modal-scrollbar flex-1 overflow-y-auto pr-2 pb-10">
                       {filteredReports.length == 0 ? <p className="text-gray-400">No reports found</p> :
                         filteredReports.map((report) => (
                           <div key={report.id} onClick={() => { setSelectedReport(report); fetchReportDetails(report.id); }} className={`mb-2 border bg-[#071525] hover:border-blue-400 hover:bg-[#0b1c31] cursor-pointer relative p-4 rounded-md transition ${selectedReport?.id === report.id ? "border-blue-400 bg-[#0b1c31]" : "border-gray-700"}`}>
@@ -466,12 +466,12 @@ export default function ScanRecordPage() {
                             </div>
                           </div>
 
-                          <div className="grid grid-cols-3 gap-4">
-                            <div className="border border-gray-700 rounded-md p-4 min-h-[220px]">
+                          <div className="grid grid-cols-4 gap-4">
+                            <div className="border border-gray-700 rounded-md p-4 min-h-[220px] col-span-2">
                               <p className="text-white font-semibold mb-4">Risk Breakdown</p>
 
                               <div className="flex items-center gap-4">
-                                <div className={`w-24 h-24 rounded-full border-[14px] ${circleColor} flex items-center justify-center`}>
+                                <div className={`w-24 h-24 ml-3 rounded-full border-[14px] ${circleColor} flex items-center justify-center`}>
                                   <div className="text-center">
                                     <p className="text-white text-xl font-semibold">
                                       {selectedReportDetails?.findings?.length || 0}
@@ -480,7 +480,7 @@ export default function ScanRecordPage() {
                                   </div>
                                 </div>
 
-                                <div className="space-y-2 ml-3 text-sm">
+                                <div className="space-y-2 ml-5 text-sm">
                                   <p className="text-red-400 text-[15px]">● {criticalCount} Critical</p>
                                   <p className="text-orange-400 text-[15px]">● {highCount} High</p>
                                   <p className="text-yellow-400 text-[15px]">● {mediumCount} Medium</p>
@@ -493,7 +493,7 @@ export default function ScanRecordPage() {
                               <p className="text-white font-semibold mb-4">Scan Information</p>
 
                               <div className="flex justify-between gap-4">
-                                <p className="text-gray-400">Target URL</p>
+                                <p className="text-gray-400">URL</p>
                                 <p className="text-blue-400 text-right truncate break-all">{selectedReport.target_url}</p>
                               </div>
 
@@ -535,16 +535,15 @@ export default function ScanRecordPage() {
                             <div className="flex gap-4 overflow-x-auto pb-2 modal-scrollbar">
                               {selectedReportDetails?.findings?.map((finding: any) => (
 
-                                <div key={finding.id} className="bg-[#0b1c31] border border-gray-700 rounded-md p-4 min-w-[280px] max-w-[280px] shrink-0">
+                                <div key={finding.id} className="bg-[#0b1c31] border border-gray-700 rounded-md p-4 min-w-[280px] max-w-[280px] min-h-[220px] shrink-0 flex flex-col">
                                   <p className="text-white font-semibold text-sm">{finding.title}</p>
 
                                   <p className="text-gray-400 text-sm mt-3 leading-5">{finding.recommendation || "No recommendation available."}</p>
-                                  <p className={`text-xs mt-4 inline-block px-2 py-1 rounded border ${getSeverityStyle(finding.severity)}`}>Priority: {finding.severity}</p>
+                                  <p className={`text-xs mt-auto inline-block w-fit px-2 py-1 rounded border ${getSeverityStyle(finding.severity)}`}>Priority: {finding.severity}</p>
 
                                 </div>
                               ))}
                             </div>
-
                           </div>
                         </div>
                       </div>
