@@ -466,8 +466,8 @@ export default function ScanRecordPage() {
                             </div>
                           </div>
 
-                          <div className="grid grid-cols-2 gap-4 items-stretch">
-                            <div className="border border-gray-700 rounded-md p-4 min-h-[300px]">
+                          <div className="grid grid-cols-3 gap-4">
+                            <div className="border border-gray-700 rounded-md p-4 min-h-[220px]">
                               <p className="text-white font-semibold mb-4">Risk Breakdown</p>
 
                               <div className="flex items-center gap-4">
@@ -480,16 +480,16 @@ export default function ScanRecordPage() {
                                   </div>
                                 </div>
 
-                                <div className="space-y-2 text-sm">
-                                  <p className="text-red-400">● {criticalCount} Critical</p>
-                                  <p className="text-orange-400">● {highCount} High</p>
-                                  <p className="text-yellow-400">● {mediumCount} Medium</p>
-                                  <p className="text-green-400">● {lowCount} Low</p>
+                                <div className="space-y-2 ml-3 text-sm">
+                                  <p className="text-red-400 text-[15px]">● {criticalCount} Critical</p>
+                                  <p className="text-orange-400 text-[15px]">● {highCount} High</p>
+                                  <p className="text-yellow-400 text-[15px]">● {mediumCount} Medium</p>
+                                  <p className="text-green-400 text-[15px]">● {lowCount} Low</p>
                                 </div>
                               </div>
                             </div>
 
-                            <div className="border border-gray-700 rounded-md p-4 min-h-[300px]">
+                            <div className="border border-gray-700 rounded-md p-4 min-h-[220px] col-span-2">
                               <p className="text-white font-semibold mb-4">Scan Information</p>
 
                               <div className="flex justify-between gap-4">
